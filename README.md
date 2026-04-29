@@ -117,7 +117,21 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 # Requerimientos del Sistema
 
 ## Requerimientos Funcionales
+| ID | Nombre | Roles | Descripción Breve |
+|----|--------|-------|-------------------|
+| RF01 | Catálogo de Patrimonio y Oficios | Ciudadano / Gestor | Fichas didácticas de elementos culturales con multimedia y georreferencia |
+| RF02 | Mapa Interactivo Cultural | Ciudadano / Gestor | Mapa con capas diferenciadas de ferias, cultores y espacios patrimoniales |
+| RF03 | Agenda Cultural Comunal | Ciudadano / Gestor | Calendario centrado en ferias, talleres y eventos con favoritos |
+| RF04 | Postulación a Fondos Culturales | Ciudadano / Gestor | Formulario de múltiples pasos para postulación con seguimiento de estado |
+| RF05 | Propuestas Ciudadanas | Ciudadano / Gestor | Iniciativas ciudadanas con votación y escalamiento a convocatorias |
+| RF06 | Panel de Transparencia | Ciudadano / Gestor | Indicadores públicos de gestión cultural actualizados |
+| RF07 | Valoración y Comentarios | Ciudadano / Gestor | Sistema de valoración con estrellas y comentarios moderados sobre fichas y eventos |
 
 ## Requerimientos No Funcionales
+| ID | Tipo | Criterio Clave |
+|----|------|----------------|
+| RNF01 | Rendimiento | Carga ≤3s en 4G, soporte 100 usuarios simultáneos |
+| RNF02 | Seguridad | HTTPS, Clave Única OAuth, rate limiting |
+| RNF03 | Usabilidad | Accesibilidad universal, lenguaje simple, feedback ≤1s |
 
-
+Para ver una descripción más detallada y completa de los requerimientos funcionales y no-funcionales, consulte el documento [requerimientos.md](requerimientos.md).
