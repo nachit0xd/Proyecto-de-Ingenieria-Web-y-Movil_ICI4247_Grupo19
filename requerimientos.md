@@ -52,7 +52,7 @@ El requerimiento se basa en la falta de difusión de actividades culturales en v
 - El formulario incluye los campos: nombre de la organización, descripción de la iniciativa, área cultural (oficio, patrimonio, feria, expresión), presupuesto estimado, impacto esperado y documentos adjuntos (en formato PDF).
 - El sistema muestra el estado de cada postulación: borrador, enviada, en revisión, aprobada/rechazada, en ejecución, finalizada.
 - El gestor puede cambiar estados, agregar observaciones y notificar al postulante mediante el sistema.
-- Los resultados de cada convocatoria se publican en una sección visible para todos los ciudadanos.
+- Los resultados de cada convocatoria se publican en una sección visible para todos los ciudadanos y está disponible a votación (RF05).
 
 **Relación con caso de la vida real:**
 El requerimiento responde a la necesidad de digitalización y mejoras en el proceso de postulación a fondos municipales culturales.
@@ -60,10 +60,9 @@ El requerimiento responde a la necesidad de digitalización y mejoras en el proc
 ## RF05 — Módulo de Propuestas Ciudadanas para Iniciativas Culturales
 **Roles participantes:** Ciudadano (propuesta y votación) y Gestor Municipal (moderación y respuesta)
 
-**Descripción:** El sistema debe permitir que el *Ciudadano* autenticado proponga nuevas iniciativas culturales (ferias, oficios, espacios patrimoniales) que no estén contempladas en la agenda municipal. Otros ciudadanos pueden apoyar las propuestas mediante votos. El *Gestor Municipal* modera el contenido, responde oficialmente a cada propuesta y puede escalarla a una convocatoria de fondos (RF04) si supera cierto umbral de apoyo.
+**Descripción:** El sistema debe permitir que el *Ciudadano* pueda apoyar las propuestas de otros ciudadanos (RF04) mediante votación popular. El *Gestor Municipal* modera el contenido, responde oficialmente a cada propuesta y puede escalarla a una convocatoria de fondos (RF04) si supera cierto umbral de apoyo.
 
 **Criterios:** 
-- El ciudadano autenticado puede crear una propuesta con: título, descripción, categoría, sector de la comuna y, opcionalmente, imágenes.
 - Otros ciudadanos autenticados pueden votar a favor de una propuesta (un voto por ciudadano por cada propuesta).
 - Las propuestas se ordenan por número de votos y fecha de creación.
 - El gestor municipal puede moderar (aprobar, rechazar o marcar como duplicada una publicación) y responder oficialmente las propuestas.
