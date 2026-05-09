@@ -1,7 +1,23 @@
+import React from 'react';
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
+import { 
+  IonApp,
+  IonIcon,
+  IonLabel, 
+  IonRouterOutlet, 
+  IonTabBar,
+  IonTabButton,
+  IonTabs,
+  setupIonicReact 
+} from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import Home from './pages/Home';
+import {
+  home,
+  library,
+  map,
+  calendar,
+  grid 
+ } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -30,21 +46,86 @@ import '@ionic/react/css/display.css';
 /* import '@ionic/react/css/palettes/dark.class.css'; */
 import '@ionic/react/css/palettes/dark.system.css';
 
-/* Theme variables */
+/* Tema global */
 import './theme/variables.css';
+
+// TODO: Importar futuros componentes aquí
+import Auth from './pages/auth/Auth';
+
 
 setupIonicReact();
 
+/* 1. Layout del Ciudadano (Tabs Inferiores) */
+const CiudadanoTabs: React.FC = () => (
+  <IonTabs>
+    <IonRouterOutlet>
+      {/* Rutas de las pestañas */}
+      <Route exact path="/ciudadano/inicio" render={() => <div>Pantalla Inicio</div>} />
+      <Route exact path="/ciudadano/catalogo" render={() => <div>Pantalla Catálogo</div>} />
+      <Route exact path="/ciudadano/mapa" render={() => <div>Pantalla Mapa</div>} />
+      <Route exact path="/ciudadano/agenda" render={() => <div>Pantalla Agenda</div>} />
+      
+      {/* Esta ruta agrupa Propuestas, Fondos y Transparencia en un solo menú */}
+      <Route path="/ciudadano/comunidad" render={() => <div>Menú Comunidad</div>} />
+      
+      <Route exact path="/ciudadano">
+        <Redirect to="/ciudadano/inicio" />
+      </Route>
+    </IonRouterOutlet>
+
+    {/* Barra de navegación inferior (visible en móvil, pero se puede ocultar en desktop) */}
+    <IonTabBar slot="bottom">
+      <IonTabButton tab="inicio" href="/ciudadano/inicio">
+        <IonIcon icon={home} />
+        <IonLabel>Inicio</IonLabel>
+      </IonTabButton>
+      
+      <IonTabButton tab="catalogo" href="/ciudadano/catalogo">
+        <IonIcon icon={library} />
+        <IonLabel>Catálogo</IonLabel>
+      </IonTabButton>
+      
+      <IonTabButton tab="mapa" href="/ciudadano/mapa">
+        <IonIcon icon={map} />
+        <IonLabel>Mapa</IonLabel>
+      </IonTabButton>
+      
+      <IonTabButton tab="agenda" href="/ciudadano/agenda">
+        <IonIcon icon={calendar} />
+        <IonLabel>Agenda</IonLabel>
+      </IonTabButton>
+      
+      <IonTabButton tab="comunidad" href="/ciudadano/comunidad">
+        <IonIcon icon={grid} />
+        <IonLabel>Comunidad</IonLabel>
+      </IonTabButton>
+    </IonTabBar>
+  </IonTabs>
+);
+
+/* 2. Enrutador Principal (App) */
 const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
+        
+        {/* Flujo de Autenticación (Sin Tabs, Sin Sidebar) */}
+        <Route exact path="/auth/login">
+          <Auth />
         </Route>
+        
+        {/* Flujo del Gestor Municipal (Layout con Sidebar) */}
+        {/* Aquí luego inyectaremos un componente que contenga el <IonSplitPane> */}
+        <Route path="/gestion" render={() => <div>Layout Gestor Municipal</div>} />
+
+        {/* Flujo Público / Ciudadano (Renderiza el componente de Tabs) */}
+        <Route path="/ciudadano" component={CiudadanoTabs} />
+
+        {/* Redirección por defecto al entrar a la raíz de la app */}
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/ciudadano/inicio" />
         </Route>
+
       </IonRouterOutlet>
     </IonReactRouter>
   </IonApp>

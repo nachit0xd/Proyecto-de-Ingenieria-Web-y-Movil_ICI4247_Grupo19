@@ -1,0 +1,198 @@
+/* Modo claro y Variables de base */
+.auth-page {
+  --background: #ffffff;
+  --ion-text-color: #333333;
+  color: #333333;
+}
+
+/* Lado visual (Izquierda) */
+.auth-visual-side {
+  height: 100vh;
+  background-image: url('/fondo-login.png'); 
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  padding: 0 !important;
+}
+
+.overlay {
+  background: rgba(0, 0, 0, 0.4);
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 40px;
+}
+
+.brand-header h2 {
+  color: white;
+  margin: 0;
+}
+
+.hero-text h1 {
+  font-size: 3rem;
+  font-weight: 400;
+  color: white;
+  letter-spacing: 2px;
+  margin-bottom: 10px;
+}
+
+.hero-text p {
+  color: white;
+  font-size: 1.2rem;
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+/* Lado formulario (Derecha) */
+.auth-form-side {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+}
+
+.form-container {
+  width: 100%;
+  max-width: 400px; 
+  padding: 20px;
+}
+
+.auth-content h2 {
+  font-size: 1.8rem;
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #222;
+}
+
+.auth-content p {
+  color: #666;
+  font-size: 0.95rem;
+  margin-bottom: 25px;
+}
+
+/* Selector (Tabs Superiores) */
+.auth-segment {
+  margin-bottom: 30px;
+  --background: transparent;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.auth-segment ion-segment-button {
+  --indicator-color: #333; 
+  --color: #888;
+  --color-checked: #222;
+  font-weight: 600;
+  text-transform: none; /* Quita las mayúsculas automáticas */
+  font-size: 1rem;
+}
+
+/* Botones */
+ion-button {
+  text-transform: none; 
+  font-weight: 600;
+  font-size: 1rem;
+  --box-shadow: none; 
+  letter-spacing: 0;
+}
+
+.clave-unica-btn {
+  --background: #1e293b; 
+  --background-hover: #0f172a;
+  --border-radius: 6px;
+  height: 48px;
+  margin-bottom: 15px;
+}
+
+.main-auth-btn {
+  --background: #e2e8f0; 
+  --color: #333;
+  --border-radius: 6px;
+  margin-top: 15px;
+  height: 48px;
+}
+
+/* Inputs y Formulario */
+.custom-input {
+  --background: #f1f5f9; 
+  --color: #333; /* Fuerza el texto oscuro */
+  --placeholder-color: #94a3b8;
+  --border-radius: 6px;
+  margin-bottom: 15px;
+}
+
+
+.custom-input::part(native) {
+  border-bottom: none;
+}
+
+/* Forzar que el texto dentro del input se vea oscuro siempre */
+.custom-input ion-input,
+.custom-input ion-select {
+  --color: #333 !important;
+}
+
+.separator {
+  text-align: center;
+  border-bottom: 1px solid #e0e0e0;
+  line-height: 0.1em;
+  margin: 25px 0;
+}
+
+.separator span {
+  background: #fff;
+  padding: 0 15px;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.auth-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  margin-bottom: 15px;
+}
+
+.auth-options a {
+  color: #666;
+  text-decoration: underline;
+}
+
+.checkbox-item {
+  --background: transparent;
+  font-size: 0.9rem;
+}
+
+.switch-text {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.95rem;
+}
+
+.switch-text a {
+  color: #333;
+  font-weight: bold;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* Animaciones y Estados */
+.fade-in {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Bordes de validación (para la vista de registro) */
+.custom-input.success {
+  border: 1px solid #2dd36f;
+}
+
+.custom-input.error {
+  border: 1px solid #eb445a;
+}
