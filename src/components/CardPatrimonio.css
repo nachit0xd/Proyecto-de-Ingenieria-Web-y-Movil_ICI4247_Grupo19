@@ -1,0 +1,91 @@
+.card-patrimonio {
+  display: flex;
+  flex-direction: column;
+  border-radius: 8px;
+  overflow: hidden; /* Asegura que la imagen no se salga de los bordes curvos */
+  border: 1px solid #d1d5db;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  min-height: 320px; /* Altura mínima para dar más espacio visual */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  background-color: #4b5563; /* Fondo gris oscuro */
+}
+
+/* Efecto hover sutil al pasar el mouse */
+.card-patrimonio:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* MITAD SUPERIOR: IMAGEN */
+.card-image-container {
+  height: 120px; /* Altura reducida para dejar más espacio al contenido */
+  width: 100%;
+  background-color: #ffffff; /* Fondo blanco */
+  background-size: cover;
+  background-position: center;
+  border-bottom: 1px solid #d1d5db;
+}
+
+.img-placeholder {
+  width: 100%;
+  height: 100%;
+  background-color: #ffffff; /* Espacio en blanco */
+}
+
+/* MITAD INFERIOR: CONTENIDO Y TEXTOS */
+.card-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Hace que el contenido empuje el footer hacia abajo */
+}
+
+.card-categoria {
+  color: #f97316; /* Naranja */
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.card-titulo {
+  color: #ffffff;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.card-descripcion {
+  color: #d1d5db; /* Gris claro */
+  font-size: 0.85rem;
+  line-height: 1.5;
+  margin: 0 0 16px 0;
+  flex-grow: 1; /* Ocupa el espacio sobrante */
+  /* Truncar texto a 3 líneas para más contenido visible */
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* FOOTER: ESTRELLAS Y BOTÓN */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.card-estrellas {
+  display: flex;
+  gap: 2px;
+}
+
+.star-icon {
+  color: #f97316; /* Color naranja de las estrellas */
+  font-size: 1.2rem;
+}
+

@@ -51,6 +51,8 @@ import './theme/variables.css';
 
 // TODO: Importar futuros componentes aquí
 import Auth from './pages/auth/Auth';
+import Inicio from './pages/ciudadano/Inicio';
+import Catalogo from './pages/ciudadano/Catalogo';
 
 
 setupIonicReact();
@@ -60,8 +62,8 @@ const CiudadanoTabs: React.FC = () => (
   <IonTabs>
     <IonRouterOutlet>
       {/* Rutas de las pestañas */}
-      <Route exact path="/ciudadano/inicio" render={() => <div>Pantalla Inicio</div>} />
-      <Route exact path="/ciudadano/catalogo" render={() => <div>Pantalla Catálogo</div>} />
+      <Route exact path="/ciudadano/inicio" component={Inicio} />
+      <Route exact path="/ciudadano/catalogo" component={Catalogo} />
       <Route exact path="/ciudadano/mapa" render={() => <div>Pantalla Mapa</div>} />
       <Route exact path="/ciudadano/agenda" render={() => <div>Pantalla Agenda</div>} />
       

@@ -1,0 +1,113 @@
+.catalogo-page {
+  --background: #f9fafb; /* Fondo un poco más gris para resaltar las tarjetas blancas */
+}
+
+/* BARRA LATERAL DE FILTROS */
+.filtros-container {
+  padding-right: 20px;
+  border-right: 1px solid #e5e7eb;
+  height: 100%;
+}
+
+.filtros-container h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-top: 0;
+  margin-bottom: 25px;
+}
+
+.filtro-grupo {
+  margin-bottom: 25px;
+}
+
+.filtro-grupo h3 {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4b5563;
+  margin-bottom: 10px;
+}
+
+.filtro-item {
+  --background: transparent;
+  --min-height: 35px;
+  font-size: 0.95rem;
+  color: #374151;
+}
+
+.filtro-item ion-checkbox {
+  margin-right: 10px;
+  --size: 18px;
+  --checkbox-background-checked: #1e3a8a; /* Azul oscuro */
+  --border-color-checked: #1e3a8a;
+}
+
+.stars-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.star-filter {
+  color: #f97316;
+}
+
+/* BARRA DE BÚSQUEDA Y RESULTADOS */
+.resultados-container {
+  padding-left: 20px;
+}
+
+.search-sort-bar {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.custom-searchbar {
+  padding: 0;
+  --box-shadow: none;
+  --background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.custom-sort {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  min-width: 180px;
+  padding: 10px 15px;
+  font-weight: 500;
+}
+
+.resultados-count {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #4b5563;
+  margin-bottom: 20px;
+}
+
+/* GRILLA DE RESULTADOS */
+.fichas-grid-container {
+  /* Asegura que las tarjetas se estiren para ocupar la misma altura en cada fila */
+  align-items: stretch; 
+}
+
+.fichas-grid-container > ion-col {
+  display: flex;
+}
+
+/* Ajustes Responsive */
+@media (max-width: 768px) {
+  .resultados-container {
+    padding-left: 0;
+  }
+  .search-sort-bar {
+    flex-wrap: wrap;
+  }
+  .custom-searchbar {
+    order: 2;
+    width: 100%;
+  }
+}
