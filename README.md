@@ -12,6 +12,7 @@
 2. [Justificación del Problema](#justificación-del-problema)
 3. [Análisis del Usuario Objetivo](#análisis-del-usuario-objetivo)
 4. [Requerimientos del Sistema](#requerimientos-del-sistema)
+5. [Arquitectura de Navegación y UX](#arquitectura-de-navegación-y-ux)
 
 # Introducción al proyecto
  
@@ -114,6 +115,7 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 - Configurar y actualizar indicadores del panel de transparencia.
 - Permitir el seguimiento de estado de iniciativas para ciudadanos.
 - Obtener datos sobre participación e impacto cultural de iniciativas para la toma de decisiones.
+
 # Requerimientos del Sistema
 
 ## Requerimientos Funcionales
@@ -135,3 +137,147 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 | RNF03 | Usabilidad | Accesibilidad universal, lenguaje simple, feedback ≤1s |
 
 Para ver una descripción más detallada y completa de los requerimientos funcionales y no-funcionales, consulte el documento [requerimientos.md](requerimientos.md).
+
+# Arquitectura de Navegación y UX
+
+## Rutas Principales y Secundarias y Relaciones Jerárquicas
+
+**Módulo Autenticación**
+```
+/
+└── /auth                       
+    ├── /auth/login         # Vista de inicio de sesión
+    └── /auth/registro      # Vista de creación de cuenta ciudadana
+```
+
+**Módulo Público / Ciudadano**
+```
+/
+└── /ciudadano
+    ├── /ciudadano/inicio                           # Dashboard público
+    ├── /ciudadano/catalogo                         # Catálogo patrimonial
+    │   └── /ciudadano/catalogo/:id                 # Detalle de una ficha
+    ├── /ciudadano/mapa                             # Mapa interactivo
+    ├── /ciudadano/agenda                           # Calendario de eventos
+    │   └── /ciudadano/agenda/:id                   # Detalle de un evento 
+    └── /ciudadano/comunidad                        # Hub de participación 
+        ├── /ciudadano/comunidad/propuestas         # Listado y votación de propuestas 
+        └── /ciudadano/comunidad/transparencia      # Información de fondos y postulaciones culturales
+```
+
+**Módulo Gestor Municipal**
+```
+/
+└── /gestor
+    ├── /gestor/dashboard        # Panel inicial con métricas
+    ├── /gestor/contenido        # Administración de fichas y agenda
+    └── /gestor/postulaciones    # Revisión de fondos de ciudadanos
+```
+
+## Flujo de Navegación entre Funcionalidades
+
+El flujo principal se basa en dos patrones según el rol del usuario:
+
+- **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los cinco dominios principales (Inicio, Catálogo, Mapa, Agenda, Comunidad). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
+- **Navegación Vertical (Gestor):** Emplea un Sidebar simple (menú lateral) fijo a la izquierda. Al seleccionar un ítem, el área principal de contenido a la derecha se actualiza, facilitando la gestión de datos pesados sin perder el contexto del menú general.
+
+## Diferenciación de Acceso según Roles 
+
+El control de acceso se maneja mediante rutas protegidas (Protected Routes) en el router de React, evaluando el token de sesión y los permisos del usuario:
+- **Acceso público (Sin autenticar):** Puede navegar libremente por `/ciudadano/inicio`, `/catalogo`, `/mapa` y `/agenda`. Si intenta interactuar (votar, postular), el flujo lo redirige automáticamente a `/auth/login`.
+- **Usuario Ciudadano (Autenticado):** Mantiene el acceso público y desbloquea permisos de escritura para crear propuestas, votar y comentar fichas dentro de la jerarquía `/ciudadano/comunidad/`.
+- **Gestor (Autenticado con credenciales municipales):** Es el único rol autorizado para renderizar la jerarquía `/gestor/`. Tiene permisos completos de CRUD (Crear, Leer, Actualizar, Borrar) sobre el catálogo, el mapa y la agenda, además de capacidad de moderación.
+
+## Task Flow
+
+Algunos flujos de tareas principales son:
+**1. Primer uso — ciudadano nuevo**
+```
+[Abre la app]
+      │
+      ▼
+  /login → tab "Registrarse"
+      │
+      ├── Ingresa nombre de usuario → validación disponibilidad
+      ├── Ingresa RUT → formato automático XX.XXX.XXX-X
+      ├── Ingresa correo → validación 
+      ├── Selecciona región → carga comunas dependientes
+      ├── Selecciona comuna
+      ├── Ingresa contraseña → indicador fortaleza  → validación coincidencia
+      └── Acepta términos → habilita botón "Crear cuenta"
+            │
+            ▼
+      Notificación de éxito
+            │
+            ▼
+      Ir a iniciar sesión → /login tab "Iniciar sesión"
+            │
+            ▼
+      Ingresa correo + contraseña → /inicio
+```
+
+**2. Ciudadano busca y valora una ficha**
+```
+/inicio
+    │
+    ▼
+Toca ficha destacada → /catalogo/:id
+    │
+    ├── Lee descripción didáctica
+    ├── Navega galería de imágenes
+    ├── Toca "Ver en mapa" → /mapa (marcador activo)
+    └── Toca "Valorar"
+          │
+          ▼ 
+      Modal de valoración
+          ├── Selecciona 1-5 estrellas
+          ├── Escribe comentario
+          └── Envía → confirmación visual → /catalogo/:id actualizado
+```
+
+**3. Ciudadano envía nueva propuesta desde inicio**
+```
+/inicio → sección "Propuestas más votadas"
+    │
+    ▼
+Toca acceso rápido → /comunidad/propuestas
+    │
+    ├── Revisa propuestas activas
+    ├── Puede buscar, filtrar o ver detalles de propuestas activas
+    └── Toca "Nueva Propuesta"
+          │
+          ▼
+      /comunidad/propuestas/postular
+          │
+          ├── [Paso 1] Datos personales
+          │     ├── Nombre representante
+          │     ├── RUT representante
+          │     └── Nombre organización
+          │
+          ├── [Paso 2] Descripción iniciativa
+          │     ├── Nombre del proyecto
+          │     ├── Categoría cultural
+          │     └── Descripción del proyecto
+          │
+          ├── [Paso 3] Presupuesto y documentos
+          │     ├── Monto solicitado (validado contra máximo)
+          │     ├── Desglose de gastos
+          │     └── Adjuntar PDF (acta, estatutos)
+          │
+          └── [Paso 4] Confirmar
+                ├── Resumen de todos los datos
+                └── Enviar 
+```
+
+## Puntos Críticos de Interacción
+- **Formularios de ingreso de datos:** Pantallas como el registro o las postulaciones requieren retroalimentación visual inmediata (validación en tiempo real de RUT o correo) para evitar frustración antes del envío al servidor.
+- **Mapa Interactivo:** Requiere manejo eficiente de gestos táctiles (zoom, arrastre) y renderizado optimizado de marcadores (ferias, cultores) para no degradar el rendimiento del navegador o dispositivo móvil.
+- **Navegación con estado preservado:** Si el usuario aplica filtros y navega a otro tab, se deben preservar los filtros para evitar que el usuario repita el proceso de filtrado.
+
+## Coherencia de Experiencia entre Dispositivos
+
+La arquitectura de navegación debe implementar un diseño Mobile-First para el entorno ciudadano y Desktop-First para el entorno administrativo, utilizando un sistema de grillas (Grid) adaptable. Lo anterior responde bajo el supuesto de que la mayoría de los usuarios promedio utilizarán dispositivo móviles para acceder a la aplicación, mientras que administradores y gestores usarán escritorios o notebooks. 
+
+En móvil, el ciudadano interactúa en la aplicación con pestañas táctiles grandes y vistas en pila; mientras que en escritorio, el panel del gestor está optimizado para resoluciones mayores, utilizando componentes de panel dividido para aprovechar el espacio ancho y con el uso de una cabecera superior fija.
+
+Esta arquitectura de navegación maximiza la usabilidad al usar patrones nativos esperados por el usuario (Tabs en móvil, Sidebar en PC). La eficiencia de interacción se logra mediante la carga diferida de los tres grandes módulos; un ciudadano que solo revisa la agenda no descargará el código Javascript del panel administrativo. La claridad estructural se mantiene separando estrictamente los componentes visuales de la lógica de enrutamiento y roles. Finalmente, la escalabilidad está asegurada: agregar una nueva funcionalidad (por ejemplo, un módulo de turismo) solo requiere crear una nueva rama en el árbol de rutas sin afectar el código de los módulos existentes.
