@@ -137,6 +137,11 @@ const Auth: React.FC = () => {
                       <IonInput type="password" placeholder="**********"></IonInput>
                     </IonItem>
 
+                    <IonItem lines="none" className="custom-input">
+                      <IonLabel position="stacked">Confirmar contraseña</IonLabel>
+                      <IonInput type="password" placeholder="**********"></IonInput>
+                    </IonItem>
+
                     <IonItem lines="none" className="checkbox-item">
                       <IonCheckbox slot="start"></IonCheckbox>
                       <IonLabel className="ion-text-wrap">

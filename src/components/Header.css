@@ -1,0 +1,50 @@
+/* Color de fondo y texto principal de la cabecera */
+.custom-toolbar {
+  --background: #1e2536; /* Azul oscuro */
+  --color: #ffffff;
+  --min-height: 64px;
+  padding: 0 20px;
+}
+
+/* Estilos del Logo / Título */
+.app-logo {
+  font-weight: 700;
+  font-size: 1.5rem;
+  letter-spacing: 0.5px;
+}
+
+/* Estilos de los botones de navegación */
+.desktop-nav-links ion-button {
+  --color: #e2e8f0;
+  --color-hover: #ffffff;
+  font-weight: 500;
+  font-size: 0.95rem;
+  text-transform: none; /* Quita las mayúsculas automáticas */
+  margin: 0 5px;
+}
+
+/* Efecto al pasar el mouse por los enlaces */
+.desktop-nav-links ion-button::part(native):hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+
+/* Botón de perfil de usuario */
+.profile-button ion-button {
+  --color: #ffffff;
+  margin-left: 15px;
+}
+
+/* COMPORTAMIENTO RESPONSIVE (MÓVIL VS PC) */
+
+/* En dispositivos móviles (pantallas menores a 992px), ocultamos los textos 
+   porque usaremos la barra inferior (Tab Bar) para navegar */
+@media (max-width: 992px) {
+  .desktop-nav-links {
+    display: none;
+  }
+  
+  .custom-toolbar {
+    padding: 0 5px; /* Menos padding en móvil */
+  }
+}

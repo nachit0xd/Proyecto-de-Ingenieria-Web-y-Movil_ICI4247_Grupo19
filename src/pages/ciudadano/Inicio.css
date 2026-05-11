@@ -1,0 +1,349 @@
+/* Configuración General */
+.inicio-page {
+  --background: #ffffff;
+}
+
+.max-width-container {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* BANNER DE BIENVENIDA */
+.welcome-banner {
+  background-color: #1a2235; /* Azul oscuro */
+  color: white;
+  border-radius: 12px;
+  padding: 35px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.welcome-text h2 {
+  margin-top: 0;
+  font-weight: bold;
+  font-size: 1.8rem;
+  letter-spacing: 0.5px;
+}
+
+.welcome-text p {
+  color: #d1d5db;
+  max-width: 480px;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  font-size: 1rem;
+}
+
+.btn-outline {
+  --border-radius: 6px;
+  --border-width: 1px;
+  --border-color: rgba(255,255,255,0.5);
+  font-weight: 500;
+  margin-right: 15px;
+}
+
+.welcome-stats {
+  display: flex;
+  gap: 40px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.stat-number {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: #d1d5db;
+  margin-top: 5px;
+}
+
+/* HEADERS DE SECCIÓN */
+.section-header h3 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+  margin: 0;
+}
+
+.center-header {
+  text-align: center;
+  margin-top: 25px;
+  margin-bottom: 10px;
+}
+
+.flex-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.flex-header a {
+  font-size: 0.95rem;
+  color: #e67e22; /* Naranja / Rojo */
+  font-weight: 500;
+}
+
+.margin-top-large {
+  margin-top: 40px;
+}
+
+.color-orange {
+  color: #e67e22 !important;
+}
+
+/* CAJAS GENERALES (OUTLINES) */
+.outline-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 20px;
+  background: #fff;
+  height: 100%;
+}
+
+/* ACCESO RÁPIDO */
+.quick-access-box {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  text-align: center;
+  padding: 15px 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.quick-access-box:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.qa-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.quick-access-box p {
+  margin: 0;
+  font-weight: bold;
+  color: #4b5563;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+/* COLUMNAS (EVENTOS / FICHAS) */
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 15px;
+}
+
+.column-header h3 {
+  margin: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.column-header a {
+  color: #e67e22;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Lista de Eventos */
+.event-item {
+  display: flex;
+  margin-bottom: 20px;
+  align-items: flex-start;
+}
+
+.event-date {
+  width: 50px;
+  height: 60px;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-right: 15px;
+  flex-shrink: 0;
+}
+
+.event-date .day { font-size: 1.3rem; font-weight: bold; line-height: 1; }
+.event-date .month { font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
+
+.date-blue { background-color: #1e3a8a; }
+.date-orange { background-color: #d97706; }
+.date-green { background-color: #15803d; }
+
+.event-details {
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 15px;
+  flex-grow: 1;
+}
+
+.event-item:last-child .event-details { border-bottom: none; padding-bottom: 0; }
+
+.event-category {
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.event-details h4 {
+  margin: 5px 0;
+  font-size: 1.05rem;
+  font-weight: bold;
+  color: #1f2937;
+}
+
+.event-details p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+/* Grid de Fichas */
+.fichas-grid {
+  display: flex;
+  gap: 15px;
+  align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
+}
+
+.fichas-grid > div {
+  flex: 1; /* Cada componente CardPatrimonio ocupará el mismo espacio */
+}
+
+.ficha-card {
+  flex: 1;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background-color: #f9fafb;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.ficha-img {
+  background-color: #fff;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.ficha-info {
+  padding: 10px;
+}
+
+.ficha-info p {
+  margin: 8px 0 0 0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #333;
+  line-height: 1.2;
+}
+
+/* Badges (Etiquetas) */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.badge-gray { background-color: #e5e7eb; color: #e67e22; }
+.badge-blue { background-color: #1e3a8a; color: white; }
+.badge-green { background-color: #15803d; color: white; }
+.badge-orange { background-color: #d97706; color: white; }
+
+/* PROPUESTAS */
+.propuesta-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.propuesta-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.votes {
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.propuesta-card h4 {
+  margin: 0 0 20px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f2937;
+  flex-grow: 1;
+}
+
+.progress-container {
+  background-color: #e5e7eb;
+  height: 6px;
+  border-radius: 3px;
+  margin-bottom: 8px;
+}
+
+.progress-bar {
+  background-color: #9ca3af;
+  height: 100%;
+  border-radius: 3px;
+}
+
+.progress-text {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+/* RESUMEN DE GESTIÓN */
+.resumen-card {
+  background-color: #4b5563;
+  color: white;
+  border-radius: 8px;
+  padding: 20px;
+}
+
+.res-title {
+  margin: 0 0 10px 0;
+  font-size: 0.9rem;
+  color: #d1d5db;
+}
+
+.res-number {
+  margin: 0 0 15px 0;
+  font-size: 2.2rem;
+  font-weight: bold;
+}
+
+.res-trend {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #4ade80; /* Verde brillante */
+  font-weight: 500;
+}
