@@ -159,7 +159,7 @@ const Inicio: React.FC = () => {
           <IonRow className="section-header margin-top-large">
             <IonCol size="12" className="flex-header">
               <h3>Propuestas más votadas</h3>
-              <a href="/ciudadano/comunidad/propuestas">Ver todas &gt;</a>
+              <a href="/ciudadano/comunidad">Ver todas &gt;</a>
             </IonCol>
           </IonRow>
 

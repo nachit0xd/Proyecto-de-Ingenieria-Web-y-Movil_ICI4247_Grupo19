@@ -53,6 +53,10 @@ import './theme/variables.css';
 import Auth from './pages/auth/Auth';
 import Inicio from './pages/ciudadano/Inicio';
 import Catalogo from './pages/ciudadano/Catalogo';
+import Mapa from './pages/ciudadano/Mapa';
+import Agenda from './pages/ciudadano/Agenda';  
+import Comunidad from './pages/ciudadano/Comunidad';
+import Transparencia from './pages/ciudadano/Transparencia';
 
 
 setupIonicReact();
@@ -64,11 +68,12 @@ const CiudadanoTabs: React.FC = () => (
       {/* Rutas de las pestañas */}
       <Route exact path="/ciudadano/inicio" component={Inicio} />
       <Route exact path="/ciudadano/catalogo" component={Catalogo} />
-      <Route exact path="/ciudadano/mapa" render={() => <div>Pantalla Mapa</div>} />
-      <Route exact path="/ciudadano/agenda" render={() => <div>Pantalla Agenda</div>} />
+      <Route exact path="/ciudadano/mapa" component={Mapa} />
+      <Route exact path="/ciudadano/agenda" component={Agenda} />
       
       {/* Esta ruta agrupa Propuestas, Fondos y Transparencia en un solo menú */}
-      <Route path="/ciudadano/comunidad" render={() => <div>Menú Comunidad</div>} />
+      <Route exact path="/ciudadano/comunidad" component={Comunidad} />
+      <Route exact path="/ciudadano/transparencia" component={Transparencia} />
       
       <Route exact path="/ciudadano">
         <Redirect to="/ciudadano/inicio" />

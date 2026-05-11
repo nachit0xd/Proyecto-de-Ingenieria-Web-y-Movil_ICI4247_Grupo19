@@ -1,0 +1,190 @@
+.transparencia-page {
+  --background: #ffffff;
+}
+
+/* =========================================
+   ENCABEZADO
+   ========================================= */
+.page-title {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: #374151;
+  margin: 0 0 5px 0;
+}
+
+.page-subtitle {
+  font-size: 1rem;
+  color: #6b7280;
+  margin: 0;
+}
+
+.margin-bottom-large {
+  margin-bottom: 30px;
+}
+
+/* =========================================
+   TARJETAS KPI (Key Performance Indicators)
+   ========================================= */
+.kpi-card {
+  background-color: #4b5563; /* Gris oscuro */
+  color: white;
+  border-radius: 8px;
+  padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-title {
+  margin: 0 0 10px 0;
+  font-size: 0.95rem;
+  color: #e5e7eb;
+}
+
+.kpi-number {
+  margin: 0 0 15px 0;
+  font-size: 2.5rem;
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.kpi-trend {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #22c55e; /* Verde brillante para el éxito */
+  font-weight: 600;
+}
+
+/* =========================================
+   CAJAS GENERALES Y TÍTULOS
+   ========================================= */
+.box-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.margin-top {
+  margin-top: 20px;
+}
+
+.h-100 {
+  height: 100%;
+}
+
+/* =========================================
+   GRÁFICO DE BARRAS (Simulado con Flexbox)
+   ========================================= */
+.bar-chart-container {
+  display: flex;
+  align-items: flex-end; /* Alinea las barras hacia abajo */
+  justify-content: space-around;
+  height: 150px;
+  padding-top: 20px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.bar-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 15%;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  border-radius: 4px 4px 0 0;
+  transition: height 0.5s ease-out; /* Pequeña animación al cargar */
+}
+
+.bar-item span {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.bar-color-blue { background-color: #1e293b; }
+.bar-color-orange { background-color: #e37e33; }
+
+/* GRÁFICO CIRCULAR (Simulado) */
+.pie-chart-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pie-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  font-size: 0.9rem;
+  color: #4b5563;
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.dot-blue { background-color: #0000a0; }
+.dot-green { background-color: #4d8000; }
+.dot-orange { background-color: #e37e33; }
+.dot-yellow { background-color: #ffff99; }
+.dot-beige { background-color: #faebd7; }
+
+/* Conic Gradient para armar el gráfico circular exacto */
+.pie-chart {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(
+    #0000a0 0% 25%,     /* Azul 25% */
+    #4d8000 25% 40%,    /* Verde 15% */
+    #e37e33 40% 75%,    /* Naranja 35% */
+    #ffff99 75% 92%,    /* Amarillo 17% */
+    #faebd7 92% 100%    /* Beige 8% */
+  );
+}
+
+/* LISTA DE ACTUALIZACIONES */
+.updates-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.update-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 15px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.update-item.border-none {
+  border-bottom: none;
+}
+
+.margin-right {
+  margin-right: 15px;
+  margin-top: 5px;
+}
+
+.update-item p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #374151;
+  line-height: 1.4;
+}

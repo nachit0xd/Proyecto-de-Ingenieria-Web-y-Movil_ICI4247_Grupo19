@@ -1,0 +1,268 @@
+/* CONTENEDOR PRINCIPAL */
+.mapa-page {
+  --background: #1f2937; /* Fondo oscuro detrás por si algo falla */
+}
+
+.mapa-layout {
+  display: flex;
+  height: 100%; /* Ocupa todo el alto disponible debajo del Header */
+  width: 100%;
+  overflow: hidden;
+}
+
+/* ZONA DEL MAPA (Simulación) */
+.mapa-canvas {
+  flex: 1; /* Ocupa todo el espacio disponible */
+  position: relative;
+  background-color: #e5f5d8; /* Verde claro tipo terreno */
+  background-image: 
+    linear-gradient(white 2px, transparent 2px),
+    linear-gradient(90deg, white 2px, transparent 2px);
+  background-size: 33% 33%; /* Simula las calles/cuadras de tu diseño */
+  transition: all 0.3s ease; /* Suaviza el cambio de tamaño */
+}
+
+/* PANEL FLOTANTE (Capas) */
+.capas-flotante {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: #4b5563;
+  color: white;
+  border-radius: 8px;
+  padding: 15px;
+  width: 250px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.capas-flotante h3 {
+  margin: 0 0 10px 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.capa-item {
+  --background: transparent;
+  --color: white;
+  --min-height: 30px;
+  font-size: 0.9rem;
+}
+
+.capa-item ion-checkbox {
+  --size: 16px;
+  margin-right: 8px;
+  --checkbox-background-checked: #3b82f6;
+  --border-color-checked: #3b82f6;
+}
+
+.punto-color {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+.punto-color.naranja { background: #d97706; }
+.punto-color.azul { background: #1e3a8a; }
+.punto-color.verde { background: #15803d; }
+
+/* MARCADORES EN EL MAPA */
+.marcador-mapa {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translate(-50%, -100%); /* Centra la punta del marcador en la coordenada */
+  cursor: pointer;
+  transition: transform 0.2s;
+  z-index: 5;
+}
+
+.marcador-mapa:hover {
+  transform: translate(-50%, -105%) scale(1.05);
+}
+
+.marcador-circulo {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: 3px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.marcador-etiqueta {
+  background: white;
+  color: #333;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  margin-top: -5px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  white-space: nowrap;
+}
+
+.marcador-activo .marcador-circulo {
+  border-color: #fbbf24; /* Resalta en amarillo si está seleccionado */
+  transform: scale(1.1);
+}
+
+/* PANEL LATERAL (Detalle del Punto) */
+.mapa-sidebar {
+  width: 380px; /* Ancho fijo para escritorio */
+  background-color: #4b5563; /* Gris oscuro del diseño */
+  color: white;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 15px rgba(0,0,0,0.2);
+  z-index: 20;
+}
+
+.animate-slide-in {
+  animation: slideInRight 0.3s forwards;
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
+}
+
+.sidebar-header-img {
+  height: 180px;
+  background-color: #93c5fd; /* Azul cielo para simular foto */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+}
+
+.sidebar-content {
+  padding: 20px;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+.info-principal {
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.badge-tipo {
+  color: #f97316;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.titulo-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin: 5px 0 10px 0;
+}
+
+.titulo-row h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: bold;
+}
+
+.icon-save {
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.detalles-texto {
+  font-size: 0.85rem;
+  color: #d1d5db;
+  line-height: 1.5;
+  margin-bottom: 15px;
+}
+
+.btn-outline-white {
+  width: 100%;
+  background: transparent;
+  color: white;
+  border: 1px solid white;
+  padding: 10px;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-outline-white:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Sección Cercanos */
+.seccion-cercanos h3 {
+  font-size: 1rem;
+  margin-bottom: 15px;
+}
+
+.cercano-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+.cercano-icon {
+  font-size: 1.5rem;
+  margin-right: 15px;
+}
+
+.cercano-cat {
+  color: #f97316;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.cercano-info h4 {
+  margin: 2px 0 0 0;
+  font-size: 0.95rem;
+}
+
+.sidebar-footer {
+  padding: 20px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-volver {
+  width: 100%;
+  background: rgba(255,255,255,0.1);
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.btn-volver:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* RESPONSIVE (Móviles) */
+@media (max-width: 768px) {
+  .mapa-layout {
+    flex-direction: column;
+  }
+  
+  .mapa-sidebar {
+    width: 100%;
+    height: 50%; /* Se convierte en Bottom Sheet */
+    animation: slideInUp 0.3s forwards;
+  }
+  
+  @keyframes slideInUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+}
