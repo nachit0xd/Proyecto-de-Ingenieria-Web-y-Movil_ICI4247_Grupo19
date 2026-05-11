@@ -344,3 +344,41 @@
 .btn-secondary { background-color: #d1d5db; color: #374151; }
 .btn-primary { background-color: #f3f4f6; color: #1f2937; }
 .btn-full { width: 150px; }
+
+/* Modal wizard para evitar recortes y asegurar legibilidad de inputs*/
+.wizard-modal .modal-content-wrapper {
+  width: 90%;
+  max-width: 640px;
+  max-height: calc(100vh - 80px);
+  overflow-y: auto;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  .wizard-modal .modal-content-wrapper {
+    width: 95%;
+    padding: 16px;
+    max-height: calc(100vh - 48px);
+  }
+  .stepper-container { flex-wrap: wrap; gap: 8px; }
+}
+
+/* Forzar colores de texto y placeholder dentro del modal (IonInput / IonTextarea usan variables CSS) */
+.wizard-modal ion-input,
+.wizard-modal ion-textarea,
+.wizard-modal .custom-modal-input,
+.wizard-modal .custom-modal-select {
+  --background: #ffffff;
+  --color: #1f2937; /* texto oscuro */
+  --placeholder-color: #9ca3af;
+}
+
+/* Forzamos color en inputs nativos dentro del modal como seguro adicional */
+.wizard-modal input,
+.wizard-modal textarea {
+  color: #1f2937 !important;
+}
+
+/* Reducir el tamaño del header del modal en pantallas pequeñas para evitar que tape contenido */
+.wizard-modal .modal-header h2 { font-size: 1.2rem; }

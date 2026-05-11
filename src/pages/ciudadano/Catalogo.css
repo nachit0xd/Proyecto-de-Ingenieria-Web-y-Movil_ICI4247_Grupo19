@@ -42,6 +42,18 @@
   --border-color-checked: #1e3a8a;
 }
 
+/* Asegurar que los labels y textos de filtros sean legibles */
+.filtros-container, .filtros-container .filtro-item, .filtros-container h2, .filtros-container h3 {
+  color: #374151;
+}
+
+.filtros-container .filtro-item ion-label,
+.filtros-container .filtro-item {
+  --color: #374151;
+  color: #374151;
+  font-weight: 500;
+}
+
 .stars-label {
   display: flex;
   align-items: center;
@@ -68,6 +80,8 @@
   padding: 0;
   --box-shadow: none;
   --background: #ffffff;
+  --color: #374151; /* texto dentro del searchbar */
+  --placeholder-color: #9ca3af; /* placeholder legible */
   border: 1px solid #d1d5db;
   border-radius: 8px;
 }
@@ -110,4 +124,41 @@
     order: 2;
     width: 100%;
   }
+}
+
+/* Botón de filtros móvil: mantener contraste para texto */
+.btn-filtros-movil {
+  --color: #374151;
+}
+
+/* Forzar contraste en searchbar, select y botón móvil (placeholders nativos) */
+/* Input nativo/placeholder dentro de ion-searchbar */
+.custom-searchbar input,
+.custom-searchbar .searchbar-input,
+.custom-searchbar .searchbar-input-native {
+  color: #374151 !important;
+}
+.custom-searchbar input::placeholder,
+.custom-searchbar .searchbar-input::placeholder,
+.custom-searchbar .searchbar-input-native::placeholder {
+  color: #9ca3af !important;
+  opacity: 1 !important;
+}
+
+/* IonSelect / caja de ordenamiento: forzar texto visible */
+.custom-sort,
+.custom-sort .select-text,
+.custom-sort .select-placeholder {
+  color: #374151 !important;
+}
+
+/* Botón filtros móvil: asegurar color visible en el texto del botón */
+.btn-filtros-movil,
+.btn-filtros-movil .button-inner {
+  color: #374151 !important;
+}
+
+@media (max-width: 480px) {
+  .custom-searchbar input { font-size: 0.95rem; }
+  .btn-filtros-movil { font-size: 0.95rem; }
 }

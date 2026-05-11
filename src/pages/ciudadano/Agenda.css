@@ -57,13 +57,16 @@
   background-color: white;
   cursor: pointer;
   outline: none;
+  color: #1f2937; /* Forzar color oscuro en el texto del select */
 }
+
+.fecha-select option { color: #1f2937; }
 
 .dias-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  color: #71717a;
+  color: #374151; /* Más contraste para abreviaturas de días */
   font-weight: 500;
   margin-bottom: 15px;
 }
