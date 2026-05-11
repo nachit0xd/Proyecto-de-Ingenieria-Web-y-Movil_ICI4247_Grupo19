@@ -321,7 +321,7 @@ npm run dev
 ```
 5. **Visualizar la app**
 
-Una vez que el servidor esté corriendo, abre tu navegador web y visita:
+Una vez que el servidor esté corriendo, abre tu navegador web y pega el enlace de localhost que entrega Vite, debería verse así:
 ```
 http://localhost:5173
 ```
