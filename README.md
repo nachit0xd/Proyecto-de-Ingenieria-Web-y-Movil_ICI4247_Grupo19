@@ -13,6 +13,7 @@
 3. [Análisis del Usuario Objetivo](#análisis-del-usuario-objetivo)
 4. [Requerimientos del Sistema](#requerimientos-del-sistema)
 5. [Arquitectura de Navegación y UX](#arquitectura-de-navegación-y-ux)
+6. [Instrucciones de Ejecución](#instrucciones-de-ejecución)
 
 # Introducción al proyecto
  
@@ -270,6 +271,7 @@ Toca acceso rápido → /comunidad/propuestas
 ```
 
 ## Puntos Críticos de Interacción
+
 - **Formularios de ingreso de datos:** Pantallas como el registro o las postulaciones requieren retroalimentación visual inmediata (validación en tiempo real de RUT o correo) para evitar frustración antes del envío al servidor.
 - **Mapa Interactivo:** Requiere manejo eficiente de gestos táctiles (zoom, arrastre) y renderizado optimizado de marcadores (ferias, cultores) para no degradar el rendimiento del navegador o dispositivo móvil.
 - **Navegación con estado preservado:** Si el usuario aplica filtros y navega a otro tab, se deben preservar los filtros para evitar que el usuario repita el proceso de filtrado.
@@ -281,3 +283,52 @@ La arquitectura de navegación debe implementar un diseño Mobile-First para el 
 En móvil, el ciudadano interactúa en la aplicación con pestañas táctiles grandes y vistas en pila; mientras que en escritorio, el panel del gestor está optimizado para resoluciones mayores, utilizando componentes de panel dividido para aprovechar el espacio ancho y con el uso de una cabecera superior fija.
 
 Esta arquitectura de navegación maximiza la usabilidad al usar patrones nativos esperados por el usuario (Tabs en móvil, Sidebar en PC). La eficiencia de interacción se logra mediante la carga diferida de los tres grandes módulos; un ciudadano que solo revisa la agenda no descargará el código Javascript del panel administrativo. La claridad estructural se mantiene separando estrictamente los componentes visuales de la lógica de enrutamiento y roles. Finalmente, la escalabilidad está asegurada: agregar una nueva funcionalidad (por ejemplo, un módulo de turismo) solo requiere crear una nueva rama en el árbol de rutas sin afectar el código de los módulos existentes.
+
+# Instrucciones de Ejecución
+
+Este proyecto ha sido desarrollado utilizando **Ionic Framework** con **React** y empaquetado con **Vite**. Para correr el proyecto en tu entorno local, sigue estos pasos:
+
+## Pre-requisitos
+
+Asegúrate de tener instalados los siguientes entornos en tu máquina:
+* [Node.js](https://nodejs.org/) (Versión 18.x o superior recomendada)
+* Git
+
+## Instalación y Despliegue Local
+
+1. **Clonar el repositorio**
+
+Abre tu terminal y ejecuta el siguiente comando para descargar el código fuente:
+```
+git clone https://github.com/nachit0xd/Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19.git
+```
+2. **Navegar al directorio del proyecto**
+
+```
+cd Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19
+```
+3. **Instalar las dependencias**
+
+Instala todos los paquetes necesarios de npm en el bash para que Ionic y React funcionen correctamente:
+```
+npm install
+```
+4. **Ejecutar el servidor de desarrollo**
+
+Levanta el entorno local utilizando Vite:
+```
+npm run dev
+```
+5. **Visualizar la app**
+
+Una vez que el servidor esté corriendo, abre tu navegador web y visita:
+```
+http://localhost:5173
+```
+
+## Prototipo de Diseño en Figma
+
+Antes de la codificación de este proyecto, la arquitectura de la información, la interfaz de usuario (UI) y la experiencia de usuario (UX) fueron prototipados en Figma. El diseño contempla la separación de roles, flujos de tareas (como la creación de propuestas) y la coherencia visual entre dispositivos.
+
+Puedes interactuar con el prototipo navegable aquí:
+[Enlace a Figma](https://www.figma.com/design/FVP8YNPAUVWo16vc55pIOn/Proyecto-ING-Web-y-M%C3%B3vil?node-id=83-430&t=O1oTsBeLjHlMRdXI-1)
