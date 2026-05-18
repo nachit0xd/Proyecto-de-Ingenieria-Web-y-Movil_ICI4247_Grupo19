@@ -1,42 +1,41 @@
 import React from 'react';
-import {
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
-  IonButton,
-  IonIcon
-} from '@ionic/react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { IonIcon } from '@ionic/react';
 import { personCircleOutline } from 'ionicons/icons';
 import './Header.css';
 
+// El Header es un componente global que se muestra en todas las páginas, con el logo a la izquierda, los links de navegación al centro y el avatar de usuario a la derecha
+// Es un componente "estático" que no tiene lógica propia, solo se utiliza para mostrar la barra superior y permitir navegar entre las diferentes secciones de la app
 const Header: React.FC = () => {
-  return (
-    <IonHeader className="main-header ion-no-border">
-      <IonToolbar className="custom-toolbar">
-        {/* Logo / Título de la App */}
-        <IonTitle slot="start" className="app-logo">
-          Cultura Municipal
-        </IonTitle>
-        
-        {/* Enlaces de Navegación (Visibles solo en el escritorio) */}
-        <IonButtons slot="end" className="desktop-nav-links">
-          <IonButton routerLink="/ciudadano/inicio">Inicio</IonButton>
-          <IonButton routerLink="/ciudadano/catalogo">Catálogo</IonButton>
-          <IonButton routerLink="/ciudadano/mapa">Mapa</IonButton>
-          <IonButton routerLink="/ciudadano/agenda">Agenda</IonButton>
-          <IonButton routerLink="/ciudadano/comunidad">Comunidad</IonButton>
-          <IonButton routerLink="/ciudadano/transparencia">Transparencia</IonButton>
-        </IonButtons>
+  const history = useHistory();
+  const location = useLocation();
 
-        {/* Botón de Perfil / Login */}
-        <IonButtons slot="end" className="profile-button">
-          <IonButton routerLink="/auth/login">
-            <IonIcon icon={personCircleOutline} size="large" />
-          </IonButton>
-        </IonButtons>
-      </IonToolbar>
-    </IonHeader>
+  // Helper para verificar qué pestaña resaltar
+  const isActive = (path: string) => location.pathname === path ? 'active' : '';
+
+  return (
+    <header className="global-header">
+      <div className="header-brand" onClick={() => history.push('/ciudadano/inicio')}>
+        Cultura Municipal
+      </div>
+      
+      <nav className="header-nav">
+        <button className={`nav-link ${isActive('/ciudadano/inicio')}`} onClick={() => history.push('/ciudadano/inicio')}>Inicio</button>
+        <button className={`nav-link ${isActive('/ciudadano/catalogo')}`} onClick={() => history.push('/ciudadano/catalogo')}>Catálogo</button>
+        <button className={`nav-link ${isActive('/ciudadano/mapa')}`} onClick={() => history.push('/ciudadano/mapa')}>Mapa</button>
+        <button className={`nav-link ${isActive('/ciudadano/agenda')}`} onClick={() => history.push('/ciudadano/agenda')}>Agenda</button>
+        <button className={`nav-link ${isActive('/ciudadano/comunidad')}`} onClick={() => history.push('/ciudadano/comunidad')}>Comunidad</button>
+        
+        {/* MODIFICACIÓN: Inclusión de la nueva pestaña de Fondos en la barra superior */}
+        <button className={`nav-link ${isActive('/ciudadano/fondos')}`} onClick={() => history.push('/ciudadano/fondos')}>Fondos</button>
+        
+        <button className={`nav-link ${isActive('/ciudadano/transparencia')}`} onClick={() => history.push('/ciudadano/transparencia')}>Transparencia</button>
+      </nav>
+
+      <div className="header-user">
+        <IonIcon icon={personCircleOutline} className="user-avatar-icon" />
+      </div>
+    </header>
   );
 };
 

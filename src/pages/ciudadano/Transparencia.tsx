@@ -2,14 +2,14 @@ import React from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol 
 } from '@ionic/react';
-import Header from '../../components/Header';
 import './Transparencia.css';
+
+// La página de transparencia muestra indicadores clave (KPIs) sobre la gestión cultural municipal, gráficos de evolución y una lista de actualizaciones recientes
+// Es una sección informativa para que los ciudadanos puedan ver el impacto y resultados de las iniciativas culturales en su municipalidad
 
 const Transparencia: React.FC = () => {
   return (
     <IonPage>
-      <Header />
-      
       <IonContent fullscreen className="transparencia-page">
         <IonGrid className="max-width-container ion-padding">
           

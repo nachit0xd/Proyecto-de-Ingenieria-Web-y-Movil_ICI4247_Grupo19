@@ -1,3 +1,5 @@
+/* Estilos para la página de inicio del ciudadano. Incluye el banner de bienvenida, secciones de acceso rápido, eventos y fichas culturales */
+
 /* Configuración General */
 .inicio-page {
   --background: #ffffff;
@@ -222,7 +224,7 @@ a {
 .fichas-grid {
   display: flex;
   gap: 15px;
-  align-items: stretch; /* Asegura que todas las tarjetas tengan la misma altura */
+  align-items: stretch; /* Se asegura que todas las tarjetas tengan la misma altura */
 }
 
 .fichas-grid > div {
@@ -344,6 +346,6 @@ a {
 .res-trend {
   margin: 0;
   font-size: 0.85rem;
-  color: #4ade80; /* Verde brillante */
+  color: #4ade80; 
   font-weight: 500;
 }

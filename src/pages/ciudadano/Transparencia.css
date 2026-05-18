@@ -1,10 +1,10 @@
+/* Estilos para la página de transparencia del ciudadano. Incluye el diseño de KPI, gráficos y lista de actualizaciones */
+
 .transparencia-page {
   --background: #ffffff;
 }
 
-/* =========================================
-   ENCABEZADO
-   ========================================= */
+/* ENCABEZADO */
 .page-title {
   font-size: 2.2rem;
   font-weight: bold;
@@ -22,9 +22,7 @@
   margin-bottom: 30px;
 }
 
-/* =========================================
-   TARJETAS KPI (Key Performance Indicators)
-   ========================================= */
+/* TARJETAS KPI (Key Performance Indicators) */
 .kpi-card {
   background-color: #4b5563; /* Gris oscuro */
   color: white;
@@ -51,13 +49,11 @@
 .kpi-trend {
   margin: 0;
   font-size: 0.9rem;
-  color: #22c55e; /* Verde brillante para el éxito */
+  color: #22c55e; 
   font-weight: 600;
 }
 
-/* =========================================
-   CAJAS GENERALES Y TÍTULOS
-   ========================================= */
+/* CAJAS GENERALES Y TÍTULOS */
 .box-title {
   font-size: 1.1rem;
   font-weight: bold;
@@ -74,9 +70,7 @@
   height: 100%;
 }
 
-/* =========================================
-   GRÁFICO DE BARRAS (Simulado con Flexbox)
-   ========================================= */
+/* GRÁFICO DE BARRAS (simulado con Flexbox) */
 .bar-chart-container {
   display: flex;
   align-items: flex-end; /* Alinea las barras hacia abajo */
@@ -111,7 +105,7 @@
 .bar-color-blue { background-color: #1e293b; }
 .bar-color-orange { background-color: #e37e33; }
 
-/* GRÁFICO CIRCULAR (Simulado) */
+/* GRÁFICO CIRCULAR (simulado) */
 .pie-chart-container {
   display: flex;
   align-items: center;

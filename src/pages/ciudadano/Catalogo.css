@@ -1,3 +1,4 @@
+/* Estilos para la página de catálogo de actividades culturales */
 .catalogo-page {
   --background: #f9fafb; /* Fondo un poco más gris para resaltar las tarjetas blancas */
 }
@@ -42,7 +43,7 @@
   --border-color-checked: #1e3a8a;
 }
 
-/* Asegurar que los labels y textos de filtros sean legibles */
+/* Aseguramos que los labels y textos de filtros sean legibles */
 .filtros-container, .filtros-container .filtro-item, .filtros-container h2, .filtros-container h3 {
   color: #374151;
 }

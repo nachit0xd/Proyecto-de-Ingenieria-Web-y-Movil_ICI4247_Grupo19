@@ -1,3 +1,4 @@
+/* Estilos para la página de comunidad, incluyendo el diseño del modal wizard para crear propuestas */
 .comunidad-page {
   --background: #f9fafb;
 }
@@ -18,7 +19,7 @@
 }
 
 .btn-nueva-propuesta {
-  --background: #f97316; /* Naranja */
+  --background: #f97316;
   --color: white;
   --border-radius: 8px;
   font-weight: bold;

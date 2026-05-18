@@ -2,15 +2,15 @@ import React from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, IonButton
 } from '@ionic/react';
-import Header from '../../components/Header';
 import CardPatrimonio from '../../components/CardPatrimonio'; 
 import './Inicio.css';
+
+// La página de inicio del ciudadano muestra un banner de bienvenida, acceso rápido a secciones clave, eventos próximos, fichas destacadas y un resumen de gestión cultural
+// Es el dashboard principal para el usuario
 
 const Inicio: React.FC = () => {
   return (
     <IonPage>
-      <Header />
-      
       <IonContent fullscreen className="inicio-page">
         <IonGrid className="ion-padding max-width-container">
           
@@ -123,7 +123,7 @@ const Inicio: React.FC = () => {
               </div>
             </IonCol>
 
-            {/* FICHAS DESTACADAS CON COMPONENTE REUTILIZABLE */}
+            {/* Columna Derecha (Fichas destacadas) */}
             <IonCol size="12" sizeMd="6" className="dashboard-column">
               <div className="box-container outline-box">
                 <div className="column-header">

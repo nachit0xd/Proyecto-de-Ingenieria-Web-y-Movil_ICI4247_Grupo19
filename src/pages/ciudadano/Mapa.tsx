@@ -3,8 +3,11 @@ import {
   IonContent, IonPage, IonCheckbox, IonItem, IonLabel, IonIcon
 } from '@ionic/react';
 import { bookmarkOutline, locationOutline } from 'ionicons/icons';
-import Header from '../../components/Header';
 import './Mapa.css';
+
+// La página del mapa ciudadano muestra un mapa interactivo con puntos de interés cultural
+// Al hacer clic en un punto, se despliega un panel lateral con detalles y opciones relacionadas
+// También incluye un panel flotante para controlar las capas del mapa (ferias, cultores, espacios patrimoniales) (PENDIENTE)
 
 // Simulamos una base de datos de puntos en el mapa
 const PUNTOS_MOCK = [
@@ -52,8 +55,6 @@ const Mapa: React.FC = () => {
 
   return (
     <IonPage>
-      <Header />
-      
       {/* scrollY={false} evita que la página haga scroll, el mapa debe ocupar el 100% */}
       <IonContent fullscreen className="mapa-page" scrollY={false}>
         

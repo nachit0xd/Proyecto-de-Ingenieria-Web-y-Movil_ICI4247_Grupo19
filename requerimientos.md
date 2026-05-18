@@ -45,14 +45,14 @@ El requerimiento se basa en la falta de difusión de actividades culturales en v
 ## RF04 — Sistema de Postulación y Seguimiento de Fondos Culturales Municipales
 **Roles participantes:** Ciudadano/Organización (postulación) y Gestor Municipal (evaluación y seguimiento)
 
-**Descripción:** El sistema debe digitalizar el proceso de postulación a fondos concursables culturales de municipios. El *Ciudadano* (persona o representante de una organización cultural) puede postular a una iniciativa completando un formulario estructurado, adjuntando documentos y haciendo un seguimiento del estado de su postulación. El *Gestor Municipal* revisa las postulaciones, cambia su estado, registra observaciones y publica los resultados.
+**Descripción:** El sistema debe digitalizar el proceso de postulación a fondos concursables culturales de municipios. El *Ciudadano* (persona o representante de una organización cultural) puede postular a una iniciativa completando un formulario estructurado de 4 pasos, adjuntando documentos y haciendo un seguimiento del estado de su postulación. El *Gestor Municipal* revisa las postulaciones, cambia su estado, registra observaciones y publica los resultados.
 
 **Criterios:** 
-- La postulación requiere la autenticación con Clave Única y debe estar vinculada al RUT del representante.
+- La postulación requiere la autenticación y debe estar vinculada al RUT del representante.
 - El formulario incluye los campos: nombre de la organización, descripción de la iniciativa, área cultural (oficio, patrimonio, feria, expresión), presupuesto estimado, impacto esperado y documentos adjuntos (en formato PDF).
-- El sistema muestra el estado de cada postulación: borrador, enviada, en revisión, aprobada/rechazada, en ejecución, finalizada.
+- El sistema muestra el estado de cada postulación: en revisión, aprobada/rechazada, requiere ajustes.
 - El gestor puede cambiar estados, agregar observaciones y notificar al postulante mediante el sistema.
-- Los resultados de cada convocatoria se publican en una sección visible para todos los ciudadanos y está disponible a votación (RF05).
+- Los resultados de cada convocatoria se publican en una sección visible para todos los ciudadanos (RF05).
 
 **Relación con caso de la vida real:**
 El requerimiento responde a la necesidad de digitalización y mejoras en el proceso de postulación a fondos municipales culturales.
@@ -60,9 +60,10 @@ El requerimiento responde a la necesidad de digitalización y mejoras en el proc
 ## RF05 — Módulo de Propuestas Ciudadanas para Iniciativas Culturales
 **Roles participantes:** Ciudadano (propuesta y votación) y Gestor Municipal (moderación y respuesta)
 
-**Descripción:** El sistema debe permitir que el *Ciudadano* pueda apoyar las propuestas de otros ciudadanos (RF04) mediante votación popular. El *Gestor Municipal* modera el contenido, responde oficialmente a cada propuesta y puede escalarla a una convocatoria de fondos (RF04) si supera cierto umbral de apoyo.
+**Descripción:** El sistema debe permitir que el *Ciudadano* pueda proponer propuestas y apoyar las de otros ciudadanos (RF04) mediante votación popular. El *Gestor Municipal* modera el contenido, responde oficialmente a cada propuesta y puede escalarla a una convocatoria de fondos si supera cierto umbral de apoyo.
 
 **Criterios:** 
+- El ciudadano puede llenar un formulario simple con su idea y descripción de una propuesta.
 - Otros ciudadanos autenticados pueden votar a favor de una propuesta (un voto por ciudadano por cada propuesta).
 - Las propuestas se ordenan por número de votos y fecha de creación.
 - El gestor municipal puede moderar (aprobar, rechazar o marcar como duplicada una publicación) y responder oficialmente las propuestas.
@@ -80,7 +81,7 @@ El requerimiento se basa en la iniciativa "Participa Las Condes", una Plataforma
 **Criterios:** 
 - El panel es visible para todos los ciudadanos, sin autenticación.
 - El panel muestra indicadores calculados automáticamente: total de fichas en el catálogo, eventos publicados, postulaciones recibidas/aprobadas, propuestas ciudadanas activas y total de votos registrados.
-- El gestor municipal puede agregar indicadores de forma manual, como: monto total adjudicado en fondos, número de beneficiarios, etc.
+- El gestor municipal puede agregar indicadores de forma manual.
 - Los indicadores se pueden presentar como valores númericos o con gráficos simples.
 
 **Relación con caso de la vida real:**

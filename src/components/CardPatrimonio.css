@@ -1,3 +1,5 @@
+/* Estilos para el componente CardPatrimonio, que representa una tarjeta de patrimonio dentro de la aplicación*/
+
 .card-patrimonio {
   display: flex;
   flex-direction: column;
@@ -64,9 +66,8 @@
   line-height: 1.5;
   margin: 0 0 16px 0;
   flex-grow: 1; /* Ocupa el espacio sobrante */
-  /* Truncar texto a 3 líneas para más contenido visible */
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 3; /* Truncar texto a 3 líneas para más contenido visible */
   -webkit-box-orient: vertical;
   overflow: hidden;
 }

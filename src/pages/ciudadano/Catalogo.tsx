@@ -4,15 +4,13 @@ import {
   IonSearchbar, IonSelect, IonSelectOption, IonCheckbox, IonItem, IonLabel, IonButton, IonIcon
 } from '@ionic/react';
 import { filterOutline, star } from 'ionicons/icons';
-import Header from '../../components/Header';
 import CardPatrimonio from '../../components/CardPatrimonio';
 import './Catalogo.css';
 
+// La página de catálogo muestra un listado de actividades culturales con filtros y opciones de búsqueda
 const Catalogo: React.FC = () => {
   return (
     <IonPage>
-      <Header />
-      
       <IonContent fullscreen className="catalogo-page">
         <IonGrid className="ion-padding max-width-container">
           <IonRow>

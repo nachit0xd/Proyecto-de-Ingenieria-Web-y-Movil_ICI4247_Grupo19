@@ -8,6 +8,7 @@ import {
 import { checkmarkCircle, closeCircle, personCircleOutline } from 'ionicons/icons';
 import './Auth.css';
 
+// Esta página maneja el login y registro de usuarios, con un diseño simple e intuitivo
 const Auth: React.FC = () => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
 

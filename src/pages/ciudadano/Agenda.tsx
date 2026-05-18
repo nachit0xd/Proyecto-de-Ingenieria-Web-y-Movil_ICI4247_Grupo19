@@ -3,8 +3,11 @@ import {
   IonContent, IonPage, IonIcon 
 } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, bookmarkOutline } from 'ionicons/icons';
-import Header from '../../components/Header';
 import './Agenda.css';
+
+// La página de Agenda del Ciudadano muestra un calendario con eventos culturales. 
+// Al hacer clic en un día, se muestran los eventos programados para ese día en una barra lateral. También se listan los próximos eventos futuros. 
+// Por el momento, la información de eventos está simulada con un array estático.
 
 // Base de datos simulada de eventos para este mes
 const EVENTOS_MES = [
@@ -20,22 +23,20 @@ const EVENTOS_MES = [
 ];
 
 const Agenda: React.FC = () => {
-  // Estado para saber qué día pinchó el usuario (iniciamos en el 13 como en tu imagen)
+  // Estado para saber qué día pinchó el usuario 
   const [diaSeleccionado, setDiaSeleccionado] = useState<number>(13);
 
-  // Filtramos si hay eventos para el día seleccionado
+  // Filtra si hay eventos para el día seleccionado
   const eventosDelDia = EVENTOS_MES.filter(evento => evento.dia === diaSeleccionado);
   
-  // Filtramos eventos futuros desde el día seleccionado
+  // Filtra eventos futuros desde el día seleccionado
   const proximosEventos = EVENTOS_MES.filter(evento => evento.dia >= diaSeleccionado);
 
-  // Generamos un array del 1 al 30 para pintar los días (simplificado para el prototipo)
+  // Generamos un array del 1 al 30 para pintar los días
   const diasDelMes = Array.from({ length: 30 }, (_, i) => i + 1);
 
   return (
     <IonPage>
-      <Header />
-      
       <IonContent fullscreen className="agenda-page">
         <div className="agenda-layout">
           

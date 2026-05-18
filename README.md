@@ -161,9 +161,9 @@ Para ver una descripción más detallada y completa de los requerimientos funcio
     ├── /ciudadano/mapa                             # Mapa interactivo
     ├── /ciudadano/agenda                           # Calendario de eventos
     │   └── /ciudadano/agenda/:id                   # Detalle de un evento 
-    └── /ciudadano/comunidad                        # Hub de participación 
-        ├── /ciudadano/comunidad/propuestas         # Listado y votación de propuestas 
-        └── /ciudadano/comunidad/transparencia      # Información de fondos y postulaciones culturales
+    ├── /ciudadano/fondos                           # Información de fondos y formulario de postulación 
+    ├── /ciudadano/comunidad                       # Listado y votación de propuestas 
+    └── /ciudadano/transparencia                    # Información de gastos y estadísticas municipales
 ```
 
 **Módulo Gestor Municipal**
@@ -171,22 +171,25 @@ Para ver una descripción más detallada y completa de los requerimientos funcio
 /
 └── /gestor
     ├── /gestor/dashboard        # Panel inicial con métricas
-    ├── /gestor/contenido        # Administración de fichas y agenda
-    └── /gestor/postulaciones    # Revisión de fondos de ciudadanos
+    ├── /gestor/catálogo         # Administración del catálogo público
+    ├── /gestor/agenda-y-mapa    # Administración de eventos 
+    ├── /gestor/propuestas       # Gestión de propuestas 
+    ├── /gestor/fondos           # Administración de fondos y convocatorias
+    └── /gestor/transparencia    # Administración de transparencia y datos públicos
 ```
 
 ## Flujo de Navegación entre Funcionalidades
 
 El flujo principal se basa en dos patrones según el rol del usuario:
 
-- **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los cinco dominios principales (Inicio, Catálogo, Mapa, Agenda, Comunidad). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
+- **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los siete dominios principales (Inicio, Catálogo, Mapa, Agenda, Fondos, Comunidad, Transparencia). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
 - **Navegación Vertical (Gestor):** Emplea un Sidebar simple (menú lateral) fijo a la izquierda. Al seleccionar un ítem, el área principal de contenido a la derecha se actualiza, facilitando la gestión de datos pesados sin perder el contexto del menú general.
 
 ## Diferenciación de Acceso según Roles 
 
 El control de acceso se maneja mediante rutas protegidas (Protected Routes) en el router de React, evaluando el token de sesión y los permisos del usuario:
 - **Acceso público (Sin autenticar):** Puede navegar libremente por `/ciudadano/inicio`, `/catalogo`, `/mapa` y `/agenda`. Si intenta interactuar (votar, postular), el flujo lo redirige automáticamente a `/auth/login`.
-- **Usuario Ciudadano (Autenticado):** Mantiene el acceso público y desbloquea permisos de escritura para crear propuestas, votar y comentar fichas dentro de la jerarquía `/ciudadano/comunidad/`.
+- **Usuario Ciudadano (Autenticado):** Mantiene el acceso público y desbloquea permisos de escritura para crear propuestas, votar y comentar fichas dentro de la jerarquía de Fondos, Propuestas y Transparencia.
 - **Gestor (Autenticado con credenciales municipales):** Es el único rol autorizado para renderizar la jerarquía `/gestor/`. Tiene permisos completos de CRUD (Crear, Leer, Actualizar, Borrar) sobre el catálogo, el mapa y la agenda, además de capacidad de moderación.
 
 ## Task Flow
@@ -248,7 +251,7 @@ Toca acceso rápido → /comunidad/propuestas
     └── Toca "Nueva Propuesta"
           │
           ▼
-      /comunidad/propuestas/postular
+      /comunidad/nueva-propuesta
           │
           ├── [Paso 1] Datos personales
           │     ├── Nombre representante
@@ -260,12 +263,7 @@ Toca acceso rápido → /comunidad/propuestas
           │     ├── Categoría cultural
           │     └── Descripción del proyecto
           │
-          ├── [Paso 3] Presupuesto y documentos
-          │     ├── Monto solicitado (validado contra máximo)
-          │     ├── Desglose de gastos
-          │     └── Adjuntar PDF (acta, estatutos)
-          │
-          └── [Paso 4] Confirmar
+          └── [Paso 3] Confirmar
                 ├── Resumen de todos los datos
                 └── Enviar 
 ```
@@ -330,5 +328,7 @@ http://localhost:5173
 
 Antes de la codificación de este proyecto, la arquitectura de la información, la interfaz de usuario (UI) y la experiencia de usuario (UX) fueron prototipados en Figma. El diseño contempla la separación de roles, flujos de tareas (como la creación de propuestas) y la coherencia visual entre dispositivos.
 
-Puedes interactuar con el prototipo navegable aquí:
-[Enlace a Figma](https://www.figma.com/design/FVP8YNPAUVWo16vc55pIOn/Proyecto-ING-Web-y-M%C3%B3vil?node-id=83-430&t=O1oTsBeLjHlMRdXI-1)
+A partir de la entrega parcial 1, se han añadido nuevos prototipos de pantallas, como la pantalla de Fondos del Ciudadano y las pantallas del Gestor Municipal, con cambios que mejoran (respecto a la entrega pasada) la navegación entre pantallas del Ciudadano.
+
+Se puede interactuar con el prototipo navegable aquí (nuevo link, prototipo actualizado):
+[Enlace a Figma](https://www.figma.com/design/zbS9fxfxutZEDHJ8CJblVV/Proyecto-ING-Web-y-M%C3%B3vil-Entrega-Parcial-2?node-id=0-1&t=KLkTDE9nLrQaHELZ-1)
