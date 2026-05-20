@@ -1,14 +1,17 @@
 import React from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
-import { IonIcon } from '@ionic/react';
+import { IonIcon, IonButton } from '@ionic/react';
 import { personCircleOutline } from 'ionicons/icons';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
-// El Header es un componente global que se muestra en todas las páginas, con el logo a la izquierda, los links de navegación al centro y el avatar de usuario a la derecha
+// El Header es un componente del ciudadano que se muestra en todas las páginas, con el logo a la izquierda, los links de navegación al centro y el avatar de usuario a la derecha
 // Es un componente "estático" que no tiene lógica propia, solo se utiliza para mostrar la barra superior y permitir navegar entre las diferentes secciones de la app
+
 const Header: React.FC = () => {
   const history = useHistory();
   const location = useLocation();
+  const { logout } = useAuth();
 
   // Helper para verificar qué pestaña resaltar
   const isActive = (path: string) => location.pathname === path ? 'active' : '';
@@ -34,6 +37,7 @@ const Header: React.FC = () => {
 
       <div className="header-user">
         <IonIcon icon={personCircleOutline} className="user-avatar-icon" />
+        <IonButton fill="clear" onClick={() => { logout(); history.push('/auth/login'); }}>Cerrar sesión</IonButton>
       </div>
     </header>
   );
