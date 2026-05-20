@@ -24,13 +24,13 @@ const GestorSidebar: React.FC = () => {
         <button type="button" className={`sidebar-item ${isActive('/gestor/agenda-mapa') ? 'active' : ''}`} onClick={() => history.push('/gestor/agenda-mapa')}>
           <IonIcon icon={calendarOutline} /> Agenda y Mapa
         </button>
-        <button type="button" className="sidebar-item">
+        <button type="button" className={`sidebar-item ${isActive('/gestor/propuestas') ? 'active' : ''}`} onClick={() => history.push('/gestor/propuestas')}>
           <IonIcon icon={bulbOutline} /> Propuestas
         </button>
-        <button type="button" className="sidebar-item">
+        <button type="button" className={`sidebar-item ${isActive('/gestor/fondos') ? 'active' : ''}`} onClick={() => history.push('/gestor/fondos')}>
           <IonIcon icon={folderOutline} /> Fondos
         </button>
-        <button type="button" className="sidebar-item">
+        <button type="button" className={`sidebar-item ${isActive('/gestor/transparencia') ? 'active' : ''}`} onClick={() => history.push('/gestor/transparencia')}>
           <IonIcon icon={barChartOutline} /> Transparencia
         </button>
       </nav>

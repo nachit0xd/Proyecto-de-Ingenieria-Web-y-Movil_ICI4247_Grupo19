@@ -3,7 +3,8 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 import { 
   IonApp,
   IonRouterOutlet, 
-  setupIonicReact 
+  setupIonicReact,
+  IonSpinner
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 
@@ -39,20 +40,25 @@ import './theme/variables.css';
 
 // IMPORTS: Importar futuros componentes aquí
 import Header from './components/Header';
-import Auth from './pages/auth/Auth';
-import Register from './pages/auth/Register';
-import Inicio from './pages/ciudadano/Inicio';
-import Catalogo from './pages/ciudadano/Catalogo';
-import Mapa from './pages/ciudadano/Mapa';
-import Agenda from './pages/ciudadano/Agenda';  
-import Comunidad from './pages/ciudadano/Comunidad';
-import Fondos from './pages/ciudadano/Fondos';
-import Transparencia from './pages/ciudadano/Transparencia';
-import DashboardGestor from './pages/gestor/Dashboard';
-import CatalogoGestor from './pages/gestor/Catalogo';
-import AgendaMapaGestor from './pages/gestor/AgendaMapa';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
+
+// Lazy loading de páginas para optimizar rendimiento inicial
+const Auth = React.lazy(() => import('./pages/auth/Auth'));
+const Register = React.lazy(() => import('./pages/auth/Register'));
+const Inicio = React.lazy(() => import('./pages/ciudadano/Inicio'));
+const Catalogo = React.lazy(() => import('./pages/ciudadano/Catalogo'));
+const Mapa = React.lazy(() => import('./pages/ciudadano/Mapa'));
+const Agenda = React.lazy(() => import('./pages/ciudadano/Agenda'));  
+const Comunidad = React.lazy(() => import('./pages/ciudadano/Comunidad'));
+const Fondos = React.lazy(() => import('./pages/ciudadano/Fondos'));
+const Transparencia = React.lazy(() => import('./pages/ciudadano/Transparencia'));
+const DashboardGestor = React.lazy(() => import('./pages/gestor/Dashboard'));
+const CatalogoGestor = React.lazy(() => import('./pages/gestor/Catalogo'));
+const AgendaMapaGestor = React.lazy(() => import('./pages/gestor/AgendaMapa'));
+const PropuestasGestor = React.lazy(() => import('./pages/gestor/Propuestas'));
+const FondosGestor = React.lazy(() => import('./pages/gestor/Fondos'));
+const TransparenciaGestor = React.lazy(() => import('./pages/gestor/Transparencia'));
 
 
 setupIonicReact();
@@ -81,6 +87,9 @@ const GestorLayout: React.FC = () => (
     <Route exact path="/gestor/dashboard" component={DashboardGestor} />
     <Route exact path="/gestor/catalogo" component={CatalogoGestor} />
     <Route exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} />
+    <Route exact path="/gestor/propuestas" component={PropuestasGestor} />
+    <Route exact path="/gestor/fondos" component={FondosGestor} />
+    <Route exact path="/gestor/transparencia" component={TransparenciaGestor} />
 
     <Route exact path="/gestor">
       <Redirect to="/gestor/dashboard" />
@@ -96,26 +105,28 @@ const AppRouter: React.FC = () => {
     <>
       {showHeader && <Header />}
 
-      <IonRouterOutlet style={{ marginTop: showHeader ? '64px' : '0' }}>
-        {/* Flujo de Autenticación (Sin Tabs, Sin Sidebar) */}
-        <Route exact path="/auth/login">
-          <Auth />
-        </Route>
-        <Route exact path="/auth/register">
-          <Register />
-        </Route>
+      <React.Suspense fallback={<div style={{display: 'flex', height: '100vh', justifyContent: 'center', alignItems: 'center'}}><IonSpinner name="crescent" /></div>}>
+        <IonRouterOutlet style={{ marginTop: showHeader ? '64px' : '0' }}>
+          {/* Flujo de Autenticación (Sin Tabs, Sin Sidebar) */}
+          <Route exact path="/auth/login">
+            <Auth />
+          </Route>
+          <Route exact path="/auth/register">
+            <Register />
+          </Route>
 
-        {/* Flujo del Gestor Municipal (Layout con Sidebar) */}
-        <ProtectedRoute path="/gestor" component={GestorLayout} allowedRoles={['gestor']} />
+          {/* Flujo del Gestor Municipal (Layout con Sidebar) */}
+          <ProtectedRoute path="/gestor" component={GestorLayout} allowedRoles={['gestor']} />
 
-        {/* Flujo Público / Ciudadano (Renderiza las rutas de ciudadano sin tabs) */}
-        <Route path="/ciudadano" component={CiudadanoLayout} />
+          {/* Flujo Público / Ciudadano (Renderiza las rutas de ciudadano sin tabs) */}
+          <Route path="/ciudadano" component={CiudadanoLayout} />
 
-        {/* Redirección por defecto al entrar a la raíz de la app */}
-        <Route exact path="/">
-          <Redirect to="/auth/login" />
-        </Route>
-      </IonRouterOutlet>
+          {/* Redirección por defecto al entrar a la raíz de la app */}
+          <Route exact path="/">
+            <Redirect to="/auth/login" />
+          </Route>
+        </IonRouterOutlet>
+      </React.Suspense>
     </>
   );
 };

@@ -1,39 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
-  IonContent, IonPage, IonIcon 
+  IonContent, IonPage, IonIcon, IonSpinner
 } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, bookmarkOutline } from 'ionicons/icons';
 import './Agenda.css';
 
-// La página de Agenda del Ciudadano muestra un calendario con eventos culturales. 
-// Al hacer clic en un día, se muestran los eventos programados para ese día en una barra lateral. También se listan los próximos eventos futuros. 
-// Por el momento, la información de eventos está simulada con un array estático.
+import { eventoService } from '../../services/evento.service';
+import { EventoCultural } from '../../types';
 
-// Base de datos simulada de eventos para este mes
-const EVENTOS_MES = [
-  {
-    id: 1,
-    dia: 25,
-    mes: 'JUN',
-    categoria: 'Feria artesanal',
-    titulo: 'Feria del libro usado',
-    horario: '12:00-18:00',
-    lugar: 'Parque Libertad'
-  }
-];
-
+// Componente principal de la página de Agenda Cultural para ciudadanos 
+// Muestra un calendario con eventos culturales y una barra lateral con detalles de eventos del día y próximos eventos
 const Agenda: React.FC = () => {
-  // Estado para saber qué día pinchó el usuario 
-  const [diaSeleccionado, setDiaSeleccionado] = useState<number>(13);
-
-  // Filtra si hay eventos para el día seleccionado
-  const eventosDelDia = EVENTOS_MES.filter(evento => evento.dia === diaSeleccionado);
+  const [eventos, setEventos] = useState<EventoCultural[]>([]);
+  const [loading, setLoading] = useState(true);
   
-  // Filtra eventos futuros desde el día seleccionado
-  const proximosEventos = EVENTOS_MES.filter(evento => evento.dia >= diaSeleccionado);
+  // Por simplicidad, forzamos junio para el demo
+  const [fechaActual] = useState(new Date('2024-06-13T12:00:00')); 
+  const [diaSeleccionado, setDiaSeleccionado] = useState<number>(fechaActual.getDate());
 
-  // Generamos un array del 1 al 30 para pintar los días
+  useEffect(() => {
+    const fetchEventos = async () => {
+      setLoading(true);
+      try {
+        const data = await eventoService.obtenerEventos();
+        setEventos(data);
+      } catch (error) {
+        console.error("Error loading eventos", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEventos();
+  }, []);
+
+  const formatDay = (date: Date) => date.getDate();
+  const formatMonth = (date: Date) => date.toLocaleString('es-ES', { month: 'short' }).toUpperCase();
+  const formatTime = (date: Date) => date.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+  // Filtra si hay eventos para el día seleccionado (asumiendo que estamos en el mismo mes/año)
+  const eventosDelDia = eventos.filter(evento => evento.fechaInicio.getDate() === diaSeleccionado);
+  
+  // Filtra eventos futuros a partir del día seleccionado
+  const proximosEventos = eventos.filter(evento => evento.fechaInicio.getDate() >= diaSeleccionado);
+
   const diasDelMes = Array.from({ length: 30 }, (_, i) => i + 1);
+
+  const tieneEvento = (dia: number) => eventos.some(e => e.fechaInicio.getDate() === dia);
 
   return (
     <IonPage>
@@ -45,7 +57,6 @@ const Agenda: React.FC = () => {
             <h1 className="agenda-titulo">Agenda cultural</h1>
             
             <div className="calendario-card outline-box">
-              {/* Controles del mes */}
               <div className="calendario-header">
                 <IonIcon icon={chevronBackOutline} className="nav-icon" />
                 <div className="selectores-fecha">
@@ -53,75 +64,76 @@ const Agenda: React.FC = () => {
                     <option value="junio">Junio</option>
                     <option value="julio">Julio</option>
                   </select>
-                  <select className="fecha-select" defaultValue="2026">
-                    <option value="2026">2026</option>
+                  <select className="fecha-select" defaultValue="2024">
+                    <option value="2024">2024</option>
                   </select>
                 </div>
                 <IonIcon icon={chevronForwardOutline} className="nav-icon" />
               </div>
 
-              {/* Días de la semana */}
               <div className="dias-semana">
                 <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span>
                 <span>Ju</span><span>Vi</span><span>Sa</span>
               </div>
 
-              {/* Grilla numérica del mes */}
-              <div className="dias-grilla">
-                {/* Días vacíos previos */}
-                <span className="dia-vacio"></span>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                  <IonSpinner name="crescent" />
+                </div>
+              ) : (
+                <div className="dias-grilla">
+                  <span className="dia-vacio"></span>
 
-                {diasDelMes.map(dia => {
-                  // Lógica para asignar clases CSS dependiendo del día
-                  let claseExtra = '';
-                  if (dia === 9) claseExtra = 'dia-hoy'; // Naranja
-                  else if (dia === 13 || dia === 25) claseExtra = 'dia-con-evento'; // Azul
-                  
-                  if (dia === diaSeleccionado) claseExtra += ' dia-seleccionado'; // Contorno
-                  
-                  return (
-                    <button 
-                      key={dia} 
-                      className={`dia-btn ${claseExtra}`}
-                      onClick={() => setDiaSeleccionado(dia)}
-                    >
-                      {dia}
-                    </button>
-                  );
-                })}
+                  {diasDelMes.map(dia => {
+                    let claseExtra = '';
+                    if (dia === fechaActual.getDate()) claseExtra = 'dia-hoy'; 
+                    else if (tieneEvento(dia)) claseExtra = 'dia-con-evento'; 
+                    
+                    if (dia === diaSeleccionado) claseExtra += ' dia-seleccionado'; 
+                    
+                    return (
+                      <button 
+                        key={dia} 
+                        className={`dia-btn ${claseExtra}`}
+                        onClick={() => setDiaSeleccionado(dia)}
+                      >
+                        {dia}
+                      </button>
+                    );
+                  })}
 
-                {/* Días grises del próximo mes */}
-                <span className="dia-vacio">1</span>
-                <span className="dia-vacio">2</span>
-                <span className="dia-vacio">3</span>
-                <span className="dia-vacio">4</span>
-              </div>
+                  <span className="dia-vacio">1</span>
+                  <span className="dia-vacio">2</span>
+                  <span className="dia-vacio">3</span>
+                  <span className="dia-vacio">4</span>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* ZONA DERECHA: BARRA LATERAL (Detalle) */}
+          {/* ZONA DERECHA: BARRA LATERAL */}
           <div className="agenda-sidebar">
             
-            {/* Sección 1: Eventos del día seleccionado */}
             <div className="eventos-dia-zona">
-              {eventosDelDia.length === 0 ? (
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><IonSpinner name="crescent" /></div>
+              ) : eventosDelDia.length === 0 ? (
                 <div className="empty-state">
                   <h3>No hay eventos agendados para este día</h3>
                 </div>
               ) : (
                 <div className="lista-eventos-dia">
-                  <h3>Eventos para hoy</h3>
+                  <h3>Eventos para el día {diaSeleccionado}</h3>
                   {eventosDelDia.map(evento => (
-                    <div className="evento-horizontal-card" key={`hoy-${evento.id}`}>
-                      {/* Reutilizamos el estilo de tarjeta del diseño */}
+                    <div className="evento-horizontal-card" key={evento.id}>
                       <div className="evento-fecha-bloque">
-                        <span className="dia">{evento.dia}</span>
-                        <span className="mes">{evento.mes}</span>
+                        <span className="dia">{formatDay(evento.fechaInicio)}</span>
+                        <span className="mes">{formatMonth(evento.fechaInicio)}</span>
                       </div>
                       <div className="evento-info-bloque">
-                        <span className="categoria-texto color-orange">{evento.categoria}</span>
+                        <span className="categoria-texto color-orange">{evento.tipo}</span>
                         <h4>{evento.titulo}</h4>
-                        <p>{evento.horario} • {evento.lugar}</p>
+                        <p>{formatTime(evento.fechaInicio)}-{formatTime(evento.fechaFin)} • {evento.ubicacion?.direccion || 'Sin ubicación'}</p>
                       </div>
                       <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
                     </div>
@@ -132,23 +144,30 @@ const Agenda: React.FC = () => {
 
             <div className="divisor-sidebar"></div>
 
-            {/* Sección 2: Próximos Eventos */}
             <div className="proximos-eventos-zona">
               <h3 className="sidebar-subtitulo">Próximos eventos</h3>
-              
-              <div className="evento-horizontal-card">
-                <div className="evento-fecha-bloque bg-blue">
-                  <span className="dia">25</span>
-                  <span className="mes">JUN</span>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><IonSpinner name="crescent" /></div>
+              ) : proximosEventos.length === 0 ? (
+                <div className="empty-state">
+                  <p>No hay eventos futuros próximos.</p>
                 </div>
-                <div className="evento-info-bloque">
-                  <span className="categoria-texto color-orange">Feria artesanal</span>
-                  <h4>Feria del libro usado</h4>
-                  <p>12:00-18:00 • Parque Libertad</p>
-                </div>
-                <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
-              </div>
-
+              ) : (
+                proximosEventos.slice(0,3).map(evento => (
+                  <div className="evento-horizontal-card" key={`prox-${evento.id}`}>
+                    <div className="evento-fecha-bloque bg-blue">
+                      <span className="dia">{formatDay(evento.fechaInicio)}</span>
+                      <span className="mes">{formatMonth(evento.fechaInicio)}</span>
+                    </div>
+                    <div className="evento-info-bloque">
+                      <span className="categoria-texto color-orange">{evento.tipo}</span>
+                      <h4>{evento.titulo}</h4>
+                      <p>{formatTime(evento.fechaInicio)}-{formatTime(evento.fechaFin)} • {evento.ubicacion?.direccion}</p>
+                    </div>
+                    <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

@@ -1,14 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, 
-  IonSearchbar, IonSelect, IonSelectOption, IonCheckbox, IonItem, IonLabel, IonButton, IonIcon
+  IonSearchbar, IonSelect, IonSelectOption, IonCheckbox, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
 } from '@ionic/react';
 import { filterOutline, star } from 'ionicons/icons';
 import CardPatrimonio from '../../components/CardPatrimonio';
 import './Catalogo.css';
 
+import { patrimonioService } from '../../services/patrimonio.service';
+import { FichaPatrimonio } from '../../types';
+
 // La página de catálogo muestra un listado de actividades culturales con filtros y opciones de búsqueda
 const Catalogo: React.FC = () => {
+  const [fichas, setFichas] = useState<FichaPatrimonio[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchFichas = async () => {
+      setLoading(true);
+      try {
+        const data = await patrimonioService.obtenerFichas();
+        setFichas(data);
+      } catch (error) {
+        console.error("Error loading fichas", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFichas();
+  }, []);
+
   return (
     <IonPage>
       <IonContent fullscreen className="catalogo-page">
@@ -31,7 +52,6 @@ const Catalogo: React.FC = () => {
 
                 <div className="filtro-grupo">
                   <h3>Sector</h3>
-                  {/* UX FIX: Cuadrados (Checkbox) para consistencia */}
                   <IonItem lines="none" className="filtro-item"><IonCheckbox slot="start" /><IonLabel>Norte</IonLabel></IonItem>
                   <IonItem lines="none" className="filtro-item"><IonCheckbox slot="start" /><IonLabel>Centro</IonLabel></IonItem>
                   <IonItem lines="none" className="filtro-item"><IonCheckbox slot="start" /><IonLabel>Sur</IonLabel></IonItem>
@@ -78,28 +98,26 @@ const Catalogo: React.FC = () => {
                 </IonSelect>
               </div>
 
-              <h3 className="resultados-count">24 elementos encontrados</h3>
+              <h3 className="resultados-count">{loading ? 'Cargando...' : `${fichas.length} elementos encontrados`}</h3>
 
-              <IonRow className="fichas-grid-container">
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Oficio tradicional" titulo="Tejeduría en telar" descripcion="Técnica ancestral mapuche transmitida por generaciones" valoracion={4} />
-                </IonCol>
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Cultor local" titulo="Alfarería en greda" descripcion="Cerámica artesanal con técnicas prehispánicas locales" valoracion={3} />
-                </IonCol>
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Expresión cultural" titulo="Música folclórica" descripcion="Cueca chora interpretada por músicos locales de la comuna" valoracion={4} />
-                </IonCol>
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Expresión cultural" titulo="Obra de teatro" descripcion="Obra teatral interpretada por grupo juvenil basada en historia local" valoracion={4} />
-                </IonCol>
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Cultor local" titulo="Telar mapuche" descripcion="Tejido en telar vertical, basado en técnicas de la comunidad" valoracion={4} />
-                </IonCol>
-                <IonCol size="12" sizeMd="6" sizeLg="4">
-                  <CardPatrimonio categoria="Cultor local" titulo="Tallado en madera" descripcion="Tallado artesanal con diferentes tips para crear figuras" valoracion={4} />
-                </IonCol>
-              </IonRow>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                  <IonSpinner name="crescent" />
+                </div>
+              ) : (
+                <IonRow className="fichas-grid-container">
+                  {fichas.map(ficha => (
+                    <IonCol size="12" sizeMd="6" sizeLg="4" key={ficha.id}>
+                      <CardPatrimonio 
+                        categoria={ficha.categoria} 
+                        titulo={ficha.nombre} 
+                        descripcion={ficha.descripcion} 
+                        valoracion={4} 
+                      />
+                    </IonCol>
+                  ))}
+                </IonRow>
+              )}
 
             </IonCol>
           </IonRow>

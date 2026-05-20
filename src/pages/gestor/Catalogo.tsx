@@ -1,36 +1,43 @@
-import React, { useState } from 'react';
-import { IonPage, IonContent, IonIcon } from '@ionic/react';
-import { personCircleOutline, searchOutline, createOutline, eyeOutline, trashOutline, arrowUpOutline
-} from 'ionicons/icons';
+import React, { useState, useEffect } from 'react';
+import { IonPage, IonContent, IonIcon, IonSpinner } from '@ionic/react';
+import { personCircleOutline, searchOutline, createOutline, eyeOutline, trashOutline, arrowUpOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
 import './Catalogo.css';
 
-// La página de catálogo del gestor municipal es el espacio donde los gestores pueden administrar las fichas culturales que se muestran en el catálogo público 
-// Aquí pueden ver una lista de todas las fichas, con información básica como nombre, categoría, fecha de creación, y estado de visibilidad 
-// Los gestores pueden editar cada ficha para actualizar su información, cambiar su estado de visible/oculto, o eliminarla si ya no es relevante. También hay opciones para crear nuevas fichas y exportar los datos del catálogo para análisis o reportes
+import { patrimonioService } from '../../services/patrimonio.service';
+import { FichaPatrimonio } from '../../types';
 
-// Base de datos simulada del catálogo para el Gestor Municipal, con campos básicos para mostrar en la tabla de gestión
-const FICHAS_MOCK = [
-  { id: 1, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: true },
-  { id: 2, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: false },
-  { id: 3, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: true },
-  { id: 4, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: false },
-  { id: 5, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: true },
-  { id: 6, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: false },
-  { id: 7, nombre: 'Tejeduría en telar', categoria: 'Cultor', fecha: '09-04-26', visible: true },
-];
-
+// Componente principal de la página de Catálogo para gestores municipales
+// Muestra una tabla con fichas de patrimonio cultural y permite gestionar su visibilidad, edición y eliminación
 const CatalogoGestor: React.FC = () => {
-  const [fichas, setFichas] = useState(FICHAS_MOCK);
+  const [fichas, setFichas] = useState<FichaPatrimonio[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Función simulada para cambiar visibilidad (Switch)
-  const toggleVisibilidad = (id: number) => {
-    setFichas(fichas.map(f => f.id === id ? { ...f, visible: !f.visible } : f));
+  useEffect(() => {
+    const fetchFichas = async () => {
+      setLoading(true);
+      try {
+        const data = await patrimonioService.obtenerFichas();
+        setFichas(data);
+      } catch (error) {
+        console.error("Error loading fichas", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchFichas();
+  }, []);
+
+  const toggleVisibilidad = (id: string) => {
+    setFichas(fichas.map(f => f.id === id ? { ...f, estado: f.estado === 'publicado' ? 'borrador' : 'publicado' } : f));
+  };
+
+  const formatDate = (date: Date) => {
+    return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '-');
   };
 
   return (
     <IonPage>
-      {/* HEADER GLOBAL DEL GESTOR */}
       <header className="gestor-header">
         <div className="gestor-brand">
           <h1>Cultura Municipal</h1>
@@ -46,19 +53,16 @@ const CatalogoGestor: React.FC = () => {
           
           <GestorSidebar />
 
-          {/* ÁREA PRINCIPAL DE CONTENIDO */}
           <main className="gestor-main-content">
             
-            {/* Encabezado de la Sección */}
             <div className="catalogo-header-row">
               <div>
                 <h2 className="section-title">Gestión del Catálogo</h2>
-                <p className="section-subtitle-count">Mostrando 17 de 23 fichas publicadas</p>
+                <p className="section-subtitle-count">{loading ? 'Cargando fichas...' : `Mostrando ${fichas.length} fichas publicadas`}</p>
               </div>
               <button className="btn-crear-ficha">+ Crear nueva ficha</button>
             </div>
 
-            {/* BARRA DE HERRAMIENTAS (Buscador y Filtros) */}
             <div className="catalogo-toolbar">
               <div className="search-box-container">
                 <IonIcon icon={searchOutline} className="search-icon-inside" />
@@ -81,48 +85,53 @@ const CatalogoGestor: React.FC = () => {
               </button>
             </div>
 
-            {/* TABLA DE DATOS OPERATIVA */}
-            <div className="table-scroll-container">
-              <table className="catalogo-table">
-                <thead>
-                  <tr>
-                    <th style={{ width: '60px' }}></th>
-                    <th>Nombre</th>
-                    <th>Categoría</th>
-                    <th>Fecha</th>
-                    <th>Estado</th>
-                    <th style={{ width: '150px', textAlign: 'center' }}>Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {fichas.map((ficha, index) => (
-                    <tr key={`${ficha.id}-${index}`}>
-                      <td className="cell-avatar">
-                        <div className="avatar-placeholder-blue">🧵</div>
-                      </td>
-                      <td className="cell-name"><strong>{ficha.nombre}</strong></td>
-                      <td>
-                        <span className="badge-categoria-cultor">{ficha.categoria}</span>
-                      </td>
-                      <td className="cell-date">{ficha.fecha}</td>
-                      <td>
-                        <button 
-                          className={`btn-status-toggle ${ficha.visible ? 'v-visible' : 'v-oculto'}`}
-                          onClick={() => toggleVisibilidad(ficha.id)}
-                        >
-                          {ficha.visible ? 'Visible' : 'Oculto'}
-                        </button>
-                      </td>
-                      <td className="cell-actions">
-                        <button className="action-icon-btn" title="Editar"><IonIcon icon={createOutline} /></button>
-                        <button className="action-icon-btn" title="Ver Vista Pública"><IonIcon icon={eyeOutline} /></button>
-                        <button className="action-icon-btn delete-btn" title="Eliminar"><IonIcon icon={trashOutline} /></button>
-                      </td>
+            {loading ? (
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
+                <IonSpinner name="crescent" />
+              </div>
+            ) : (
+              <div className="table-scroll-container">
+                <table className="catalogo-table">
+                  <thead>
+                    <tr>
+                      <th style={{ width: '60px' }}></th>
+                      <th>Nombre</th>
+                      <th>Categoría</th>
+                      <th>Fecha</th>
+                      <th>Estado</th>
+                      <th style={{ width: '150px', textAlign: 'center' }}>Acciones</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {fichas.map((ficha, index) => (
+                      <tr key={`${ficha.id}-${index}`}>
+                        <td className="cell-avatar">
+                          <div className="avatar-placeholder-blue">🧵</div>
+                        </td>
+                        <td className="cell-name"><strong>{ficha.nombre}</strong></td>
+                        <td>
+                          <span className="badge-categoria-cultor">{ficha.categoria}</span>
+                        </td>
+                        <td className="cell-date">{formatDate(ficha.fechaCreacion)}</td>
+                        <td>
+                          <button 
+                            className={`btn-status-toggle ${ficha.estado === 'publicado' ? 'v-visible' : 'v-oculto'}`}
+                            onClick={() => toggleVisibilidad(ficha.id)}
+                          >
+                            {ficha.estado === 'publicado' ? 'Visible' : 'Oculto'}
+                          </button>
+                        </td>
+                        <td className="cell-actions">
+                          <button className="action-icon-btn" title="Editar"><IonIcon icon={createOutline} /></button>
+                          <button className="action-icon-btn" title="Ver Vista Pública"><IonIcon icon={eyeOutline} /></button>
+                          <button className="action-icon-btn delete-btn" title="Eliminar"><IonIcon icon={trashOutline} /></button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
 
           </main>
         </div>
