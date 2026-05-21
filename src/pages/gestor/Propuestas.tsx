@@ -2,36 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { IonPage, IonContent, IonIcon, IonSpinner, IonModal } from '@ionic/react';
 import { personCircleOutline, documentTextOutline, alertCircleOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import Badge, { BadgeVariant } from '../../components/ui/Badge';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import ActionButton from '../../components/ui/ActionButton';
 import './Propuestas.css';
 
-import { comunidadService, PropuestaComunidadGestor } from '../../services/comunidad.service';
+import { usePropuestasGestor } from '../../hooks/useComunidad';
+import { PropuestaComunidadGestor } from '../../services/comunidad.service';
 
 // Componente principal de la página de Propuestas para gestores municipales
 // Muestra una lista de propuestas culturales enviadas por la comunidad, permite filtrarlas por estado y tomar acciones de aprobación, rechazo o revisión con un modal de confirmación
 const PropuestasGestor: React.FC = () => {
-  const [propuestas, setPropuestas] = useState<PropuestaComunidadGestor[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data = [], isLoading: loading } = usePropuestasGestor();
   const [filtro, setFiltro] = useState<string>('todas');
   const [propuestaActiva, setPropuestaActiva] = useState<PropuestaComunidadGestor | null>(null);
+  const [propuestasState, setPropuestasState] = useState<PropuestaComunidadGestor[]>([]);
+
+  useEffect(() => {
+    if (data.length > 0) {
+      setPropuestasState(data);
+    }
+  }, [data]);
 
   // Modal State
   const [mostrarModal, setMostrarModal] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState<string>('');
-
-  useEffect(() => {
-    const fetchPropuestas = async () => {
-      setLoading(true);
-      try {
-        const data = await comunidadService.obtenerPropuestasGestor();
-        setPropuestas(data);
-      } catch (error) {
-        console.error("Error fetching propuestas", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPropuestas();
-  }, []);
 
   const formatDate = (date: Date) => {
     const diffTime = Math.abs(Date.now() - date.getTime());
@@ -53,6 +48,16 @@ const PropuestasGestor: React.FC = () => {
     return map[estado] || estado;
   };
 
+  const getBadgeVariant = (estado: string): BadgeVariant => {
+    const map: Record<string, BadgeVariant> = {
+      'pendiente': 'warning',
+      'en_revision': 'info',
+      'aprobado': 'success',
+      'rechazado': 'danger'
+    };
+    return map[estado] || 'neutral';
+  };
+
   const abrirModalConfirmacion = (accion: string) => {
     setAccionPendiente(accion);
     setMostrarModal(true);
@@ -60,15 +65,14 @@ const PropuestasGestor: React.FC = () => {
 
   const confirmarAccion = () => {
     if (propuestaActiva) {
-      // Simulate status change
       const updatedPropuesta = { ...propuestaActiva, estado: accionPendiente };
-      setPropuestas(propuestas.map(p => p.id === propuestaActiva.id ? updatedPropuesta : p));
+      setPropuestasState(propuestasState.map(p => p.id === propuestaActiva.id ? updatedPropuesta : p));
       setPropuestaActiva(updatedPropuesta);
     }
     setMostrarModal(false);
   };
 
-  const propuestasFiltradas = propuestas.filter(p => filtro === 'todas' || p.estado === filtro);
+  const propuestasFiltradas = propuestasState.filter(p => filtro === 'todas' || p.estado === filtro);
 
   return (
     <IonPage className="propuestas-gestor-page">
@@ -89,7 +93,7 @@ const PropuestasGestor: React.FC = () => {
           <main className="gestor-main-content">
             <div className="master-detail-layout">
               
-              {/* MASTER COLUMN */}
+              {/* COLUMNA PRINCIPAL */}
               <div className="master-column">
                 <div className="propuestas-header">
                   <h2>Gestión de Propuestas</h2>
@@ -117,12 +121,12 @@ const PropuestasGestor: React.FC = () => {
                       >
                         <div className="prop-card-header">
                           <h3>{prop.titulo}</h3>
-                          <span className="badge-votos">{prop.votos} votos</span>
+                          <Badge variant="primary">{prop.votos} votos</Badge>
                         </div>
                         <p className="prop-card-meta">{prop.categoria} • Por: {prop.autor}</p>
                         <div className="prop-card-footer">
                           <p>Publicado {formatDate(prop.fechaPublicacion)}</p>
-                          <span className={`badge-status-small ${prop.estado}`}>{getStatusLabel(prop.estado)}</span>
+                          <Badge variant={getBadgeVariant(prop.estado)}>{getStatusLabel(prop.estado)}</Badge>
                         </div>
                       </div>
                     ))
@@ -133,7 +137,7 @@ const PropuestasGestor: React.FC = () => {
                 </div>
               </div>
 
-              {/* DETAIL COLUMN */}
+              {/* COLUMNA DE DETALLE */}
               <div className="detail-column">
                 {propuestaActiva ? (
                   <div className="fade-in">
@@ -156,9 +160,9 @@ const PropuestasGestor: React.FC = () => {
                     <div className="detail-section">
                       <h3>Acciones:</h3>
                       <div className="detail-actions">
-                        <button className="btn-action-gestor btn-en-revision" onClick={() => abrirModalConfirmacion('en_revision')}>En revisión</button>
-                        <button className="btn-action-gestor btn-aprobar" onClick={() => abrirModalConfirmacion('aprobado')}>Aprobar</button>
-                        <button className="btn-action-gestor btn-rechazar" onClick={() => abrirModalConfirmacion('rechazado')}>Rechazar</button>
+                        <ActionButton variant="info" onClick={() => abrirModalConfirmacion('en_revision')}>En revisión</ActionButton>
+                        <ActionButton variant="success" onClick={() => abrirModalConfirmacion('aprobado')}>Aprobar</ActionButton>
+                        <ActionButton variant="danger" onClick={() => abrirModalConfirmacion('rechazado')}>Rechazar</ActionButton>
                       </div>
                     </div>
 
@@ -188,18 +192,15 @@ const PropuestasGestor: React.FC = () => {
           </main>
         </div>
 
-        {/* Modal de confirmación */}
-        <IonModal isOpen={mostrarModal} onDidDismiss={() => setMostrarModal(false)} className="confirm-modal" style={{ '--height': 'auto', '--width': '400px', '--border-radius': '12px' }}>
-          <div className="confirm-modal-content">
-            <IonIcon icon={alertCircleOutline} style={{ fontSize: '48px', color: '#2563eb', marginBottom: '16px' }} />
-            <h3>Confirmar Acción</h3>
-            <p>¿Estás seguro que deseas cambiar el estado de esta propuesta a <strong>{getStatusLabel(accionPendiente)}</strong>?</p>
-            <div className="modal-actions">
-              <button className="btn-modal-cancel" onClick={() => setMostrarModal(false)}>Cancelar</button>
-              <button className="btn-modal-confirm" onClick={confirmarAccion}>Confirmar</button>
-            </div>
-          </div>
-        </IonModal>
+        <ConfirmModal
+          isOpen={mostrarModal}
+          title="Confirmar Acción"
+          message={`¿Estás seguro que deseas cambiar el estado de esta propuesta a ${getStatusLabel(accionPendiente)}?`}
+          confirmText="Confirmar"
+          cancelText="Cancelar"
+          onConfirm={confirmarAccion}
+          onCancel={() => setMostrarModal(false)}
+        />
 
       </IonContent>
     </IonPage>

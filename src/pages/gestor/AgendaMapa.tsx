@@ -4,35 +4,19 @@ import { personCircleOutline, searchOutline, createOutline, trashOutline, chevro
 import GestorSidebar from '../../components/GestorSidebar';
 import './AgendaMapa.css';
 
-import { eventoService } from '../../services/evento.service';
+import { useEventos } from '../../hooks/useEventos';
 import { EventoCultural } from '../../types';
 
 // Componente principal de la página de Agenda Mapa para gestores municipales
 // Muestra un mapa con eventos culturales geolocalizados y permite gestionar eventos desde una vista detallada
 const AgendaMapaGestor: React.FC = () => {
-  const [eventos, setEventos] = useState<EventoCultural[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: eventos = [], isLoading: loading } = useEventos();
   const [eventoActivo, setEventoActivo] = useState<EventoCultural | null>(null);
 
-  useEffect(() => {
-    const fetchEventos = async () => {
-      setLoading(true);
-      try {
-        const data = await eventoService.obtenerEventos();
-        setEventos(data);
-      } catch (error) {
-        console.error("Error loading eventos", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEventos();
-  }, []);
-
   const getEventColor = (tipo: string) => {
-    if (tipo === 'patrimonio') return '#4d8000';
-    if (tipo === 'feria') return '#0000a0';
-    return '#e37e33';
+    if (tipo === 'patrimonio') return '#22c55e'; // Verde: patrimonio
+    if (tipo === 'feria') return '#3b82f6'; // Azul: feria
+    return '#f97316'; // Naranja: cultores y otros eventos
   };
 
   const getEventIcon = (tipo: string) => {
@@ -42,7 +26,6 @@ const AgendaMapaGestor: React.FC = () => {
   };
 
   const getPosition = (index: number) => {
-    // Generate pseudo-random coordinates for the map based on index to keep them consistent
     const positions = [
       { top: '30%', left: '35%' },
       { top: '55%', left: '70%' },

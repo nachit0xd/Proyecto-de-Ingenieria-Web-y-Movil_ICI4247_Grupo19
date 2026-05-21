@@ -7,28 +7,14 @@ import { filterOutline, star } from 'ionicons/icons';
 import CardPatrimonio from '../../components/CardPatrimonio';
 import './Catalogo.css';
 
-import { patrimonioService } from '../../services/patrimonio.service';
-import { FichaPatrimonio } from '../../types';
+import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
 
-// La página de catálogo muestra un listado de actividades culturales con filtros y opciones de búsqueda
+// Página de catálogo patrimonial que muestra las fichas aprobadas
 const Catalogo: React.FC = () => {
-  const [fichas, setFichas] = useState<FichaPatrimonio[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchFichas = async () => {
-      setLoading(true);
-      try {
-        const data = await patrimonioService.obtenerFichas();
-        setFichas(data);
-      } catch (error) {
-        console.error("Error loading fichas", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFichas();
-  }, []);
+  const { data: fichas = [], isLoading: loading } = useFichasPatrimonio();
+  
+  const [categoria, setCategoria] = useState('Todas');
+  const [search, setSearch] = useState('');
 
   return (
     <IonPage>

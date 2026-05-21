@@ -2,18 +2,31 @@ import React, { useState, useEffect } from 'react';
 import { IonPage, IonContent, IonIcon, IonSpinner, IonModal } from '@ionic/react';
 import { personCircleOutline, documentTextOutline, searchOutline, createOutline, eyeOutline, trashOutline, alertCircleOutline, downloadOutline, chevronForwardOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import Badge, { BadgeVariant } from '../../components/ui/Badge';
+import ConfirmModal from '../../components/ui/ConfirmModal';
+import ActionButton from '../../components/ui/ActionButton';
 import './Fondos.css';
 
-import { fondosService, PostulacionFondoGestor } from '../../services/fondos.service';
+import { usePostulacionesGestor, useConvocatoriasGestor } from '../../hooks/useFondos';
+import { PostulacionFondoGestor } from '../../services/fondos.service';
 
 // Componente principal de la página de Fondos para gestores municipales
 // Permite gestionar postulaciones a fondos culturales, revisar detalles financieros y administrar convocatorias de fondos
 const FondosGestor: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<'postulaciones' | 'convocatorias'>('postulaciones');
   
+  const { data: postulacionesData = [], isLoading: loadPostulaciones } = usePostulacionesGestor();
+  const { data: convocatorias = [], isLoading: loadConvocatorias } = useConvocatoriasGestor();
+
+  const loading = loadPostulaciones || loadConvocatorias;
+
   const [postulaciones, setPostulaciones] = useState<PostulacionFondoGestor[]>([]);
-  const [convocatorias, setConvocatorias] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (postulacionesData.length > 0) {
+      setPostulaciones(postulacionesData);
+    }
+  }, [postulacionesData]);
 
   const [filtroPostulacion, setFiltroPostulacion] = useState<string>('pendiente');
   const [postulacionActiva, setPostulacionActiva] = useState<PostulacionFondoGestor | null>(null);
@@ -22,26 +35,6 @@ const FondosGestor: React.FC = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState<string>('');
   const [errorValidacion, setErrorValidacion] = useState('');
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (tabActiva === 'postulaciones') {
-          const data = await fondosService.obtenerPostulacionesGestor();
-          setPostulaciones(data);
-        } else {
-          const data = await fondosService.obtenerConvocatoriasGestor();
-          setConvocatorias(data);
-        }
-      } catch (error) {
-        console.error("Error fetching", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [tabActiva]);
 
   const formatDateAbsolute = (date: Date) => {
     return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '/');
@@ -56,6 +49,17 @@ const FondosGestor: React.FC = () => {
       'requiere_ajuste': 'Requiere ajuste'
     };
     return map[estado] || estado;
+  };
+
+  const getBadgeVariant = (estado: string): BadgeVariant => {
+    const map: Record<string, BadgeVariant> = {
+      'pendiente': 'warning',
+      'en_revision': 'info',
+      'aprobado': 'success',
+      'rechazado': 'danger',
+      'requiere_ajuste': 'warning'
+    };
+    return map[estado] || 'neutral';
   };
 
   const formatCurrency = (val: number) => {
@@ -138,9 +142,9 @@ const FondosGestor: React.FC = () => {
                           >
                             <div className="postulacion-card-header">
                               <h3>{post.descripcionIniciativa.substring(0, 30)}...</h3>
-                              <span className={`badge-status-small ${post.estado}`}>{getStatusLabel(post.estado)}</span>
+                              <Badge variant={getBadgeVariant(post.estado)}>{getStatusLabel(post.estado)}</Badge>
                             </div>
-                            <span className="badge-fondo">{post.fondoNombre}</span>
+                            <Badge variant="primary">{post.fondoNombre}</Badge>
                             <div className="prop-card-meta mt-2" style={{marginTop: '8px'}}>
                               <strong>{formatCurrency(post.presupuestoEstimado)}</strong> • Por: {post.nombreRepresentante}
                             </div>
@@ -219,9 +223,9 @@ const FondosGestor: React.FC = () => {
                           <div className="detail-section" style={{ borderBottom: 'none' }}>
                             <h3>Acciones:</h3>
                             <div className="detail-actions" style={{marginBottom: '16px'}}>
-                              <button className="btn-action-gestor btn-aprobar" onClick={() => abrirModalConfirmacion('aprobado')}>Aprobar</button>
-                              <button className="btn-action-gestor btn-en-revision" onClick={() => abrirModalConfirmacion('requiere_ajuste')}>Solicitar corrección</button>
-                              <button className="btn-action-gestor btn-rechazar" onClick={() => abrirModalConfirmacion('rechazado')}>Rechazar</button>
+                              <ActionButton variant="success" onClick={() => abrirModalConfirmacion('aprobado')}>Aprobar</ActionButton>
+                              <ActionButton variant="info" onClick={() => abrirModalConfirmacion('requiere_ajuste')}>Solicitar corrección</ActionButton>
+                              <ActionButton variant="danger" onClick={() => abrirModalConfirmacion('rechazado')}>Rechazar</ActionButton>
                             </div>
                             
                             {errorValidacion && <p style={{color: '#dc2626', fontSize: '13px', margin: '0 0 8px 0'}}>{errorValidacion}</p>}
@@ -283,7 +287,7 @@ const FondosGestor: React.FC = () => {
                               <td>{formatCurrency(conv.presupuesto)}</td>
                               <td>{formatCurrency(conv.montoMaximo)}</td>
                               <td>{conv.postulaciones} / {conv.cupos}</td>
-                              <td><span className="badge-abierta">{conv.estado}</span></td>
+                              <td><Badge variant="success">{conv.estado}</Badge></td>
                               <td className="cell-actions" style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
                                 <button className="action-icon-btn" title="Editar"><IonIcon icon={createOutline} /></button>
                                 <button className="action-icon-btn" title="Ver"><IonIcon icon={eyeOutline} /></button>
@@ -301,18 +305,15 @@ const FondosGestor: React.FC = () => {
           </main>
         </div>
 
-        {/* Modal de confirmación */}
-        <IonModal isOpen={mostrarModal} onDidDismiss={() => setMostrarModal(false)} className="confirm-modal" style={{ '--height': 'auto', '--width': '400px', '--border-radius': '12px' }}>
-          <div className="confirm-modal-content">
-            <IonIcon icon={alertCircleOutline} style={{ fontSize: '48px', color: '#2563eb', marginBottom: '16px' }} />
-            <h3>Confirmar Acción</h3>
-            <p>¿Deseas confirmar esta acción y notificar al usuario?</p>
-            <div className="modal-actions">
-              <button className="btn-modal-cancel" onClick={() => setMostrarModal(false)}>Cancelar</button>
-              <button className="btn-modal-confirm" onClick={confirmarAccion}>Confirmar y Enviar</button>
-            </div>
-          </div>
-        </IonModal>
+        <ConfirmModal
+          isOpen={mostrarModal}
+          title="Confirmar Acción"
+          message="¿Deseas confirmar esta acción y notificar al usuario?"
+          confirmText="Confirmar y Enviar"
+          cancelText="Cancelar"
+          onConfirm={confirmarAccion}
+          onCancel={() => setMostrarModal(false)}
+        />
 
       </IonContent>
     </IonPage>

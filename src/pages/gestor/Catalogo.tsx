@@ -4,29 +4,21 @@ import { personCircleOutline, searchOutline, createOutline, eyeOutline, trashOut
 import GestorSidebar from '../../components/GestorSidebar';
 import './Catalogo.css';
 
-import { patrimonioService } from '../../services/patrimonio.service';
+import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
 import { FichaPatrimonio } from '../../types';
 
 // Componente principal de la página de Catálogo para gestores municipales
 // Muestra una tabla con fichas de patrimonio cultural y permite gestionar su visibilidad, edición y eliminación
 const CatalogoGestor: React.FC = () => {
+  const { data: fichasData = [], isLoading: loading } = useFichasPatrimonio();
+  
   const [fichas, setFichas] = useState<FichaPatrimonio[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchFichas = async () => {
-      setLoading(true);
-      try {
-        const data = await patrimonioService.obtenerFichas();
-        setFichas(data);
-      } catch (error) {
-        console.error("Error loading fichas", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFichas();
-  }, []);
+    if (fichasData.length > 0) {
+      setFichas(fichasData);
+    }
+  }, [fichasData]);
 
   const toggleVisibilidad = (id: string) => {
     setFichas(fichas.map(f => f.id === id ? { ...f, estado: f.estado === 'publicado' ? 'borrador' : 'publicado' } : f));

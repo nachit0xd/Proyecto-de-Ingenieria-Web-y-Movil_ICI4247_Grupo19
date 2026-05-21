@@ -6,37 +6,17 @@ import { personCircleOutline, searchOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
 import './Dashboard.css';
 
-// Servicios para obtener KPIs y actividad reciente del gestor
-import { dashboardService, KpisGestor, ActividadReciente } from '../../services/dashboard.service';
+import { useKpisGestor, useActividadReciente } from '../../hooks/useDashboard';
 
 // Página principal del gestor municipal, mostrando KPIs clave, botones de acción rápida y una tabla de actividad reciente para facilitar la gestión cultural
 const DashboardGestor: React.FC = () => {
   const history = useHistory();
   const { logout } = useAuth();
 
-  const [kpis, setKpis] = useState<KpisGestor | null>(null);
-  const [actividades, setActividades] = useState<ActividadReciente[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: kpis, isLoading: loadKpis } = useKpisGestor();
+  const { data: actividades = [], isLoading: loadActividades } = useActividadReciente();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [kpisData, actividadesData] = await Promise.all([
-          dashboardService.obtenerKpisGestor(),
-          dashboardService.obtenerActividadReciente()
-        ]);
-        setKpis(kpisData);
-        setActividades(actividadesData);
-      } catch (error) {
-        console.error("Error cargando dashboard del gestor", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, []);
+  const loading = loadKpis || loadActividades;
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '-');

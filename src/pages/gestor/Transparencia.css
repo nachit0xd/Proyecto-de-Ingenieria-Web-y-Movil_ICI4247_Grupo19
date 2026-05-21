@@ -1,3 +1,4 @@
+/* ESTILOS PARA LA PÁGINA DE TRANSPARENCIA DEL GESTOR */
 .transparencia-gestor-page {
   --page-bg: #f9fafb;
   --card-bg: #ffffff;
@@ -46,7 +47,7 @@
 }
 
 .btn-descargar-reporte {
-  background: #e37e33;
+  background: #f97316;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -225,7 +226,7 @@
 }
 
 .btn-nueva-pub {
-  background: #e37e33;
+  background: #f97316;
   color: white;
   border: none;
   padding: 8px 16px;
@@ -251,9 +252,9 @@
 }
 
 .panel-table th {
-  background: #f9fafb;
-  font-weight: 600;
-  color: var(--text-main);
+  background: #f3f4f6;
+  font-weight: 700;
+  color: #111827;
 }
 
 .btn-toggle-visible {

@@ -1,30 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, IonSpinner 
 } from '@ionic/react';
 import './Transparencia.css';
 
-import { dashboardService, ResumenGestion } from '../../services/dashboard.service';
+import { useResumenGestion } from '../../hooks/useDashboard';
 
-// La página de transparencia muestra indicadores clave de gestión cultural, gráficos de evolución y últimas actualizaciones municipales
+// Página de transparencia que expone información sobre el presupuesto y metas alcanzadas
 const Transparencia: React.FC = () => {
-  const [resumen, setResumen] = useState<ResumenGestion | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchTransparencia = async () => {
-      setLoading(true);
-      try {
-        const data = await dashboardService.obtenerResumenGestion();
-        setResumen(data);
-      } catch (error) {
-        console.error("Error loading transparencia", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTransparencia();
-  }, []);
+  const { data: resumen, isLoading: loading } = useResumenGestion();
 
   return (
     <IonPage>

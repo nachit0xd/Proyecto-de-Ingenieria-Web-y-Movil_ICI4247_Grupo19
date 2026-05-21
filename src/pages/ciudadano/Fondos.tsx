@@ -3,16 +3,17 @@ import { IonContent, IonPage, IonIcon, IonModal, IonButton, IonInput, IonTextare
 import { downloadOutline, documentTextOutline, alertCircleOutline, checkmarkCircleOutline, closeCircleOutline, chevronBackOutline, checkmarkOutline } from 'ionicons/icons';
 import './Fondos.css';
 
-import { fondosService } from '../../services/fondos.service';
+import { useConvocatoriasCiudadano, usePostulacionesCiudadano } from '../../hooks/useFondos';
 import { PostulacionFondo } from '../../types';
 
 // La página de fondos culturales muestra convocatorias abiertas, permite postular a ellas y ver el estado de las postulaciones realizadas por el usuario
 const Fondos: React.FC = () => {
   const [tabActiva, setTabActiva] = useState<'abiertas' | 'mis-postulaciones' | 'resultados'>('abiertas');
   
-  const [convocatorias, setConvocatorias] = useState<any[]>([]);
-  const [postulaciones, setPostulaciones] = useState<PostulacionFondo[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: convocatorias = [], isLoading: loadConvocatorias } = useConvocatoriasCiudadano();
+  const { data: postulaciones = [], isLoading: loadPostulaciones } = usePostulacionesCiudadano();
+
+  const loading = loadConvocatorias || loadPostulaciones;
 
   const [mostrarModal, setMostrarModal] = useState(false);
   const [pasoActual, setPasoActual] = useState(1);
@@ -26,26 +27,6 @@ const Fondos: React.FC = () => {
     presupuesto: '',
     desglose: ''
   });
-
-  useEffect(() => {
-    const fetchFondos = async () => {
-      setLoading(true);
-      try {
-        if (tabActiva === 'abiertas') {
-          const data = await fondosService.obtenerConvocatoriasActivas();
-          setConvocatorias(data);
-        } else {
-          const data = await fondosService.obtenerPostulaciones();
-          setPostulaciones(data);
-        }
-      } catch (error) {
-        console.error("Error loading fondos", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchFondos();
-  }, [tabActiva]);
 
   const handleInputChange = (campo: string, valor: any) => {
     setFormData(prev => ({ ...prev, [campo]: valor }));

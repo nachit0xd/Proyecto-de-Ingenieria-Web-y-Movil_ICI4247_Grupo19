@@ -1,5 +1,6 @@
 @import url('./Dashboard.css');
 
+/* ESTILOS PARA LA PÁGINA DE AGENDA / MAPA DEL GESTOR */
 .agenda-mapa-header {
   display: flex;
   justify-content: space-between;
@@ -15,7 +16,7 @@
 }
 
 .btn-nuevo-evento {
-  background-color: #e37e33; 
+  background-color: #f97316; 
   color: white;
   border: none;
   padding: 12px 24px;
@@ -27,7 +28,7 @@
 }
 
 .btn-nuevo-evento:hover {
-  background-color: #c25e17;
+  background-color: #ea580c;
 }
 
 /* ZONA DEL MAPA GESTOR */
@@ -82,9 +83,9 @@
 .dot {
   width: 10px; height: 10px; border-radius: 50%; display: inline-block;
 }
-.dot-orange { background: #e37e33; }
-.dot-blue { background: #0000a0; }
-.dot-green { background: #4d8000; }
+.dot-orange { background: #f97316; }
+.dot-blue { background: #3b82f6; }
+.dot-green { background: #22c55e; }
 
 .gestor-marcador {
   position: absolute;

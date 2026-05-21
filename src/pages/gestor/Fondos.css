@@ -1,3 +1,4 @@
+/* ESTILOS PARA LA PÁGINA DE FONDOS DEL GESTOR */
 .fondos-gestor-page {
   --page-bg: #f9fafb;
   --card-bg: #ffffff;
@@ -117,9 +118,10 @@
 /* Postulacion Card Mini */
 .postulacion-card-mini {
   background: white;
-  border: 1px solid var(--border-color);
-  border-radius: 6px;
-  padding: 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
   cursor: pointer;
   transition: all 0.2s;
   display: flex;
@@ -142,24 +144,31 @@
 .postulacion-card-mini.status-en_revision::before { background-color: #3b82f6; }
 .postulacion-card-mini.status-aprobado::before { background-color: #10b981; }
 .postulacion-card-mini.status-rechazado::before { background-color: #ef4444; }
-.postulacion-card-mini.status-requiere_ajuste::before { background-color: #8b5cf6; }
 
-.postulacion-card-mini:hover, .postulacion-card-mini.active {
-  border-color: #9ca3af;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+.postulacion-card-mini:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+}
+
+.postulacion-card-mini.active {
+  border-color: #f97316;
+  background-color: #fff7ed;
 }
 
 .postulacion-card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 10px;
 }
 
 .postulacion-card-header h3 {
   margin: 0;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text-main);
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1.3;
 }
 
 .badge-fondo {
@@ -205,6 +214,19 @@
 
 .btn-descargar-detalle ion-icon {
   font-size: 18px;
+}
+
+.btn-descargar-detalle i.prop-card-meta {
+  font-size: 0.85rem;
+  color: #4b5563;
+}
+
+.prop-card-footer {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 0.8rem;
+  color: #6b7280;
 }
 
 .info-list {

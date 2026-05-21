@@ -1,5 +1,6 @@
 import React from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { 
   IonApp,
   IonRouterOutlet, 
@@ -62,6 +63,17 @@ const TransparenciaGestor = React.lazy(() => import('./pages/gestor/Transparenci
 
 
 setupIonicReact();
+
+// Configuración del QueryClient para React Query, con opciones por defecto que se aplicarán a todas las consultas. 
+// Esto incluye deshabilitar el refetch automático al enfocar la ventana y establecer un tiempo de vida de los datos en caché de 5 minutos.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
 
 /* 1. Layout del Ciudadano (Navegación por Header) */
 const CiudadanoLayout: React.FC = () => (
@@ -131,15 +143,17 @@ const AppRouter: React.FC = () => {
   );
 };
 
-/* 2. Enrutador Principal (App) */
+/* 2. Enrutador Principal (App), con configuración de QueryClient */
 const App: React.FC = () => (
-  <IonApp>
-    <AuthProvider>
-      <IonReactRouter>
-        <AppRouter />
-      </IonReactRouter>
-    </AuthProvider>
-  </IonApp>
+  <QueryClientProvider client={queryClient}>
+    <IonApp>
+      <AuthProvider>
+        <IonReactRouter>
+          <AppRouter />
+        </IonReactRouter>
+      </AuthProvider>
+    </IonApp>
+  </QueryClientProvider>
 );
 
 export default App;

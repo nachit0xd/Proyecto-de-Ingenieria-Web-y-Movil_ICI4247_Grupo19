@@ -5,39 +5,32 @@ import {
 import { chevronBackOutline, chevronForwardOutline, bookmarkOutline } from 'ionicons/icons';
 import './Agenda.css';
 
-import { eventoService } from '../../services/evento.service';
-import { EventoCultural } from '../../types';
+import { useEventos } from '../../hooks/useEventos';
 
-// Componente principal de la página de Agenda Cultural para ciudadanos 
-// Muestra un calendario con eventos culturales y una barra lateral con detalles de eventos del día y próximos eventos
+// Página de agenda cultural que muestra una lista de eventos ordenados cronológicamente
 const Agenda: React.FC = () => {
-  const [eventos, setEventos] = useState<EventoCultural[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: eventos = [], isLoading: loading } = useEventos();
+
+  const [filtroDia, setFiltroDia] = useState<number | null>(null);
+  const [filtroMes, setFiltroMes] = useState<number | null>(null);
   
   // Por simplicidad, forzamos junio para el demo
   const [fechaActual] = useState(new Date('2024-06-13T12:00:00')); 
   const [diaSeleccionado, setDiaSeleccionado] = useState<number>(fechaActual.getDate());
-
-  useEffect(() => {
-    const fetchEventos = async () => {
-      setLoading(true);
-      try {
-        const data = await eventoService.obtenerEventos();
-        setEventos(data);
-      } catch (error) {
-        console.error("Error loading eventos", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEventos();
-  }, []);
 
   const formatDay = (date: Date) => date.getDate();
   const formatMonth = (date: Date) => date.toLocaleString('es-ES', { month: 'short' }).toUpperCase();
   const formatTime = (date: Date) => date.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
   // Filtra si hay eventos para el día seleccionado (asumiendo que estamos en el mismo mes/año)
+  const eventosOrdenados = [...eventos].sort((a, b) => a.fechaInicio.getTime() - b.fechaInicio.getTime());
+  const eventosFiltrados = eventosOrdenados.filter(evento => {
+    const date = evento.fechaInicio;
+    if (filtroDia && date.getDate() !== filtroDia) return false;
+    if (filtroMes && date.getMonth() !== filtroMes) return false;
+    return true;
+  });
+
   const eventosDelDia = eventos.filter(evento => evento.fechaInicio.getDate() === diaSeleccionado);
   
   // Filtra eventos futuros a partir del día seleccionado

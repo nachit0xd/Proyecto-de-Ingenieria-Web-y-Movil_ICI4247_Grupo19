@@ -1,6 +1,7 @@
 /* REUTILIZACIÓN DE LAYOUT BASE */
 @import url('./Dashboard.css');
 
+/* ESTILOS PARA LA PÁGINA DE CATÁLOGO DEL GESTOR */
 /* ENCABEZADO DE CATÁLOGO */
 .catalogo-header-row {
   display: flex;
@@ -66,20 +67,21 @@
   border: 1px solid #cbd5e1;
   border-radius: 6px;
   font-size: 0.95rem;
-  color: #334155;
+  background-color: #ffffff;
+  color: #111827;
   outline: none;
 }
 
 .toolbar-search-input:focus, .toolbar-select:focus {
-  border-color: #e37e33;
+  border-color: #f97316;
 }
 
 .toolbar-select {
   padding: 12px 20px;
   border: 1px solid #cbd5e1;
   border-radius: 6px;
-  background-color: white;
-  color: #334155;
+  background-color: #ffffff;
+  color: #111827;
   font-size: 0.95rem;
   outline: none;
   cursor: pointer;
@@ -169,7 +171,7 @@
 
 /* BADGES Y CONTROLES DE ESTADO */
 .badge-categoria-cultor {
-  background-color: #e37e33;
+  background-color: #f97316;
   color: white;
   padding: 4px 12px;
   border-radius: 4px;

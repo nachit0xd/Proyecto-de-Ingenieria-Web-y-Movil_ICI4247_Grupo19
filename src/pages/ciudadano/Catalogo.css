@@ -12,8 +12,8 @@
 
 .filtros-container h2 {
   font-size: 1.5rem;
-  font-weight: bold;
-  color: #1f2937;
+  font-weight: 800;
+  color: #111827;
   margin-top: 0;
   margin-bottom: 25px;
 }
@@ -23,24 +23,33 @@
 }
 
 .filtro-grupo h3 {
-  font-size: 1rem;
-  font-weight: bold;
-  color: #4b5563;
-  margin-bottom: 10px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 12px;
 }
 
 .filtro-item {
   --background: transparent;
-  --min-height: 35px;
+  --min-height: 38px;
   font-size: 0.95rem;
   color: #374151;
+  border-radius: 6px;
+  transition: all 0.2s;
+  cursor: pointer;
+  margin-bottom: 2px;
+}
+
+.filtro-item:hover {
+  --background: #f3f4f6;
 }
 
 .filtro-item ion-checkbox {
-  margin-right: 10px;
-  --size: 18px;
-  --checkbox-background-checked: #1e3a8a; /* Azul oscuro */
-  --border-color-checked: #1e3a8a;
+  margin-right: 12px;
+  --size: 20px;
+  --checkbox-background-checked: #f97316;
+  --border-color-checked: #f97316;
+  --border-radius: 4px;
 }
 
 /* Aseguramos que los labels y textos de filtros sean legibles */
@@ -79,12 +88,18 @@
 
 .custom-searchbar {
   padding: 0;
-  --box-shadow: none;
+  --box-shadow: 0 1px 2px rgba(0,0,0,0.05);
   --background: #ffffff;
-  --color: #374151; /* texto dentro del searchbar */
-  --placeholder-color: #9ca3af; /* placeholder legible */
+  --color: #111827;
+  --placeholder-color: #6b7280;
   border: 1px solid #d1d5db;
   border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.custom-searchbar:focus-within {
+  border-color: #f97316;
+  --box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
 }
 
 .custom-sort {

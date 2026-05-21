@@ -5,45 +5,19 @@ import {
 import CardPatrimonio from '../../components/CardPatrimonio'; 
 import './Inicio.css';
 
-// Servicios para obtener datos de fichas, eventos, propuestas y resumen de gestión
-import { patrimonioService } from '../../services/patrimonio.service';
-import { eventoService } from '../../services/evento.service';
-import { comunidadService } from '../../services/comunidad.service';
-import { dashboardService, ResumenGestion } from '../../services/dashboard.service';
-import { FichaPatrimonio, EventoCultural, PropuestaCiudadana } from '../../types';
+import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
+import { useProximosEventos } from '../../hooks/useEventos';
+import { usePropuestasPopulares } from '../../hooks/useComunidad';
+import { useResumenGestion } from '../../hooks/useDashboard';
 
 // Página de inicio para ciudadanos, mostrando un resumen del patrimonio local, próximos eventos, propuestas populares y estadísticas de gestión cultural
 const Inicio: React.FC = () => {
-  const [fichas, setFichas] = useState<FichaPatrimonio[]>([]);
-  const [eventos, setEventos] = useState<EventoCultural[]>([]);
-  const [propuestas, setPropuestas] = useState<PropuestaCiudadana[]>([]);
-  const [resumen, setResumen] = useState<ResumenGestion | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { data: fichas = [], isLoading: loadingFichas } = useFichasPatrimonio();
+  const { data: eventos = [], isLoading: loadingEventos } = useProximosEventos();
+  const { data: propuestas = [], isLoading: loadingPropuestas } = usePropuestasPopulares();
+  const { data: resumen, isLoading: loadingResumen } = useResumenGestion();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [fichasData, eventosData, propuestasData, resumenData] = await Promise.all([
-          patrimonioService.obtenerFichasDestacadas(),
-          eventoService.obtenerProximosEventos(),
-          comunidadService.obtenerPropuestasPopulares(),
-          dashboardService.obtenerResumenGestion()
-        ]);
-        
-        setFichas(fichasData);
-        setEventos(eventosData);
-        setPropuestas(propuestasData);
-        setResumen(resumenData);
-      } catch (error) {
-        console.error("Error loading dashboard data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, []);
+  const loading = loadingFichas || loadingEventos || loadingPropuestas || loadingResumen;
 
   const formatDay = (date: Date) => date.getDate().toString().padStart(2, '0');
   const formatMonth = (date: Date) => date.toLocaleString('es-ES', { month: 'short' }).toUpperCase();
@@ -204,13 +178,13 @@ const Inicio: React.FC = () => {
                 <div className="propuesta-card outline-box">
                   <div className="propuesta-header">
                     <span className={`badge ${getPropuestaBadge(index)}`}>Idea</span>
-                    <span className="votes">{propuesta.votos} votos</span>
+                    <span className="votes">{propuesta.votosTotales} votos</span>
                   </div>
                   <h4>{propuesta.titulo}</h4>
                   <div className="progress-container">
-                    <div className="progress-bar" style={{width: `${Math.min((propuesta.votos / 150) * 100, 100)}%`}}></div>
+                    <div className="progress-bar" style={{width: `${Math.min((propuesta.votosTotales / 150) * 100, 100)}%`}}></div>
                   </div>
-                  <p className="progress-text">{propuesta.votos} / 150 votos para escalar</p>
+                  <p className="progress-text">{propuesta.votosTotales} / 150 votos para escalar</p>
                 </div>
               </IonCol>
             ))}

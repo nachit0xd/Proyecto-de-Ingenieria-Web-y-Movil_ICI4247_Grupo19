@@ -4,33 +4,24 @@ import { personCircleOutline, settingsOutline, downloadOutline } from 'ionicons/
 import GestorSidebar from '../../components/GestorSidebar';
 import './Transparencia.css';
 
-import { transparenciaService, KPI_Transparencia, PublicacionPanel } from '../../services/transparencia.service';
+import { useKPIsTransparencia, usePublicacionesTransparencia } from '../../hooks/useTransparencia';
+import { KPI_Transparencia, PublicacionPanel } from '../../services/transparencia.service';
 
 // Componente principal de la página de Transparencia para gestores municipales
 // Muestra KPIs clave de transparencia, gráficos de desempeño y un panel público con publicaciones y su visibilidad
 const TransparenciaGestor: React.FC = () => {
-  const [kpis, setKpis] = useState<KPI_Transparencia | null>(null);
+  const { data: kpis, isLoading: loadKpis } = useKPIsTransparencia();
+  const { data: pubData = [], isLoading: loadPubs } = usePublicacionesTransparencia();
+
+  const loading = loadKpis || loadPubs;
+
   const [publicaciones, setPublicaciones] = useState<PublicacionPanel[]>([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const [kpiData, pubData] = await Promise.all([
-          transparenciaService.obtenerKPIs(),
-          transparenciaService.obtenerPublicaciones()
-        ]);
-        setKpis(kpiData);
-        setPublicaciones(pubData);
-      } catch (error) {
-        console.error("Error fetching", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+    if (pubData.length > 0) {
+      setPublicaciones(pubData);
+    }
+  }, [pubData]);
 
   const toggleVisibility = (id: string) => {
     setPublicaciones(publicaciones.map(p => p.id === id ? { ...p, visible: !p.visible } : p));
