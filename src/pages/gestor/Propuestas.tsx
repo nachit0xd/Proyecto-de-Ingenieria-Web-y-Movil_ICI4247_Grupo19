@@ -169,11 +169,13 @@ const PropuestasGestor: React.FC = () => {
                     <div className="detail-section" style={{ borderBottom: 'none' }}>
                       <h3>Comentarios de gestor:</h3>
                       {propuestaActiva.comentariosGestor && propuestaActiva.comentariosGestor.length > 0 ? (
-                        <ul className="gestor-comments-list">
-                          {propuestaActiva.comentariosGestor.map((comentario, index) => (
-                            <li key={index}>{comentario}</li>
+                        <div className="comments-list" style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                          {propuestaActiva.comentariosGestor.map((comentario: any, index: any) => (
+                            <div key={index} className="comment-bubble" style={{ padding: '8px 12px', background: '#f1f5f9', borderRadius: '8px', fontSize: '0.9rem', color: '#334155' }}>
+                              {comentario}
+                            </div>
                           ))}
-                        </ul>
+                        </div>
                       ) : (
                         <p style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '14px' }}>No hay comentarios todavía.</p>
                       )}

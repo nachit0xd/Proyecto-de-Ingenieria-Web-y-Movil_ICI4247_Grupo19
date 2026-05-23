@@ -51,11 +51,30 @@ const Register: React.FC = () => {
     setErrors(e);
     if (Object.keys(e).length) return;
     setSubmitting(true);
-    await wait(700);
-    setSubmitting(false);
+    
+    try {
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: form.username,
+          email: form.email.trim(),
+          password: form.password.trim(),
+          rol: 'ciudadano' // Default a ciudadano
+        })
+      });
 
-    // Simulación: redirigir al login con prefill
-    history.push('/auth/login', { prefillEmail: form.email, prefillPassword: form.password });
+      if (!response.ok) {
+        throw new Error('Error al registrar');
+      }
+
+      alert('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
+      history.push('/auth/login', { prefillEmail: form.email, prefillPassword: form.password });
+    } catch (error) {
+      alert('Error al crear la cuenta. Intenta con otro correo o revisa la conexión.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (

@@ -7,9 +7,9 @@ import { UserRole } from '../../services/auth.service';
 import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
-// Esta página maneja el login de usuarios, con un diseño simple e intuitivo
-// El formulario de login permite a los usuarios ingresar con su correo y contraseña, o usar Clave Única (pendiente de implementar)
-// El formulario de registro solicita información básica para crear una cuenta, con validaciones simples para mejorar la experiencia del usuario
+// Esta página maneja el login de usuarios, con un diseño simple e intuitivo.
+// El formulario de login permite a los usuarios ingresar con su correo y contraseña, o usar Clave Única (pendiente de implementar).
+// El formulario de registro solicita información básica para crear una cuenta, con validaciones simples para mejorar la experiencia del usuario.
 
 interface LoginFormState {
   email: string;
@@ -190,8 +190,22 @@ const Auth: React.FC = () => {
     setIsSubmittingRegister(true);
 
     try {
-      await wait(900);
-      setRegisterSuccess('Cuenta creada en modo demo. Ahora puedes iniciar sesión con tu correo y contraseña.');
+      const response = await fetch('http://localhost:3000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: registerForm.username,
+          email: registerForm.email.trim(),
+          password: registerForm.password.trim(),
+          rol: 'ciudadano'
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al registrar');
+      }
+
+      setRegisterSuccess('¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
       setAuthMode('login');
       setLoginForm((prev) => ({
         ...prev,
@@ -199,6 +213,8 @@ const Auth: React.FC = () => {
         password: registerForm.password,
         role: 'ciudadano'
       }));
+    } catch (error) {
+      setAuthError('Error al crear la cuenta. Intenta con otro correo.');
     } finally {
       setIsSubmittingRegister(false);
     }

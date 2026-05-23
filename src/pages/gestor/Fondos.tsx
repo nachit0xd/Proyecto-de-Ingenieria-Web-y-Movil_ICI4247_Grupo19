@@ -189,7 +189,7 @@ const FondosGestor: React.FC = () => {
                                 </tr>
                               </thead>
                               <tbody>
-                                {postulacionActiva.desglose.map((item, i) => (
+                                {postulacionActiva.desglose.map((item: any, i: any) => (
                                   <tr key={i}>
                                     <td>{item.tipo}</td>
                                     <td>{formatCurrency(item.monto)}</td>
@@ -219,6 +219,7 @@ const FondosGestor: React.FC = () => {
                               </div>
                             </div>
                           </div>
+
 
                           <div className="detail-section" style={{ borderBottom: 'none' }}>
                             <h3>Acciones:</h3>
@@ -280,7 +281,7 @@ const FondosGestor: React.FC = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {convocatorias.map(conv => (
+                          {convocatorias.map((conv: any) => (
                             <tr key={conv.id}>
                               <td><strong>{conv.titulo}</strong></td>
                               <td>{conv.periodo}</td>

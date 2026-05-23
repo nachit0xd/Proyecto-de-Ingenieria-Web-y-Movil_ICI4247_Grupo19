@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id        String   @id @default(uuid())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       String   // "ciudadano" | "gestor"
+  creadoEn  DateTime @default(now())
+}
+
+model Propuesta {
+  id             String   @id @default(uuid())
+  titulo         String
+  descripcion    String
+  estado         String   // "revision" | "aprobado" | "rechazado"
+  votosTotales   Int      @default(0)
+  idUsuario      String
+  fechaCreacion  DateTime @default(now())
+}
+
+model Evento {
+  id             String   @id @default(uuid())
+  titulo         String
+  tipo           String   // "patrimonio" | "feria" | "cultor"
+  estado         String   // "activo" | "finalizado"
+  fechaInicio    DateTime
+  fechaFin       DateTime
+  direccion      String?
+  lat            Float?
+  lng            Float?
+  creadoEn       DateTime @default(now())
+}
+
+model Fondo {
+  id             String   @id @default(uuid())
+  titulo         String
+  descripcion    String
+  montoMaximo    Int
+  presupuesto    Int
+  cupos          Int
+  estado         String   // "abierto" | "cerrado"
+  creadoEn       DateTime @default(now())
+}
+
+model Postulacion {
+  id                   String   @id @default(uuid())
+  fondoId              String
+  nombreRepresentante  String
+  rutRepresentante     String
+  nombreOrganizacion   String
+  descripcion          String
+  presupuestoEstimado  Int
+  estado               String   // "pendiente" | "aprobado" | "rechazado"
+  fechaPostulacion     DateTime @default(now())
+}

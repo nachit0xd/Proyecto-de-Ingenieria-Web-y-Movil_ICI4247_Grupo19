@@ -1,6 +1,7 @@
 import { FichaPatrimonio } from '../types';
 
 // Servicio simulado para obtener fichas de patrimonio, con datos de ejemplo y un retraso artificial para simular una llamada a API real
+
 const MOCK_FICHAS: FichaPatrimonio[] = [
   {
     id: 'f1',

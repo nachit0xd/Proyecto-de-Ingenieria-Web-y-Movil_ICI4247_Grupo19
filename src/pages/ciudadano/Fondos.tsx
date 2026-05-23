@@ -132,7 +132,7 @@ const Fondos: React.FC = () => {
               <>
                 {tabActiva === 'abiertas' && (
                   <div className="lista-fondos">
-                    {convocatorias.map(conv => (
+                    {convocatorias.map((conv: any) => (
                       <div className="fondo-card outline-box" key={conv.id}>
                         <div className="fondo-card-header">
                           <h2>{conv.titulo}</h2>

@@ -1,4 +1,4 @@
-// Servicio simulado de Transparencia para obtener KPIs y publicaciones del panel
+// Servicio para manejar las operaciones relacionadas con la transparencia, como obtener KPIs y publicaciones del panel
 
 export interface KPI_Transparencia {
   ejecucionPresupuestaria: string;
@@ -18,34 +18,18 @@ export interface PublicacionPanel {
   visible: boolean;
 }
 
-const MOCK_KPIS: KPI_Transparencia = {
-  ejecucionPresupuestaria: '$2,4 M',
-  ejecucionMeta: 'de $10 M mensuales',
-  tasaAprobacion: '42%',
-  tasaAprobacionMeta: 'este mes',
-  tiempoRespuesta: '5 días',
-  tiempoRespuestaMeta: 'promedio en evaluar propuesta',
-  participacionCiudadana: '1,204',
-  participacionMeta: 'usuarios únicos activos este mes'
-};
-
-const MOCK_PUBLICACIONES: PublicacionPanel[] = [
-  { id: '1', fecha: '15-05-26', mensaje: 'Nuevo Fondo de Nuevos Emprendedores disponible desde hoy hasta el 15 de Junio', visible: true },
-  { id: '2', fecha: '14-05-26', mensaje: 'Propuesta "Feria Artesanal" escalada a convocatoria de fondos', visible: false },
-  { id: '3', fecha: '13-05-26', mensaje: 'Nuevo Fondo Feria Libre disponible desde hoy hasta fin de mes', visible: true },
-  { id: '4', fecha: '13-05-26', mensaje: 'Fondo de Artes 2026: resultados y planes futuros', visible: true },
-];
-
-const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+import api from './api';
 
 export const transparenciaService = {
   obtenerKPIs: async (): Promise<KPI_Transparencia> => {
-    await delay(300);
-    return MOCK_KPIS;
+    const response = await api.get('/transparencia/kpis');
+    return response.data;
   },
   
   obtenerPublicaciones: async (): Promise<PublicacionPanel[]> => {
-    await delay(300);
-    return MOCK_PUBLICACIONES;
+    // Keep mock for publications for now since it's not in the backend yet
+    return [
+      { id: '1', fecha: '15-05-26', mensaje: 'Nuevo Fondo de Nuevos Emprendedores disponible', visible: true }
+    ];
   }
 };

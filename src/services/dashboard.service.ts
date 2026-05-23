@@ -1,4 +1,4 @@
-// Servicio simulado para el dashboard del gestor municipal, proporcionando datos de resumen de gestión, KPIs clave y actividad reciente con retrasos artificiales para simular llamadas a API reales
+// Servicio para manejar las operaciones relacionadas con el dashboard del gestor, como obtener resúmenes, KPIs y actividad reciente
 
 export interface ResumenGestion {
   fichasPublicadas: number;

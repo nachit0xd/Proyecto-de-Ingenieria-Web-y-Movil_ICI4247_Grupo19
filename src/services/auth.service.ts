@@ -1,23 +1,34 @@
-// Este servicio de autenticación es una implementación simple para manejar el estado de autenticación del usuario en la aplicación.
-// Proporciona funciones para iniciar sesión, cerrar sesión, verificar si el usuario está autenticado y obtener el rol del usuario.
+import api from './api';
+
+// Servicio de autenticación para manejar el login, logout y estado de autenticación del usuario
 
 export type UserRole = 'ciudadano' | 'gestor';
 
 const TOKEN_KEY = 'token';
 const ROLE_KEY = 'userRole';
+const USER_KEY = 'user';
 
-export const login = (email: string, password: string, role: UserRole = 'ciudadano'): boolean => {
-  if (email && password) {
-    localStorage.setItem(TOKEN_KEY, 'mock-token');
-    localStorage.setItem(ROLE_KEY, role);
-    return true;
+// Función para realizar el login del usuario, guarda el token y rol en localStorage
+export const login = async (email: string, password: string): Promise<boolean> => {
+  try {
+    const response = await api.post('/auth/login', { email, password });
+    if (response.data.token) {
+      localStorage.setItem(TOKEN_KEY, response.data.token);
+      localStorage.setItem(ROLE_KEY, response.data.user.rol);
+      localStorage.setItem(USER_KEY, JSON.stringify(response.data.user));
+      return true;
+    }
+    return false;
+  } catch (error) {
+    console.error("Login failed", error);
+    return false;
   }
-  return false;
 };
 
 export const logout = () => {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(ROLE_KEY);
+  localStorage.removeItem(USER_KEY);
 };
 
 export const isAuthenticated = (): boolean => {
@@ -27,7 +38,7 @@ export const isAuthenticated = (): boolean => {
 export const getUserRole = (): UserRole | null => {
   const role = localStorage.getItem(ROLE_KEY);
   if (role === 'ciudadano' || role === 'gestor') {
-    return role;
+    return role as UserRole;
   }
   return null;
 };

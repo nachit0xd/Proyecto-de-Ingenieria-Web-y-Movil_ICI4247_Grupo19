@@ -1,13 +1,12 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { getUserRole, isAuthenticated, login as loginService, logout as logoutService, UserRole } from '../services/auth.service';
 
-// El AuthContext se encarga de manejar el estado de autenticación y el rol del usuario en toda la aplicación
-// Proporciona funciones para iniciar sesión y cerrar sesión, y mantiene el estado de si el usuario está autenticado y cuál es su rol (ciudadano o gestor)
+// Contexto de autenticación para manejar el estado de autenticación y rol del usuario en toda la aplicación
 
 interface AuthContextValue {
   isAuthenticated: boolean;
   role: UserRole | null;
-  login: (email: string, password: string, role: UserRole) => Promise<void>;
+  login: (email: string, password: string, requestedRole: UserRole) => Promise<void>;
   logout: () => void;
 }
 
@@ -17,22 +16,23 @@ interface AuthProviderProps {
   children: React.ReactNode;
 }
 
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [authenticated, setAuthenticated] = useState<boolean>(isAuthenticated());
   const [role, setRole] = useState<UserRole | null>(getUserRole());
 
-  const login = async (email: string, password: string, nextRole: UserRole) => {
-    await wait(700);
-
-    const success = loginService(email, password, nextRole);
+// Función de login que llama al backend para validar las credenciales y obtener el rol real del usuario
+  const login = async (email: string, password: string, requestedRole: UserRole) => {
+    // LLamamos al backend
+    const success = await loginService(email, password);
     if (!success) {
       throw new Error('Credenciales inválidas.');
     }
-
+    
+    // Obtenemos el rol validado que nos mandó el backend
+    const actualRole = getUserRole();
+    
     setAuthenticated(true);
-    setRole(nextRole);
+    setRole(actualRole);
   };
 
   const logout = () => {
