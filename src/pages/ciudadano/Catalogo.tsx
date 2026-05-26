@@ -5,6 +5,8 @@ import {
 } from '@ionic/react';
 import { filterOutline, star } from 'ionicons/icons';
 import CardPatrimonio from '../../components/CardPatrimonio';
+import FichaModal from '../../components/FichaModal';
+import { FichaPatrimonio } from '../../types/patrimonio';
 import './Catalogo.css';
 
 import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
@@ -15,6 +17,7 @@ const Catalogo: React.FC = () => {
   
   const [categoria, setCategoria] = useState('Todas');
   const [search, setSearch] = useState('');
+  const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
 
   return (
     <IonPage>
@@ -98,7 +101,8 @@ const Catalogo: React.FC = () => {
                         categoria={ficha.categoria} 
                         titulo={ficha.nombre} 
                         descripcion={ficha.descripcion} 
-                        valoracion={4} 
+                        valoracion={Math.round(ficha.valoracionPromedio || 0)} 
+                        onClick={() => setSelectedFicha(ficha as FichaPatrimonio)}
                       />
                     </IonCol>
                   ))}
@@ -109,6 +113,12 @@ const Catalogo: React.FC = () => {
           </IonRow>
         </IonGrid>
       </IonContent>
+
+      <FichaModal 
+        isOpen={!!selectedFicha} 
+        onClose={() => setSelectedFicha(null)} 
+        ficha={selectedFicha} 
+      />
     </IonPage>
   );
 };

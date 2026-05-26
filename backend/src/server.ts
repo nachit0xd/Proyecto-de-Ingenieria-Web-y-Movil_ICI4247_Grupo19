@@ -10,6 +10,7 @@ import comunidadRoutes from './routes/comunidad';
 import eventosRoutes from './routes/eventos';
 import fondosRoutes from './routes/fondos';
 import transparenciaRoutes from './routes/transparencia';
+import fichasRoutes from './routes/fichas';
 
 // Crear la aplicación Express
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api/comunidad', comunidadRoutes);
 app.use('/api/eventos', eventosRoutes);
 app.use('/api/fondos', fondosRoutes);
 app.use('/api/transparencia', transparenciaRoutes);
+app.use('/api/fichas', fichasRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {

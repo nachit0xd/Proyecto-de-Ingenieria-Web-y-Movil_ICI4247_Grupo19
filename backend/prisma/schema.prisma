@@ -21,13 +21,26 @@ model Usuario {
 }
 
 model Propuesta {
-  id             String   @id @default(uuid())
+  id             String          @id @default(uuid())
   titulo         String
   descripcion    String
-  estado         String   // "revision" | "aprobado" | "rechazado"
-  votosTotales   Int      @default(0)
+  estado         String          // "revision" | "aprobado" | "rechazado"
+  votosTotales   Int             @default(0)
   idUsuario      String
-  fechaCreacion  DateTime @default(now())
+  fechaCreacion  DateTime        @default(now())
+  
+  votos          VotoPropuesta[]
+}
+
+model VotoPropuesta {
+  id           String    @id @default(uuid())
+  idUsuario    String
+  idPropuesta  String
+  fechaVoto    DateTime  @default(now())
+
+  propuesta    Propuesta @relation(fields: [idPropuesta], references: [id], onDelete: Cascade)
+  
+  @@unique([idUsuario, idPropuesta])
 }
 
 model Evento {
@@ -64,4 +77,32 @@ model Postulacion {
   presupuestoEstimado  Int
   estado               String   // "pendiente" | "aprobado" | "rechazado"
   fechaPostulacion     DateTime @default(now())
+}
+
+model Ficha {
+  id                 String   @id @default(uuid())
+  nombre             String
+  descripcion        String
+  categoria          String   // "oficio" | "lugar" | "cultor" | "expresion"
+  ubicacion          String?  // JSON stringificado o string simple para lat/lng si se desea a futuro
+  multimediaUrl      String?  // JSON stringificado de array de URLs
+  estado             String   // "borrador" | "publicado" | "inactivo"
+  valoracionPromedio Float    @default(0)
+  totalValoraciones  Int      @default(0)
+  fechaCreacion      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+  
+  valoraciones       ValoracionFicha[]
+}
+
+model ValoracionFicha {
+  id           String   @id @default(uuid())
+  valoracion   Int      // 1 a 5
+  usuarioId    String
+  fichaId      String
+  fechaCreacion DateTime @default(now())
+
+  ficha        Ficha    @relation(fields: [fichaId], references: [id], onDelete: Cascade)
+  
+  @@unique([usuarioId, fichaId])
 }

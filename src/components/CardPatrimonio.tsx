@@ -12,6 +12,7 @@ interface CardPatrimonioProps {
   descripcion: string;
   valoracion: number; // Un número del 0 al 5
   imagenUrl?: string; // Opcional, si no se pasa, se muestra un recuadro blanco en su lugar
+  onClick?: () => void;
 }
 
 const CardPatrimonio: React.FC<CardPatrimonioProps> = ({
@@ -19,7 +20,8 @@ const CardPatrimonio: React.FC<CardPatrimonioProps> = ({
   titulo,
   descripcion,
   valoracion,
-  imagenUrl
+  imagenUrl,
+  onClick
 }) => {
   
   // Pequeña función para dibujar las 5 estrellas, dependiendo de la valoración
@@ -38,7 +40,7 @@ const CardPatrimonio: React.FC<CardPatrimonioProps> = ({
   };
 
   return (
-    <div className="card-patrimonio">
+    <div className="card-patrimonio" onClick={onClick} style={{ cursor: onClick ? 'pointer' : 'default' }}>
       
       {/* Mitad Superior: Contenedor de la Imagen */}
       <div 

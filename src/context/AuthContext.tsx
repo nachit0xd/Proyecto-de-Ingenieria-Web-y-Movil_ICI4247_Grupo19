@@ -6,7 +6,7 @@ import { getUserRole, isAuthenticated, login as loginService, logout as logoutSe
 interface AuthContextValue {
   isAuthenticated: boolean;
   role: UserRole | null;
-  login: (email: string, password: string, requestedRole: UserRole) => Promise<void>;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [role, setRole] = useState<UserRole | null>(getUserRole());
 
 // Función de login que llama al backend para validar las credenciales y obtener el rol real del usuario
-  const login = async (email: string, password: string, requestedRole: UserRole) => {
+  const login = async (email: string, password: string) => {
     // LLamamos al backend
     const success = await loginService(email, password);
     if (!success) {

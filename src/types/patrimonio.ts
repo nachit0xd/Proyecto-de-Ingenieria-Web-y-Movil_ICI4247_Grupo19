@@ -18,6 +18,8 @@ export interface FichaPatrimonio {
   ubicacion?: UbicacionGeografica;
   multimediaUrl?: string[]; // URLs a imágenes, audios o videos
   estado: EstadoPublicacion;
+  valoracionPromedio?: number;
+  totalValoraciones?: number;
   fechaCreacion: Date;
   fechaActualizacion: Date;
 }

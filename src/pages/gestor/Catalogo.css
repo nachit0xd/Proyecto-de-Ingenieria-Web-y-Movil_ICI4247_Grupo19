@@ -50,6 +50,16 @@
 .search-box-container {
   position: relative;
   flex: 1;
+  background-color: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box-container:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
 }
 
 .search-icon-inside {
@@ -64,16 +74,11 @@
 .toolbar-search-input {
   width: 100%;
   padding: 12px 15px 12px 45px;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  font-size: 0.95rem;
-  background-color: #ffffff;
+  border: none;
+  background-color: transparent;
   color: #111827;
+  font-size: 0.95rem;
   outline: none;
-}
-
-.toolbar-search-input:focus, .toolbar-select:focus {
-  border-color: #f97316;
 }
 
 .toolbar-select {
@@ -228,4 +233,100 @@
 
 .action-icon-btn.delete-btn:hover {
   color: #ef4444; /* Rojo para el botón eliminar */
+}
+
+/* ESTILOS DE LOS MODALES */
+.wizard-modal {
+  --width: 500px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 12px;
+}
+
+.modal-content-wrapper {
+  background: white;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: #1f2937;
+  margin: 0;
+}
+
+.modal-body {
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.custom-modal-input,
+.custom-modal-select {
+  --background: #f9fafb;
+  --padding-start: 15px;
+  --padding-end: 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.custom-modal-select {
+  width: 100%;
+  padding: 14px 15px;
+  background-color: #f9fafb;
+  color: #111827;
+}
+
+.btn-modal {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+.btn-modal.btn-secondary {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+.btn-modal.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.btn-modal.btn-primary {
+  background-color: #f97316;
+  color: white;
+}
+
+.btn-modal.btn-primary:hover {
+  background-color: #ea580c;
+}
+.btn-modal.btn-primary:disabled {
+  background-color: #fdba74;
+  cursor: not-allowed;
 }

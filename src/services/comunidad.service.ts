@@ -33,5 +33,20 @@ export const comunidadService = {
   votarPropuesta: async (idPropuesta: string): Promise<boolean> => {
     await api.post(`/comunidad/votar/${idPropuesta}`);
     return true;
+  },
+
+  anularVoto: async (idPropuesta: string): Promise<boolean> => {
+    await api.post(`/comunidad/anular-voto/${idPropuesta}`);
+    return true;
+  },
+
+  obtenerMisVotos: async (): Promise<string[]> => {
+    const response = await api.get('/comunidad/mis-votos');
+    return response.data;
+  },
+
+  crearPropuesta: async (datos: { titulo: string, descripcion: string }): Promise<any> => {
+    const response = await api.post('/comunidad/propuesta', datos);
+    return response.data;
   }
 };

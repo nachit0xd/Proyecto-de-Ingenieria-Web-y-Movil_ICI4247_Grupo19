@@ -36,8 +36,8 @@ const AgendaMapaGestor: React.FC = () => {
     return positions[index % positions.length];
   };
 
-  const formatTime = (date: Date) => date.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
-  const formatDayName = (date: Date) => date.toLocaleDateString('es-ES', { weekday: 'long' });
+  const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatDayName = (date: any) => new Date(date).toLocaleDateString('es-ES', { weekday: 'long' });
 
   const RenderMap = ({ enfocado }: { enfocado: boolean }) => (
     <div className={`gestor-mapa-canvas ${enfocado ? 'mapa-enfocado' : ''}`}>

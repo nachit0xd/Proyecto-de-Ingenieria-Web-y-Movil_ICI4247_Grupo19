@@ -36,8 +36,8 @@ const FondosGestor: React.FC = () => {
   const [accionPendiente, setAccionPendiente] = useState<string>('');
   const [errorValidacion, setErrorValidacion] = useState('');
 
-  const formatDateAbsolute = (date: Date) => {
-    return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '/');
+  const formatDateAbsolute = (date: any) => {
+    return new Date(date).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '/');
   };
 
   const getStatusLabel = (estado: string) => {
@@ -149,7 +149,7 @@ const FondosGestor: React.FC = () => {
                               <strong>{formatCurrency(post.presupuestoEstimado)}</strong> • Por: {post.nombreRepresentante}
                             </div>
                             <div className="prop-card-footer">
-                              <p>Publicado hace {Math.floor((Date.now() - post.fechaPostulacion.getTime()) / (1000 * 3600 * 24))} días</p>
+                              <p>Publicado hace {Math.floor((Date.now() - new Date(post.fechaPostulacion).getTime()) / (1000 * 3600 * 24))} días</p>
                             </div>
                           </div>
                         ))}

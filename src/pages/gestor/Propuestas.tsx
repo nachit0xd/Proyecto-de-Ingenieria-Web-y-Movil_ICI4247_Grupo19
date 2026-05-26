@@ -28,14 +28,14 @@ const PropuestasGestor: React.FC = () => {
   const [mostrarModal, setMostrarModal] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState<string>('');
 
-  const formatDate = (date: Date) => {
-    const diffTime = Math.abs(Date.now() - date.getTime());
+  const formatDate = (date: any) => {
+    const diffTime = Math.abs(Date.now() - new Date(date).getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return `hace ${diffDays} días`;
   };
   
-  const formatDateAbsolute = (date: Date) => {
-    return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '/');
+  const formatDateAbsolute = (date: any) => {
+    return new Date(date).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '/');
   };
 
   const getStatusLabel = (estado: string) => {

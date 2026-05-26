@@ -79,8 +79,8 @@ const Fondos: React.FC = () => {
     return '$' + val.toLocaleString('es-CL');
   };
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' });
+  const formatDate = (date: any) => {
+    return new Date(date).toLocaleDateString('es-CL', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const getStatusIcon = (estado: string) => {

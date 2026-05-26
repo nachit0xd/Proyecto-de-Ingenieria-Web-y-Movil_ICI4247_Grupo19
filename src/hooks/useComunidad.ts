@@ -28,7 +28,35 @@ export const useVotarPropuesta = () => {
   return useMutation({
     mutationFn: comunidadService.votarPropuesta,
     onSuccess: () => {
-      // Invalidate queries so they refetch the updated vote counts
+      queryClient.invalidateQueries({ queryKey: ['propuestas'] });
+      queryClient.invalidateQueries({ queryKey: ['mis-votos'] });
+    },
+  });
+};
+
+export const useAnularVoto = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: comunidadService.anularVoto,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['propuestas'] });
+      queryClient.invalidateQueries({ queryKey: ['mis-votos'] });
+    },
+  });
+};
+
+export const useMisVotos = () => {
+  return useQuery({
+    queryKey: ['mis-votos'],
+    queryFn: comunidadService.obtenerMisVotos,
+  });
+};
+
+export const useCrearPropuesta = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: comunidadService.crearPropuesta,
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['propuestas'] });
     },
   });

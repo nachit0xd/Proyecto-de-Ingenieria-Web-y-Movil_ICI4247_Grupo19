@@ -10,7 +10,74 @@ import './Auth.css'; // El CSS de esta página se encuentra en el mismo archivo 
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const rutRegex = /^\d{1,2}\.\d{3}\.\d{3}-[\dkK]$/;
-const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Datos de regiones y comunas para el formulario de registro, permitiendo una selección dinámica basada en la región elegida por el usuario
+const REGIONES_DATA: Record<string, { nombre: string; comunas: string[] }> = {
+  arica: {
+    nombre: 'Región de Arica y Parinacota',
+    comunas: ["Arica", "Camarones", "Putre", "General Lagos"]
+  },
+  tarapaca: {
+    nombre: 'Región de Tarapacá',
+    comunas: ["Iquique", "Alto Hospicio", "Pozo Almonte", "Camiña", "Colchane", "Huara", "Pica"]
+  },
+  antofagasta: {
+    nombre: 'Región de Antofagasta',
+    comunas: ["Antofagasta", "Mejillones", "Sierra Gorda", "Taltal", "Calama", "Ollagüe", "San Pedro de Atacama", "Tocopilla", "María Elena"]
+  },
+  atacama: {
+    nombre: 'Región de Atacama',
+    comunas: ["Copiapó", "Caldera", "Tierra Amarilla", "Chañaral", "Diego de Almagro", "Vallenar", "Alto del Carmen", "Freirina", "Huasco"]
+  },
+  coquimbo: {
+    nombre: 'Región de Coquimbo',
+    comunas: ["La Serena", "Coquimbo", "Andacollo", "La Higuera", "Paiguano", "Vicuña", "Illapel", "Canela", "Los Vilos", "Salamanca", "Ovalle", "Combarbalá", "Monte Patria", "Punitaqui", "Río Hurtado"]
+  },
+  valparaiso: {
+    nombre: 'Región de Valparaíso',
+    comunas: ["Valparaíso", "Casablanca", "Concón", "Juan Fernández", "Puchuncaví", "Quintero", "Viña del Mar", "Isla de Pascua", "Los Andes", "Calle Larga", "Rinconada", "San Esteban", "La Ligua", "Cabildo", "Papudo", "Petorca", "Zapallar", "Quillota", "Calera", "Hijuelas", "La Cruz", "Nogales", "San Antonio", "Algarrobo", "Cartagena", "El Quisco", "El Tabo", "Santo Domingo", "San Felipe", "Catemu", "Llaillay", "Panquehue", "Putaendo", "Santa María", "Quilpué", "Limache", "Olmué", "Villa Alemana"]
+  },
+  ohiggins: {
+    nombre: 'Región de O’Higgins',
+    comunas: ["Rancagua", "Codegua", "Coinco", "Coltauco", "Doñihue", "Graneros", "Las Cabras", "Machalí", "Malloa", "Mostazal", "Olivar", "Peumo", "Pichidegua", "Quinta de Tilcoco", "Rengo", "Requínoa", "San Vicente", "Pichilemu", "La Estrella", "Litueche", "Marchihue", "Navidad", "Paredones", "San Fernando", "Chépica", "Chimbarongo", "Lolol", "Nancagua", "Palmilla", "Peralillo", "Placilla", "Pumanque", "Santa Cruz"]
+  },
+  maule: {
+    nombre: 'Región del Maule',
+    comunas: ["Talca", "Constitución", "Curepto", "Empedrado", "Maule", "Pelarco", "Pencahue", "Río Claro", "San Clemente", "San Rafael", "Cauquenes", "Chanco", "Pelluhue", "Curicó", "Hualañé", "Licantén", "Molina", "Rauco", "Romeral", "Sagrada Familia", "Teno", "Vichuquén", "Linares", "Colbún", "Longaví", "Parral", "Retiro", "San Javier", "Villa Alegre", "Yerbas Buenas"]
+  },
+  ñuble: {
+    nombre: 'Región de Ñuble',
+    comunas: ["Cobquecura", "Coelemu", "Ninhue", "Portezuelo", "Quirihue", "Ránquil", "Treguaco", "Bulnes", "Chillán Viejo", "Chillán", "El Carmen", "Pemuco", "Pinto", "Quillón", "San Ignacio", "Yungay", "Coihueco", "Ñiquén", "San Carlos", "San Fabián", "San Nicolás"]
+  },
+  biobio: {
+    nombre: 'Región del Biobío',
+    comunas: ["Concepción", "Coronel", "Chiguayante", "Florida", "Hualqui", "Lota", "Penco", "San Pedro de la Paz", "Santa Juana", "Talcahuano", "Tomé", "Hualpén", "Lebu", "Arauco", "Cañete", "Contulmo", "Curanilahue", "Los Álamos", "Tirúa", "Los Ángeles", "Antuco", "Cabrero", "Laja", "Mulchén", "Nacimiento", "Negrete", "Quilaco", "Quilleco", "San Rosendo", "Santa Bárbara", "Tucapel", "Yumbel", "Alto Biobío"]
+  },
+  araucania: {
+    nombre: 'Región de La Araucanía',
+    comunas: ["Temuco", "Carahue", "Cunco", "Curarrehue", "Freire", "Galvarino", "Gorbea", "Lautaro", "Loncoche", "Melipeuco", "Nueva Imperial", "Padre las Casas", "Perquenco", "Pitrufquén", "Pucón", "Saavedra", "Teodoro Schmidt", "Toltén", "Vilcún", "Villarrica", "Cholchol", "Angol", "Collipulli", "Curacautín", "Ercilla", "Lonquimay", "Los Sauces", "Lumaco", "Purén", "Renaico", "Traiguén", "Victoria"]
+  },
+  losRios: {
+    nombre: 'Región de Los Ríos',
+    comunas: ["Valdivia", "Corral", "Lanco", "Los Lagos", "Máfil", "Mariquina", "Paillaco", "Panguipulli", "La Unión", "Futrono", "Lago Ranco", "Río Bueno"]
+  },
+  losLagos: {
+    nombre: 'Región de Los Lagos',
+    comunas: ["Puerto Montt", "Calbuco", "Cochamó", "Fresia", "Frutillar", "Los Muermos", "Llanquihue", "Maullín", "Puerto Varas", "Castro", "Ancud", "Chonchi", "Curaco de Vélez", "Dalcahue", "Puqueldón", "Queilén", "Quellón", "Quemchi", "Quinchao", "Osorno", "Puerto Octay", "Purranque", "Puyehue", "Río Negro", "San Juan de la Costa", "San Pablo", "Chaitén", "Futaleufú", "Hualaihué", "Palena"]
+  },
+  aysen: {
+    nombre: 'Región de Aysén',
+    comunas: ["Coyhaique", "Lago Verde", "Aisén", "Cisnes", "Guaitecas", "Cochrane", "O’Higgins", "Tortel", "Chile Chico", "Río Ibáñez"]
+  },
+  magallanes: {
+    nombre: 'Región de Magallanes y la Antártica Chilena',
+    comunas: ["Punta Arenas", "Laguna Blanca", "Río Verde", "San Gregorio", "Cabo de Hornos (Ex Navarino)", "Antártica", "Porvenir", "Primavera", "Timaukel", "Natales", "Torres del Paine"]
+  },
+  metropolitana: {
+    nombre: 'Región Metropolitana de Santiago',
+    comunas: ["Cerrillos", "Cerro Navia", "Conchalí", "El Bosque", "Estación Central", "Huechuraba", "Independencia", "La Cisterna", "La Florida", "La Granja", "La Pintana", "La Reina", "Las Condes", "Lo Barnechea", "Lo Espejo", "Lo Prado", "Macul", "Maipú", "Ñuñoa", "Pedro Aguirre Cerda", "Peñalolén", "Providencia", "Pudahuel", "Quilicura", "Quinta Normal", "Recoleta", "Renca", "Santiago", "San Joaquín", "San Miguel", "San Ramón", "Vitacura", "Puente Alto", "Pirque", "San José de Maipo", "Colina", "Lampa", "Tiltil", "San Bernardo", "Buin", "Calera de Tango", "Paine", "Melipilla", "Alhué", "Curacaví", "María Pinto", "San Pedro", "Talagante", "El Monte", "Isla de Maipo", "Padre Hurtado", "Peñaflor"]
+  }
+};
 
 const Register: React.FC = () => {
   const history = useHistory();
@@ -27,6 +94,16 @@ const Register: React.FC = () => {
 
   const [errors, setErrors] = useState<any>({});
   const [submitting, setSubmitting] = useState(false);
+
+  // Función para formatear el RUT a medida que el usuario lo va ingresando, asegurando un formato consistente y fácil de leer
+  const formatRut = (value: string) => {
+    let clean = value.replace(/[^0-9kK]/gi, '');
+    if (clean.length === 0) return '';
+    const dv = clean.slice(-1);
+    const body = clean.slice(0, -1);
+    const formattedBody = body.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return body.length > 0 ? `${formattedBody}-${dv}` : dv;
+  };
 
   // Validación del formulario de registro, con mensajes de error específicos para cada campo
   const validate = () => {
@@ -109,7 +186,7 @@ const Register: React.FC = () => {
 
                   <IonItem lines="none" className="custom-input">
                     <IonLabel position="stacked">RUT</IonLabel>
-                    <IonInput value={form.rut} onIonInput={(e) => setForm((p) => ({ ...p, rut: e.detail.value ?? '' }))} placeholder="Ej. 12.345.678-9" />
+                    <IonInput value={form.rut} onIonInput={(e) => setForm((p) => ({ ...p, rut: formatRut(e.detail.value ?? '') }))} placeholder="Ej. 12.345.678-9" />
                   </IonItem>
                   {errors.rut && <IonText color="danger"><p>{errors.rut}</p></IonText>}
 
@@ -121,23 +198,20 @@ const Register: React.FC = () => {
 
                   <IonItem lines="none" className="custom-input">
                     <IonLabel position="stacked">Región</IonLabel>
-                    <IonSelect value={form.region} onIonChange={(e) => setForm((p) => ({ ...p, region: e.detail.value as string }))} placeholder="Seleccionar región" interface="popover">
-                      <IonSelectOption value="valparaiso">Región de Valparaíso</IonSelectOption>
-                      <IonSelectOption value="metropolitana">Región Metropolitana</IonSelectOption>
-                      <IonSelectOption value="coquimbo">Región de Coquimbo</IonSelectOption>
-                      <IonSelectOption value="biobio">Región del Biobío</IonSelectOption>
+                    <IonSelect value={form.region} onIonChange={(e) => setForm((p) => ({ ...p, region: e.detail.value as string, comuna: '' }))} placeholder="Seleccionar región" interface="popover">
+                      {Object.entries(REGIONES_DATA).map(([key, data]) => (
+                        <IonSelectOption key={key} value={key}>{data.nombre}</IonSelectOption>
+                      ))}
                     </IonSelect>
                   </IonItem>
                   {errors.region && <IonText color="danger"><p>{errors.region}</p></IonText>}
 
                   <IonItem lines="none" className="custom-input">
                     <IonLabel position="stacked">Comuna</IonLabel>
-                    <IonSelect value={form.comuna} onIonChange={(e) => setForm((p) => ({ ...p, comuna: e.detail.value as string }))} placeholder="Seleccionar comuna" interface="popover">
-                      <IonSelectOption value="vinadelmar">Viña del Mar</IonSelectOption>
-                      <IonSelectOption value="valparaiso_comuna">Valparaíso</IonSelectOption>
-                      <IonSelectOption value="quilpue">Quilpué</IonSelectOption>
-                      <IonSelectOption value="villaalemana">Villa Alemana</IonSelectOption>
-                      <IonSelectOption value="santiago">Santiago</IonSelectOption>
+                    <IonSelect disabled={!form.region} value={form.comuna} onIonChange={(e) => setForm((p) => ({ ...p, comuna: e.detail.value as string }))} placeholder="Seleccionar comuna" interface="popover">
+                      {form.region && REGIONES_DATA[form.region]?.comunas.map((comuna) => (
+                        <IonSelectOption key={comuna} value={comuna}>{comuna}</IonSelectOption>
+                      ))}
                     </IonSelect>
                   </IonItem>
                   {errors.comuna && <IonText color="danger"><p>{errors.comuna}</p></IonText>}

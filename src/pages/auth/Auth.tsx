@@ -14,7 +14,6 @@ import './Auth.css';
 interface LoginFormState {
   email: string;
   password: string;
-  role: UserRole;
 }
 
 interface RegisterFormState {
@@ -110,8 +109,7 @@ const Auth: React.FC = () => {
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [loginForm, setLoginForm] = useState<LoginFormState>({
     email: '',
-    password: '',
-    role: 'ciudadano'
+    password: ''
   });
   const [registerForm, setRegisterForm] = useState<RegisterFormState>({
     username: '',
@@ -170,7 +168,7 @@ const Auth: React.FC = () => {
     setIsSubmittingLogin(true);
 
     try {
-      await login(loginForm.email.trim(), loginForm.password.trim(), loginForm.role);
+      await login(loginForm.email.trim(), loginForm.password.trim());
     } catch (error) {
       setAuthError('No fue posible iniciar sesión. Intenta nuevamente.');
     } finally {
@@ -320,17 +318,7 @@ const Auth: React.FC = () => {
                       </IonText>
                     )}
 
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Ingresar como</IonLabel>
-                      <IonSelect
-                        value={loginForm.role}
-                        onIonChange={(e) => setLoginForm((prev) => ({ ...prev, role: e.detail.value as UserRole }))}
-                        interface="popover"
-                      >
-                        <IonSelectOption value="ciudadano">Ciudadano</IonSelectOption>
-                        <IonSelectOption value="gestor">Gestor Municipal</IonSelectOption>
-                      </IonSelect>
-                    </IonItem>
+
 
                     <div className="auth-options">
                       <IonItem lines="none" className="checkbox-item">

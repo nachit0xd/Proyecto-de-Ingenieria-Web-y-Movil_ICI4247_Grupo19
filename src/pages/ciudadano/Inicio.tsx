@@ -3,6 +3,8 @@ import {
   IonContent, IonPage, IonGrid, IonRow, IonCol, IonButton, IonSpinner
 } from '@ionic/react';
 import CardPatrimonio from '../../components/CardPatrimonio'; 
+import FichaModal from '../../components/FichaModal';
+import { FichaPatrimonio } from '../../types/patrimonio';
 import './Inicio.css';
 
 import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
@@ -12,6 +14,7 @@ import { useResumenGestion } from '../../hooks/useDashboard';
 
 // Página de inicio para ciudadanos, mostrando un resumen del patrimonio local, próximos eventos, propuestas populares y estadísticas de gestión cultural
 const Inicio: React.FC = () => {
+  const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
   const { data: fichas = [], isLoading: loadingFichas } = useFichasPatrimonio();
   const { data: eventos = [], isLoading: loadingEventos } = useProximosEventos();
   const { data: propuestas = [], isLoading: loadingPropuestas } = usePropuestasPopulares();
@@ -19,9 +22,9 @@ const Inicio: React.FC = () => {
 
   const loading = loadingFichas || loadingEventos || loadingPropuestas || loadingResumen;
 
-  const formatDay = (date: Date) => date.getDate().toString().padStart(2, '0');
-  const formatMonth = (date: Date) => date.toLocaleString('es-ES', { month: 'short' }).toUpperCase();
-  const formatTime = (date: Date) => date.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatDay = (date: any) => new Date(date).getDate().toString().padStart(2, '0');
+  const formatMonth = (date: any) => new Date(date).toLocaleString('es-ES', { month: 'short' }).toUpperCase();
+  const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
   const getEventColor = (tipo: string) => {
     if (tipo === 'feria') return 'date-blue';
@@ -156,7 +159,8 @@ const Inicio: React.FC = () => {
                       categoria={ficha.categoria}
                       titulo={ficha.nombre}
                       descripcion={ficha.descripcion}
-                      valoracion={4} 
+                      valoracion={Math.round(ficha.valoracionPromedio || 0)} 
+                      onClick={() => setSelectedFicha(ficha as FichaPatrimonio)}
                     />
                   ))}
                 </div>
@@ -233,6 +237,12 @@ const Inicio: React.FC = () => {
 
         </IonGrid>
       </IonContent>
+
+      <FichaModal 
+        isOpen={!!selectedFicha} 
+        onClose={() => setSelectedFicha(null)} 
+        ficha={selectedFicha} 
+      />
     </IonPage>
   );
 };

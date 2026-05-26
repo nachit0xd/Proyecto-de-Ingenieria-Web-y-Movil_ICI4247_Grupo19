@@ -18,27 +18,27 @@ const Agenda: React.FC = () => {
   const [fechaActual] = useState(new Date('2024-06-13T12:00:00')); 
   const [diaSeleccionado, setDiaSeleccionado] = useState<number>(fechaActual.getDate());
 
-  const formatDay = (date: Date) => date.getDate();
-  const formatMonth = (date: Date) => date.toLocaleString('es-ES', { month: 'short' }).toUpperCase();
-  const formatTime = (date: Date) => date.toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatDay = (date: any) => new Date(date).getDate();
+  const formatMonth = (date: any) => new Date(date).toLocaleString('es-ES', { month: 'short' }).toUpperCase();
+  const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
   // Filtra si hay eventos para el día seleccionado (asumiendo que estamos en el mismo mes/año)
-  const eventosOrdenados = [...eventos].sort((a, b) => a.fechaInicio.getTime() - b.fechaInicio.getTime());
+  const eventosOrdenados = [...eventos].sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime());
   const eventosFiltrados = eventosOrdenados.filter(evento => {
-    const date = evento.fechaInicio;
+    const date = new Date(evento.fechaInicio);
     if (filtroDia && date.getDate() !== filtroDia) return false;
     if (filtroMes && date.getMonth() !== filtroMes) return false;
     return true;
   });
 
-  const eventosDelDia = eventos.filter(evento => evento.fechaInicio.getDate() === diaSeleccionado);
+  const eventosDelDia = eventos.filter(evento => new Date(evento.fechaInicio).getDate() === diaSeleccionado);
   
   // Filtra eventos futuros a partir del día seleccionado
-  const proximosEventos = eventos.filter(evento => evento.fechaInicio.getDate() >= diaSeleccionado);
+  const proximosEventos = eventos.filter(evento => new Date(evento.fechaInicio).getDate() >= diaSeleccionado);
 
   const diasDelMes = Array.from({ length: 30 }, (_, i) => i + 1);
 
-  const tieneEvento = (dia: number) => eventos.some(e => e.fechaInicio.getDate() === dia);
+  const tieneEvento = (dia: number) => eventos.some(e => new Date(e.fechaInicio).getDate() === dia);
 
   return (
     <IonPage>

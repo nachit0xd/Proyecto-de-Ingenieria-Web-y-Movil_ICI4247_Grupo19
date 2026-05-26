@@ -18,8 +18,8 @@ const DashboardGestor: React.FC = () => {
 
   const loading = loadKpis || loadActividades;
 
-  const formatDate = (date: Date) => {
-    return date.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '-');
+  const formatDate = (date: any) => {
+    return new Date(date).toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: '2-digit' }).replace(/\//g, '-');
   };
 
   const getBadgeClass = (estado: string) => {
