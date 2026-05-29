@@ -65,11 +65,22 @@ const AppRouter: React.FC = () => {
   const location = useLocation();
   const showHeader = location.pathname.startsWith('/ciudadano');
 
+  // Detectar tema oscuro al cargar la aplicación
+  React.useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+      document.body.classList.add('dark-theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-theme', 'dark');
+    }
+  }, []);
+
   return (
     <>
       {showHeader && <Header />}
 
-      <IonRouterOutlet style={{ marginTop: showHeader ? '64px' : '0' }}>
+      <IonRouterOutlet animated={false} style={{ marginTop: showHeader ? '64px' : '0' }}>
         {/* Rutas de Autenticación */}
         <Route exact path="/auth/login" component={Auth} />
         <Route exact path="/auth/register" component={Register} />

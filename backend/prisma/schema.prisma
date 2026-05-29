@@ -18,6 +18,8 @@ model Usuario {
   password  String
   rol       String   // "ciudadano" | "gestor"
   creadoEn  DateTime @default(now())
+  
+  propuestas Propuesta[]
 }
 
 model Propuesta {
@@ -28,7 +30,9 @@ model Propuesta {
   votosTotales   Int             @default(0)
   idUsuario      String
   fechaCreacion  DateTime        @default(now())
+  comentariosGestor String[]     @default([])
   
+  usuario        Usuario         @relation(fields: [idUsuario], references: [id])
   votos          VotoPropuesta[]
 }
 
@@ -65,6 +69,8 @@ model Fondo {
   cupos          Int
   estado         String   // "abierto" | "cerrado"
   creadoEn       DateTime @default(now())
+  
+  postulaciones  Postulacion[]
 }
 
 model Postulacion {
@@ -76,7 +82,12 @@ model Postulacion {
   descripcion          String
   presupuestoEstimado  Int
   estado               String   // "pendiente" | "aprobado" | "rechazado"
+  areaCultural         String?
+  desglose             String?
+  documentos           String?
   fechaPostulacion     DateTime @default(now())
+  
+  fondo                Fondo    @relation(fields: [fondoId], references: [id], onDelete: Cascade)
 }
 
 model Ficha {
@@ -105,4 +116,12 @@ model ValoracionFicha {
   ficha        Ficha    @relation(fields: [fichaId], references: [id], onDelete: Cascade)
   
   @@unique([usuarioId, fichaId])
+}
+
+model PublicacionTransparencia {
+  id           String   @id @default(uuid())
+  mensaje      String
+  tipo         String   @default("General")
+  visible      Boolean  @default(true)
+  fecha        DateTime @default(now())
 }

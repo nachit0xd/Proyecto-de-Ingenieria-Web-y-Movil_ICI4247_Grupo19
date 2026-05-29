@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonIcon, IonSpinner
 } from '@ionic/react';
@@ -7,38 +7,100 @@ import './Agenda.css';
 
 import { useEventos } from '../../hooks/useEventos';
 
-// Página de agenda cultural que muestra una lista de eventos ordenados cronológicamente
+const MESES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+];
+
 const Agenda: React.FC = () => {
   const { data: eventos = [], isLoading: loading } = useEventos();
 
-  const [filtroDia, setFiltroDia] = useState<number | null>(null);
-  const [filtroMes, setFiltroMes] = useState<number | null>(null);
+  // Fecha actual 
+  const hoy = new Date();
   
-  // Por simplicidad, forzamos junio para el demo
-  const [fechaActual] = useState(new Date('2024-06-13T12:00:00')); 
-  const [diaSeleccionado, setDiaSeleccionado] = useState<number>(fechaActual.getDate());
+  // Estado para el mes y año que estamos visualizando en el calendario
+  const [viewDate, setViewDate] = useState(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
+  
+  // Estado para el día seleccionado explícitamente por el usuario
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  const formatDay = (date: any) => new Date(date).getDate();
-  const formatMonth = (date: any) => new Date(date).toLocaleString('es-ES', { month: 'short' }).toUpperCase();
+  const viewYear = viewDate.getFullYear();
+  const viewMonth = viewDate.getMonth();
+
+  const handlePrevMonth = () => {
+    setViewDate(new Date(viewYear, viewMonth - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setViewDate(new Date(viewYear, viewMonth + 1, 1));
+  };
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setViewDate(new Date(viewYear, parseInt(e.target.value), 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setViewDate(new Date(parseInt(e.target.value), viewMonth, 1));
+  };
+
+  // Cálculos para dibujar el calendario
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay(); 
+
+  // Array para los "huecos" vacíos antes del primer día del mes
+  const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+  // Array de los días del mes actual
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  const isHoy = (dia: number) => {
+    return hoy.getDate() === dia && hoy.getMonth() === viewMonth && hoy.getFullYear() === viewYear;
+  };
+
+  const isSelected = (dia: number) => {
+    return selectedDate && selectedDate.getDate() === dia && selectedDate.getMonth() === viewMonth && selectedDate.getFullYear() === viewYear;
+  };
+
+  const tieneEvento = (dia: number) => {
+    return eventos.some(e => {
+      const eDate = new Date(e.fechaInicio);
+      return eDate.getDate() === dia && eDate.getMonth() === viewMonth && eDate.getFullYear() === viewYear;
+    });
+  };
+
+  const handleSelectDay = (dia: number) => {
+    // Si ya estaba seleccionado, lo deseleccionamos
+    if (isSelected(dia)) {
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(new Date(viewYear, viewMonth, dia));
+    }
+  };
+
   const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatDay = (date: any) => new Date(date).getDate();
+  const formatMonthShort = (date: any) => new Date(date).toLocaleString('es-ES', { month: 'short' }).toUpperCase();
 
-  // Filtra si hay eventos para el día seleccionado (asumiendo que estamos en el mismo mes/año)
-  const eventosOrdenados = [...eventos].sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime());
-  const eventosFiltrados = eventosOrdenados.filter(evento => {
-    const date = new Date(evento.fechaInicio);
-    if (filtroDia && date.getDate() !== filtroDia) return false;
-    if (filtroMes && date.getMonth() !== filtroMes) return false;
-    return true;
-  });
+  // Filtrado de la barra derecha
+  let eventosMostrados = [];
+  let sidebarTitle = '';
 
-  const eventosDelDia = eventos.filter(evento => new Date(evento.fechaInicio).getDate() === diaSeleccionado);
-  
-  // Filtra eventos futuros a partir del día seleccionado
-  const proximosEventos = eventos.filter(evento => new Date(evento.fechaInicio).getDate() >= diaSeleccionado);
-
-  const diasDelMes = Array.from({ length: 30 }, (_, i) => i + 1);
-
-  const tieneEvento = (dia: number) => eventos.some(e => new Date(e.fechaInicio).getDate() === dia);
+  if (selectedDate) {
+    // Si hay un día seleccionado, mostrar solo los de ese día
+    eventosMostrados = eventos.filter(e => {
+      const eDate = new Date(e.fechaInicio);
+      return eDate.getDate() === selectedDate.getDate() && 
+             eDate.getMonth() === selectedDate.getMonth() && 
+             eDate.getFullYear() === selectedDate.getFullYear();
+    });
+    sidebarTitle = `Eventos para el ${selectedDate.getDate()} de ${MESES[selectedDate.getMonth()]}`;
+  } else {
+    // Mostrar próximos eventos a partir de hoy, ordenados por fecha, limitando a 5
+    eventosMostrados = [...eventos]
+      .filter(e => new Date(e.fechaInicio).getTime() >= hoy.setHours(0,0,0,0))
+      .sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime())
+      .slice(0, 5);
+    sidebarTitle = 'Próximos eventos';
+  }
 
   return (
     <IonPage>
@@ -51,17 +113,24 @@ const Agenda: React.FC = () => {
             
             <div className="calendario-card outline-box">
               <div className="calendario-header">
-                <IonIcon icon={chevronBackOutline} className="nav-icon" />
+                <button className="nav-btn" onClick={handlePrevMonth}>
+                  <IonIcon icon={chevronBackOutline} />
+                </button>
                 <div className="selectores-fecha">
-                  <select className="fecha-select" defaultValue="junio">
-                    <option value="junio">Junio</option>
-                    <option value="julio">Julio</option>
+                  <select className="fecha-select" value={viewMonth} onChange={handleMonthChange}>
+                    {MESES.map((mes, index) => (
+                      <option key={index} value={index}>{mes}</option>
+                    ))}
                   </select>
-                  <select className="fecha-select" defaultValue="2024">
-                    <option value="2024">2024</option>
+                  <select className="fecha-select" value={viewYear} onChange={handleYearChange}>
+                    {[viewYear - 1, viewYear, viewYear + 1, viewYear + 2].map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
                   </select>
                 </div>
-                <IonIcon icon={chevronForwardOutline} className="nav-icon" />
+                <button className="nav-btn" onClick={handleNextMonth}>
+                  <IonIcon icon={chevronForwardOutline} />
+                </button>
               </div>
 
               <div className="dias-semana">
@@ -70,35 +139,32 @@ const Agenda: React.FC = () => {
               </div>
 
               {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
                   <IonSpinner name="crescent" />
                 </div>
               ) : (
                 <div className="dias-grilla">
-                  <span className="dia-vacio"></span>
+                  {emptyDays.map(empty => (
+                    <span key={`empty-${empty}`} className="dia-vacio"></span>
+                  ))}
 
-                  {diasDelMes.map(dia => {
+                  {daysArray.map(dia => {
                     let claseExtra = '';
-                    if (dia === fechaActual.getDate()) claseExtra = 'dia-hoy'; 
-                    else if (tieneEvento(dia)) claseExtra = 'dia-con-evento'; 
+                    if (isHoy(dia)) claseExtra += ' dia-hoy'; 
+                    else if (tieneEvento(dia)) claseExtra += ' dia-con-evento'; 
                     
-                    if (dia === diaSeleccionado) claseExtra += ' dia-seleccionado'; 
+                    if (isSelected(dia)) claseExtra += ' dia-seleccionado'; 
                     
                     return (
                       <button 
                         key={dia} 
                         className={`dia-btn ${claseExtra}`}
-                        onClick={() => setDiaSeleccionado(dia)}
+                        onClick={() => handleSelectDay(dia)}
                       >
                         {dia}
                       </button>
                     );
                   })}
-
-                  <span className="dia-vacio">1</span>
-                  <span className="dia-vacio">2</span>
-                  <span className="dia-vacio">3</span>
-                  <span className="dia-vacio">4</span>
                 </div>
               )}
             </div>
@@ -106,56 +172,35 @@ const Agenda: React.FC = () => {
 
           {/* ZONA DERECHA: BARRA LATERAL */}
           <div className="agenda-sidebar">
-            
-            <div className="eventos-dia-zona">
-              {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><IonSpinner name="crescent" /></div>
-              ) : eventosDelDia.length === 0 ? (
-                <div className="empty-state">
-                  <h3>No hay eventos agendados para este día</h3>
-                </div>
-              ) : (
-                <div className="lista-eventos-dia">
-                  <h3>Eventos para el día {diaSeleccionado}</h3>
-                  {eventosDelDia.map(evento => (
-                    <div className="evento-horizontal-card" key={evento.id}>
-                      <div className="evento-fecha-bloque">
-                        <span className="dia">{formatDay(evento.fechaInicio)}</span>
-                        <span className="mes">{formatMonth(evento.fechaInicio)}</span>
-                      </div>
-                      <div className="evento-info-bloque">
-                        <span className="categoria-texto color-orange">{evento.tipo}</span>
-                        <h4>{evento.titulo}</h4>
-                        <p>{formatTime(evento.fechaInicio)}-{formatTime(evento.fechaFin)} • {evento.ubicacion?.direccion || 'Sin ubicación'}</p>
-                      </div>
-                      <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
-                    </div>
-                  ))}
-                </div>
+            <div className="sidebar-header-info">
+              <h3 className="sidebar-subtitulo">{sidebarTitle}</h3>
+              {selectedDate && (
+                <button className="btn-clear-date" onClick={() => setSelectedDate(null)}>
+                  Ver próximos eventos
+                </button>
               )}
             </div>
 
-            <div className="divisor-sidebar"></div>
-
-            <div className="proximos-eventos-zona">
-              <h3 className="sidebar-subtitulo">Próximos eventos</h3>
+            <div className="lista-eventos-sidebar">
               {loading ? (
-                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}><IonSpinner name="crescent" /></div>
-              ) : proximosEventos.length === 0 ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                  <IonSpinner name="crescent" color="light" />
+                </div>
+              ) : eventosMostrados.length === 0 ? (
                 <div className="empty-state">
-                  <p>No hay eventos futuros próximos.</p>
+                  <p>No hay eventos agendados.</p>
                 </div>
               ) : (
-                proximosEventos.slice(0,3).map(evento => (
-                  <div className="evento-horizontal-card" key={`prox-${evento.id}`}>
+                eventosMostrados.map((evento, idx) => (
+                  <div className="evento-horizontal-card" key={evento.id || idx}>
                     <div className="evento-fecha-bloque bg-blue">
                       <span className="dia">{formatDay(evento.fechaInicio)}</span>
-                      <span className="mes">{formatMonth(evento.fechaInicio)}</span>
+                      <span className="mes">{formatMonthShort(evento.fechaInicio)}</span>
                     </div>
                     <div className="evento-info-bloque">
                       <span className="categoria-texto color-orange">{evento.tipo}</span>
                       <h4>{evento.titulo}</h4>
-                      <p>{formatTime(evento.fechaInicio)}-{formatTime(evento.fechaFin)} • {evento.ubicacion?.direccion}</p>
+                      <p>{formatTime(evento.fechaInicio)} - {formatTime(evento.fechaFin)} • {evento.direccion || 'Centro'}</p>
                     </div>
                     <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
                   </div>

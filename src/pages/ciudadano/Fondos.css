@@ -1,19 +1,19 @@
 /* Estilos para la página de fondos concursables, incluyendo el diseño de las tarjetas de convocatorias y postulaciones, así como los estados de trámites */
 .fondos-page {
-  --background: #ffffff;
+  --background: var(--app-bg);
 }
 
 .fondos-titulo {
   font-size: 2rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin-bottom: 25px;
 }
 
 /* NAVEGACIÓN DE TABS INTERNAS */
 .fondos-tabs {
   display: flex;
-  border-bottom: 2px solid #e5e7eb;
+  border-bottom: 2px solid var(--app-border-color);
   margin-bottom: 30px;
   gap: 10px;
 }
@@ -25,7 +25,7 @@
   padding: 12px 24px;
   font-size: 1rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--app-text-muted);
   cursor: pointer;
   transition: all 0.2s ease;
   margin-bottom: -2px;
@@ -38,11 +38,12 @@
 
 /* TARJETAS CONVOCATORIAS */
 .fondo-card, .postulacion-card {
-  background: #ffffff;
+  background: var(--app-card-bg);
   padding: 25px;
   margin-bottom: 20px;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--app-border-color);
+  box-shadow: var(--app-shadow);
   transition: all 0.2s ease-in-out;
 }
 
@@ -61,7 +62,7 @@
 .fondo-card-header h2, .postulacion-header h2 {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin: 0;
 }
 
@@ -77,7 +78,7 @@
 
 .fondo-card-meta {
   font-size: 0.95rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
   margin-bottom: 15px;
 }
 
@@ -87,7 +88,7 @@
 
 .fondo-descripcion {
   font-size: 0.95rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
   line-height: 1.6;
   margin-bottom: 25px;
 }
@@ -97,14 +98,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--app-border-color);
   padding-top: 18px;
 }
 
 .btn-descargar, .btn-comprobante {
-  background: #f3f4f6;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--app-border-color);
+  color: var(--app-text-color);
+  border: 1px solid var(--app-border-color);
   padding: 10px 18px;
   border-radius: 8px;
   font-weight: 600;
@@ -117,7 +118,7 @@
 }
 
 .btn-descargar:hover, .btn-comprobante:hover {
-  background: #e5e7eb;
+  background: var(--app-input-border);
   transform: translateY(-1px);
 }
 
@@ -146,13 +147,13 @@
 /* ELEMENTOS DE MIS POSTULACIONES Y RESULTADOS */
 .time-ago {
   font-size: 0.85rem;
-  color: #9ca3af;
+  color: var(--app-text-muted);
 }
 
 .subtext {
   margin: 5px 0 0 0;
   font-size: 0.9rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
 }
 
 .status-row {
@@ -175,9 +176,9 @@
 .text-red { background-color: #fef2f2; color: #991b1b; }
 
 .btn-editar-post, .btn-ver-resultados {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
+  border: 1px solid var(--app-border-color);
   padding: 10px 18px;
   border-radius: 8px;
   font-weight: 600;
@@ -187,23 +188,23 @@
 }
 
 .btn-editar-post:hover:not(:disabled), .btn-ver-resultados:hover {
-  background: #f9fafb;
+  background: var(--app-border-color);
   transform: translateY(-1px);
 }
 
 .btn-editar-post.active {
-  border-color: #1f2937;
-  background: #1f2937;
-  color: white;
+  border-color: var(--app-text-color);
+  background: var(--app-text-color);
+  color: var(--app-bg);
 }
 .btn-editar-post.active:hover {
-  background: #111827;
+  background: var(--app-text-muted);
 }
 
 .btn-editar-post:disabled {
-  color: #9ca3af;
-  background: #f9fafb;
-  border-color: #e5e7eb;
+  color: var(--app-text-muted);
+  background: var(--app-bg);
+  border-color: var(--app-border-color);
   cursor: not-allowed;
   transform: none;
 }

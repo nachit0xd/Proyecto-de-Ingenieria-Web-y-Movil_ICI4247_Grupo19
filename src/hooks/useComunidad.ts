@@ -61,3 +61,14 @@ export const useCrearPropuesta = () => {
     },
   });
 };
+
+export const useActualizarPropuestaGestor = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: string, data: { estado?: string, nuevoComentario?: string } }) => 
+      comunidadService.actualizarPropuestaGestor(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['propuestas'] });
+    },
+  });
+};

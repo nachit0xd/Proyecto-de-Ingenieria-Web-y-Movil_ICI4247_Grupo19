@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, 
   IonSearchbar, IonSelect, IonSelectOption, IonCheckbox, IonItem, IonLabel, IonButton, IonIcon, IonSpinner
@@ -15,8 +15,6 @@ import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
 const Catalogo: React.FC = () => {
   const { data: fichas = [], isLoading: loading } = useFichasPatrimonio();
   
-  const [categoria, setCategoria] = useState('Todas');
-  const [search, setSearch] = useState('');
   const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
 
   return (

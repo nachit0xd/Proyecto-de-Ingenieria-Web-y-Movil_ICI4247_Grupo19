@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 import { IonPage, IonContent, IonIcon, IonSpinner, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption, IonToast } from '@ionic/react';
-import { personCircleOutline, searchOutline, createOutline, eyeOutline, trashOutline, arrowUpOutline, closeOutline } from 'ionicons/icons';
+import { searchOutline, createOutline, eyeOutline, trashOutline, arrowUpOutline, closeOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import GestorHeader from '../../components/GestorHeader';
 import './Catalogo.css';
 
 import { useFichasPatrimonio, useCrearFicha, useEditarFicha, useCambiarEstadoFicha, useEliminarFicha } from '../../hooks/usePatrimonio';
@@ -113,16 +114,8 @@ const CatalogoGestor: React.FC = () => {
   };
 
   return (
-    <IonPage>
-      <header className="gestor-header">
-        <div className="gestor-brand">
-          <h1>Cultura Municipal</h1>
-          <span className="gestor-role-badge">Gestor Municipal</span>
-        </div>
-        <div className="gestor-user-menu">
-          <IonIcon icon={personCircleOutline} className="avatar-icon" />
-        </div>
-      </header>
+    <IonPage className="catalogo-gestor-page">
+      <GestorHeader />
 
       <IonContent fullscreen scrollY={false}>
         <div className="gestor-layout">

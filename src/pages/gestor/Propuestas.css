@@ -1,10 +1,10 @@
 /* ESTILOS PARA LA PÁGINA DE PROPUESTAS DEL GESTOR */
 .propuestas-gestor-page {
-  --page-bg: #f9fafb;
-  --card-bg: #ffffff;
-  --border-color: #e5e7eb;
-  --text-main: #111827;
-  --text-muted: #6b7280;
+  --page-bg: var(--app-bg);
+  --card-bg: var(--app-card-bg);
+  --border-color: var(--app-border-color);
+  --text-main: var(--app-text-color);
+  --text-muted: var(--app-text-muted);
   color: var(--text-main);
   background-color: var(--page-bg);
 }
@@ -56,8 +56,8 @@
 }
 
 .filter-btn {
-  background: white;
-  border: 1px solid var(--border-color);
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
   border-radius: 6px;
   padding: 6px 12px;
   font-size: 13px;
@@ -74,9 +74,9 @@
 
 .sort-select {
   padding: 6px 12px;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 6px;
-  background: white;
+  background: var(--app-card-bg);
   font-size: 13px;
   color: var(--text-main);
   outline: none;
@@ -92,8 +92,8 @@
 }
 
 .propuesta-card-mini {
-  background: white;
-  border: 1px solid var(--border-color);
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
   border-radius: 6px;
   padding: 16px;
   cursor: pointer;
@@ -257,7 +257,7 @@
 .btn-en-revision:hover { background: #d1d5db; }
 
 .btn-aprobar {
-  background: white;
+  background: var(--app-card-bg);
   border-color: #10b981;
   color: #10b981;
 }
@@ -321,9 +321,9 @@
 .btn-modal-cancel {
   padding: 10px 20px;
   border-radius: 6px;
-  border: 1px solid var(--border-color);
-  background: white;
-  color: var(--text-main);
+  border: 1px solid var(--app-border-color);
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
   font-weight: 500;
   cursor: pointer;
 }

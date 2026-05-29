@@ -13,13 +13,13 @@
 .section-title {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin: 0 0 5px 0;
 }
 
 .section-subtitle-count {
   font-size: 0.95rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
   margin: 0;
 }
 
@@ -50,8 +50,8 @@
 .search-box-container {
   position: relative;
   flex: 1;
-  background-color: white;
-  border: 1px solid #e2e8f0;
+  background-color: var(--app-input-bg);
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   transition: border-color 0.2s, box-shadow 0.2s;
@@ -76,17 +76,17 @@
   padding: 12px 15px 12px 45px;
   border: none;
   background-color: transparent;
-  color: #111827;
+  color: var(--app-text-color);
   font-size: 0.95rem;
   outline: none;
 }
 
 .toolbar-select {
   padding: 12px 20px;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--app-border-color);
   border-radius: 6px;
-  background-color: #ffffff;
-  color: #111827;
+  background-color: var(--app-input-bg);
+  color: var(--app-text-color);
   font-size: 0.95rem;
   outline: none;
   cursor: pointer;
@@ -95,11 +95,11 @@
 
 .btn-exportar-catalogo {
   background: transparent;
-  border: 1px solid #cbd5e1;
+  border: 1px solid var(--app-border-color);
   padding: 11px;
   border-radius: 6px;
   font-size: 1.2rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -112,7 +112,7 @@
 
 /* DISEÑO DE LA DATA TABLE */
 .table-scroll-container {
-  border: 1px solid #e2e8f0;
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -121,16 +121,16 @@
 .catalogo-table {
   width: 100%;
   border-collapse: collapse;
-  background: white;
+  background: var(--app-card-bg);
   text-align: left;
 }
 
 .catalogo-table th {
-  background-color: #ffffff;
-  color: #334155;
+  background-color: var(--app-bg);
+  color: var(--app-text-color);
   font-weight: 700;
   padding: 14px 20px;
-  border-bottom: 2px solid #edf2f7;
+  border-bottom: 1px solid var(--app-border-color);
   font-size: 0.9rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -138,14 +138,14 @@
 
 .catalogo-table td {
   padding: 12px 20px;
-  border-bottom: 1px solid #edf2f7;
-  color: #475569;
+  border-bottom: 1px solid var(--app-border-color);
+  color: var(--app-text-muted);
   font-size: 0.95rem;
   vertical-align: middle;
 }
 
 .catalogo-table tbody tr:hover td {
-  background-color: #f8fafc; /* Efecto Hover */
+  background-color: var(--app-bg);
 }
 
 /* CELDAS ESPECÍFICAS */
@@ -166,7 +166,7 @@
 }
 
 .cell-name {
-  color: #1e293b !important;
+  color: var(--app-text-color) !important;
 }
 
 .cell-date {
@@ -197,13 +197,13 @@
 }
 
 .btn-status-toggle.v-visible {
-  background-color: white;
-  color: #1e293b;
+  background-color: var(--app-card-bg);
+  color: var(--app-text-color);
 }
 
 .btn-status-toggle.v-oculto {
-  background-color: #e2e8f0;
-  color: #64748b;
+  background-color: var(--app-bg);
+  color: var(--app-text-muted);
 }
 
 /* BOTONES DE ACCIONES (ICONOS) */
@@ -244,7 +244,7 @@
 }
 
 .modal-content-wrapper {
-  background: white;
+  background: var(--app-card-bg);
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -261,7 +261,7 @@
 .modal-header h2 {
   font-size: 1.4rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin: 0;
 }
 
@@ -278,16 +278,16 @@
   display: block;
   font-size: 0.95rem;
   font-weight: 600;
-  color: #374151;
+  color: var(--app-text-color);
   margin-bottom: 8px;
 }
 
 .custom-modal-input,
 .custom-modal-select {
-  --background: #f9fafb;
+  --background: var(--app-input-bg);
   --padding-start: 15px;
   --padding-end: 15px;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   font-size: 1rem;
 }
@@ -295,8 +295,8 @@
 .custom-modal-select {
   width: 100%;
   padding: 14px 15px;
-  background-color: #f9fafb;
-  color: #111827;
+  background-color: var(--app-input-bg);
+  color: var(--app-text-color);
 }
 
 .btn-modal {

@@ -10,7 +10,7 @@
   min-height: 320px; /* Altura mínima para dar más espacio visual */
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   cursor: pointer;
-  background-color: #4b5563; /* Fondo gris oscuro */
+  background-color: var(--app-card-bg);
 }
 
 /* Efecto hover sutil al pasar el mouse */
@@ -53,7 +53,7 @@
 }
 
 .card-titulo {
-  color: #ffffff;
+  color: var(--app-text-color);
   font-size: 1.1rem;
   font-weight: bold;
   margin: 0 0 10px 0;
@@ -61,7 +61,7 @@
 }
 
 .card-descripcion {
-  color: #d1d5db; /* Gris claro */
+  color: var(--app-text-muted);
   font-size: 0.85rem;
   line-height: 1.5;
   margin: 0 0 16px 0;

@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { IonPage, IonContent, IonIcon, IonSpinner } from '@ionic/react';
-import { personCircleOutline, searchOutline, createOutline, trashOutline, chevronBackOutline } from 'ionicons/icons';
+import { searchOutline, createOutline, chevronBackOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import GestorHeader from '../../components/GestorHeader';
+import EventoModal from '../../components/EventoModal';
 import './AgendaMapa.css';
 
 import { useEventos } from '../../hooks/useEventos';
@@ -12,17 +14,25 @@ import { EventoCultural } from '../../types';
 const AgendaMapaGestor: React.FC = () => {
   const { data: eventos = [], isLoading: loading } = useEventos();
   const [eventoActivo, setEventoActivo] = useState<EventoCultural | null>(null);
+  
+  // Estados para controlar el modal de creación/edición de eventos
+  const [modalOpen, setModalOpen] = useState(false);
+  const [eventoParaEditar, setEventoParaEditar] = useState<EventoCultural | null>(null);
+
+  const handleNuevoEvento = () => {
+    setEventoParaEditar(null);
+    setModalOpen(true);
+  };
+
+  const handleEditarEvento = (evt: EventoCultural) => {
+    setEventoParaEditar(evt);
+    setModalOpen(true);
+  };
 
   const getEventColor = (tipo: string) => {
     if (tipo === 'patrimonio') return '#22c55e'; // Verde: patrimonio
     if (tipo === 'feria') return '#3b82f6'; // Azul: feria
     return '#f97316'; // Naranja: cultores y otros eventos
-  };
-
-  const getEventIcon = (tipo: string) => {
-    if (tipo === 'patrimonio') return '🎨';
-    if (tipo === 'feria') return '🎪';
-    return '✍️';
   };
 
   const getPosition = (index: number) => {
@@ -67,16 +77,8 @@ const AgendaMapaGestor: React.FC = () => {
   );
 
   return (
-    <IonPage>
-      <header className="gestor-header">
-        <div className="gestor-brand">
-          <h1>Cultura Municipal</h1>
-          <span className="gestor-role-badge">Gestor Municipal</span>
-        </div>
-        <div className="gestor-user-menu">
-          <IonIcon icon={personCircleOutline} className="avatar-icon" />
-        </div>
-      </header>
+    <IonPage className="agenda-mapa-gestor-page">
+      <GestorHeader />
 
       <IonContent fullscreen scrollY={false}>
         <div className="gestor-layout">
@@ -86,7 +88,7 @@ const AgendaMapaGestor: React.FC = () => {
           <main className="gestor-main-content">
             <div className="agenda-mapa-header">
               <h2>Gestión de Eventos y Territorio</h2>
-              <button className="btn-nuevo-evento">+ Nuevo evento</button>
+              <button className="btn-nuevo-evento" onClick={handleNuevoEvento}>+ Nuevo evento</button>
             </div>
 
             {loading ? (
@@ -116,7 +118,7 @@ const AgendaMapaGestor: React.FC = () => {
                           <div className="evento-card-top">
                             <div className="evento-card-info">
                               <h3>{evt.titulo}</h3>
-                              <p className="lugar">{evt.ubicacion?.direccion || 'Sin dirección'}</p>
+                              <p className="lugar">{evt.direccion || 'Sin dirección'}</p>
                               <p className="horario">{formatDayName(evt.fechaInicio)} • {formatTime(evt.fechaInicio)} - {formatTime(evt.fechaFin)}</p>
                             </div>
                             <span className={`badge-estado ${evt.estado === 'activo' ? 'badge-activo' : 'badge-finalizado'}`}>
@@ -124,8 +126,9 @@ const AgendaMapaGestor: React.FC = () => {
                             </span>
                           </div>
                           <div className="evento-card-actions">
-                            <button className="icon-btn-action" onClick={(e) => e.stopPropagation()}><IonIcon icon={createOutline} /></button>
-                            <button className="icon-btn-action" onClick={(e) => e.stopPropagation()}><IonIcon icon={trashOutline} /></button>
+                            <button className="icon-btn-action" onClick={(e) => { e.stopPropagation(); handleEditarEvento(evt); }}>
+                              <IonIcon icon={createOutline} />
+                            </button>
                           </div>
                           <div className="evento-card-border" style={{ backgroundColor: getEventColor(evt.tipo) }}></div>
                         </div>
@@ -149,7 +152,7 @@ const AgendaMapaGestor: React.FC = () => {
                       <div className="detalle-contenido">
                         <div className="detalle-info-principal">
                           <h2>{eventoActivo.titulo}</h2>
-                          <p className="lugar">{eventoActivo.ubicacion?.direccion}</p>
+                          <p className="lugar">{eventoActivo.direccion || 'Sin dirección'}</p>
                           <p className="horario">{formatDayName(eventoActivo.fechaInicio)} • {formatTime(eventoActivo.fechaInicio)} - {formatTime(eventoActivo.fechaFin)}</p>
                         </div>
                         
@@ -158,8 +161,9 @@ const AgendaMapaGestor: React.FC = () => {
                             {eventoActivo.estado}
                           </span>
                           <div className="evento-card-actions mt-auto">
-                            <button className="icon-btn-action"><IonIcon icon={createOutline} /></button>
-                            <button className="icon-btn-action"><IonIcon icon={trashOutline} /></button>
+                            <button className="icon-btn-action" onClick={() => handleEditarEvento(eventoActivo)}>
+                              <IonIcon icon={createOutline} />
+                            </button>
                           </div>
                         </div>
                       </div>
@@ -172,6 +176,12 @@ const AgendaMapaGestor: React.FC = () => {
           </main>
         </div>
       </IonContent>
+
+      <EventoModal 
+        isOpen={modalOpen} 
+        onClose={() => setModalOpen(false)} 
+        eventoAEditar={eventoParaEditar} 
+      />
     </IonPage>
   );
 };

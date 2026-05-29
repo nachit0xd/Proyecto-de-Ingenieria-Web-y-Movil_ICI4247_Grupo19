@@ -1,20 +1,20 @@
 /* Estilos para la página de transparencia del ciudadano. Incluye el diseño de KPI, gráficos y lista de actualizaciones */
 
 .transparencia-page {
-  --background: #ffffff;
+  --background: var(--app-bg);
 }
 
 /* ENCABEZADO */
 .page-title {
   font-size: 2.2rem;
   font-weight: bold;
-  color: #374151;
+  color: var(--app-text-color);
   margin: 0 0 5px 0;
 }
 
 .page-subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
   margin: 0;
 }
 
@@ -24,25 +24,29 @@
 
 /* TARJETAS KPI (Key Performance Indicators) */
 .kpi-card {
-  background-color: #4b5563; /* Gris oscuro */
-  color: white;
-  border-radius: 8px;
+  background-color: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  box-shadow: var(--app-shadow);
+  color: var(--app-text-color);
+  border-radius: 12px;
   padding: 20px;
   height: 100%;
   display: flex;
   flex-direction: column;
+  transition: all 0.3s ease;
 }
 
 .kpi-title {
   margin: 0 0 10px 0;
   font-size: 0.95rem;
-  color: #e5e7eb;
+  color: var(--app-text-muted);
 }
 
 .kpi-number {
   margin: 0 0 15px 0;
   font-size: 2.5rem;
   font-weight: bold;
+  color: #f97316; 
   flex-grow: 1;
 }
 
@@ -57,13 +61,17 @@
 .box-title {
   font-size: 1.1rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin-top: 0;
   margin-bottom: 20px;
 }
 
 .margin-top {
   margin-top: 20px;
+}
+
+.chart-box {
+  height: auto !important;
 }
 
 .h-100 {
@@ -77,7 +85,7 @@
   justify-content: space-around;
   height: 150px;
   padding-top: 20px;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--app-border-color);
 }
 
 .bar-item {
@@ -98,7 +106,7 @@
 .bar-item span {
   margin-top: 8px;
   font-size: 0.85rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
   font-weight: 500;
 }
 
@@ -120,7 +128,7 @@
 
 .legend-item {
   font-size: 0.9rem;
-  color: #4b5563;
+  color: var(--app-text-muted);
   display: flex;
   align-items: center;
 }
@@ -134,11 +142,11 @@
   flex-shrink: 0;
 }
 
-.dot-blue { background-color: #0000a0; }
-.dot-green { background-color: #4d8000; }
-.dot-orange { background-color: #e37e33; }
-.dot-yellow { background-color: #ffff99; }
-.dot-beige { background-color: #faebd7; }
+.dot-blue { background-color: #3b82f6; }
+.dot-green { background-color: #10b981; }
+.dot-orange { background-color: #f59e0b; }
+.dot-yellow { background-color: #ef4444; }
+.dot-beige { background-color: #8b5cf6; }
 
 /* Conic Gradient para armar el gráfico circular exacto */
 .pie-chart {
@@ -146,11 +154,11 @@
   height: 150px;
   border-radius: 50%;
   background: conic-gradient(
-    #0000a0 0% 25%,     /* Azul 25% */
-    #4d8000 25% 40%,    /* Verde 15% */
-    #e37e33 40% 75%,    /* Naranja 35% */
-    #ffff99 75% 92%,    /* Amarillo 17% */
-    #faebd7 92% 100%    /* Beige 8% */
+    #3b82f6 0% 25%,     
+    #10b981 25% 40%,    
+    #f59e0b 40% 75%,    
+    #ef4444 75% 92%,    
+    #8b5cf6 92% 100%    
   );
 }
 
@@ -164,7 +172,7 @@
   display: flex;
   align-items: flex-start;
   padding: 15px 0;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--app-border-color);
 }
 
 .update-item.border-none {
@@ -179,6 +187,6 @@
 .update-item p {
   margin: 0;
   font-size: 0.95rem;
-  color: #374151;
+  color: var(--app-text-color);
   line-height: 1.4;
 }

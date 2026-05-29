@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonCheckbox, IonItem, IonLabel, IonIcon
 } from '@ionic/react';
-import { bookmarkOutline, locationOutline } from 'ionicons/icons';
+import { bookmarkOutline } from 'ionicons/icons';
 import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
 import FichaModal from '../../components/FichaModal';
 import { FichaPatrimonio } from '../../types/patrimonio';
@@ -13,14 +13,14 @@ import './Mapa.css';
 // También incluye un panel flotante para controlar las capas del mapa (ferias, cultores, espacios patrimoniales) (PENDIENTE)
 
 const Mapa: React.FC = () => {
-  const { data: fichas = [], isLoading } = useFichasPatrimonio();
+  const { data: fichas = [] } = useFichasPatrimonio();
   
   // Mapeamos fichas reales a puntos de mapa (coordenadas ficticias por el momento) y asignamos colores e íconos según categoría
   const [puntos, setPuntos] = useState<any[]>([]);
 
   React.useEffect(() => {
     if (fichas.length > 0) {
-      const mapeados = fichas.map((ficha, index) => {
+      const mapeados = fichas.map((ficha) => {
         // Coordenadas ficticias 
         const randomTop = Math.floor(Math.random() * 60 + 20) + '%';
         const randomLeft = Math.floor(Math.random() * 60 + 20) + '%';

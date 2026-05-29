@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, IonButton, IonSpinner
 } from '@ionic/react';
@@ -11,9 +11,11 @@ import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
 import { useProximosEventos } from '../../hooks/useEventos';
 import { usePropuestasPopulares } from '../../hooks/useComunidad';
 import { useResumenGestion } from '../../hooks/useDashboard';
+import { useAuth } from '../../context/AuthContext';
 
 // Página de inicio para ciudadanos, mostrando un resumen del patrimonio local, próximos eventos, propuestas populares y estadísticas de gestión cultural
 const Inicio: React.FC = () => {
+  const { user } = useAuth();
   const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
   const { data: fichas = [], isLoading: loadingFichas } = useFichasPatrimonio();
   const { data: eventos = [], isLoading: loadingEventos } = useProximosEventos();
@@ -27,9 +29,17 @@ const Inicio: React.FC = () => {
   const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
 
   const getEventColor = (tipo: string) => {
-    if (tipo === 'feria') return 'date-blue';
-    if (tipo === 'taller') return 'date-orange';
+    const t = (tipo || '').toLowerCase();
+    if (t === 'feria') return 'date-blue';
+    if (t === 'taller' || t === 'cultor') return 'date-orange';
     return 'date-green';
+  };
+
+  const getEventCategoryClass = (tipo: string) => {
+    const t = (tipo || '').toLowerCase();
+    if (t === 'feria') return 'color-blue';
+    if (t === 'taller' || t === 'cultor') return 'color-orange';
+    return 'color-green';
   };
 
   const getPropuestaBadge = (index: number) => {
@@ -60,7 +70,7 @@ const Inicio: React.FC = () => {
             <IonCol size="12">
               <div className="welcome-banner">
                 <div className="welcome-text">
-                  <h2>¡Bienvenido, Sebastián Gonzales!</h2>
+                  <h2>¡Bienvenido, {user?.nombre || 'Ciudadano'}!</h2>
                   <p>Explora el patrimonio local de tu comuna, descubre oficios tradicionales y participa en las decisiones culturales de tu municipio</p>
                   <div className="banner-actions">
                     <IonButton color="light" fill="outline" className="btn-outline" routerLink="/ciudadano/catalogo">Explorar catálogo</IonButton>
@@ -127,14 +137,14 @@ const Inicio: React.FC = () => {
                 </div>
                 
                 <div className="event-list">
-                  {eventos.map(evento => (
+                  {eventos.slice(0, 3).map(evento => (
                     <div className="event-item" key={evento.id}>
                       <div className={`event-date ${getEventColor(evento.tipo)}`}>
                         <span className="day">{formatDay(evento.fechaInicio)}</span>
                         <span className="month">{formatMonth(evento.fechaInicio)}</span>
                       </div>
                       <div className="event-details">
-                        <span className="event-category color-orange">{evento.tipo}</span>
+                        <span className={`event-category ${getEventCategoryClass(evento.tipo)}`}>{evento.tipo.toUpperCase()}</span>
                         <h4>{evento.titulo}</h4>
                         <p>{formatTime(evento.fechaInicio)}-{formatTime(evento.fechaFin)} • {evento.ubicacion?.direccion || 'Por definir'}</p>
                       </div>
@@ -153,7 +163,7 @@ const Inicio: React.FC = () => {
                 </div>
                 
                 <div className="fichas-grid">
-                  {fichas.map(ficha => (
+                  {fichas.slice(0, 3).map(ficha => (
                     <CardPatrimonio 
                       key={ficha.id}
                       categoria={ficha.categoria}
@@ -177,7 +187,7 @@ const Inicio: React.FC = () => {
           </IonRow>
 
           <IonRow>
-            {propuestas.map((propuesta, index) => (
+            {propuestas.slice(0, 3).map((propuesta, index) => (
               <IonCol size="12" sizeMd="4" key={propuesta.id}>
                 <div className="propuesta-card outline-box">
                   <div className="propuesta-header">

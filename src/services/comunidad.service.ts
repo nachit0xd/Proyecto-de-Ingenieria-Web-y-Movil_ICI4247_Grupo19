@@ -48,5 +48,10 @@ export const comunidadService = {
   crearPropuesta: async (datos: { titulo: string, descripcion: string }): Promise<any> => {
     const response = await api.post('/comunidad/propuesta', datos);
     return response.data;
+  },
+
+  actualizarPropuestaGestor: async (id: string, datos: { estado?: string, nuevoComentario?: string }): Promise<any> => {
+    const response = await api.put(`/comunidad/propuesta/${id}`, datos);
+    return response.data;
   }
 };

@@ -2,7 +2,7 @@
 
 /* Configuración General */
 .inicio-page {
-  --background: #ffffff;
+  --background: var(--app-bg);
 }
 
 .max-width-container {
@@ -16,7 +16,7 @@ a {
 
 /* BANNER DE BIENVENIDA */
 .welcome-banner {
-  background-color: #1a2235; /* Azul oscuro */
+  background-color: #1a2235; /* Azul oscuro - se mantiene estático por el contraste del banner */
   color: white;
   border-radius: 12px;
   padding: 35px;
@@ -44,9 +44,16 @@ a {
 .btn-outline {
   --border-radius: 6px;
   --border-width: 1px;
-  --border-color: rgba(255,255,255,0.5);
+  --border-color: rgba(255, 255, 255, 0.5);
+  --color: #ffffff;
   font-weight: 500;
   margin-right: 15px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-outline:hover {
+  --background: rgba(255, 255, 255, 0.15);
+  --border-color: #ffffff;
 }
 
 .welcome-stats {
@@ -77,7 +84,7 @@ a {
 .section-header h3 {
   font-size: 1.5rem;
   font-weight: bold;
-  color: #333;
+  color: var(--app-text-color);
   margin: 0;
 }
 
@@ -95,7 +102,7 @@ a {
 
 .flex-header a {
   font-size: 0.95rem;
-  color: #e67e22; /* Naranja / Rojo */
+  color: #ea580c; 
   font-weight: 500;
 }
 
@@ -104,42 +111,58 @@ a {
 }
 
 .color-orange {
-  color: #e67e22 !important;
+  color: #ea580c !important;
+}
+.color-blue {
+  color: #2563eb !important;
+}
+.color-green {
+  color: #10b981 !important;
 }
 
 /* CAJAS GENERALES (OUTLINES) */
 .outline-box {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--app-border-color);
   border-radius: 10px;
   padding: 20px;
-  background: #fff;
+  background: var(--app-card-bg);
   height: 100%;
 }
 
 /* ACCESO RÁPIDO */
 .quick-access-box {
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  display: block;
+  background-color: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  border-radius: 12px;
   text-align: center;
-  padding: 15px 10px;
+  padding: 20px 12px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.25s ease;
+  box-shadow: var(--app-shadow);
 }
 
 .quick-access-box:hover {
-  border-color: #d1d5db;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  transform: translateY(-3px);
+  background-color: var(--app-card-bg);
+  border-color: #ea580c;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
 
 .qa-icon {
   font-size: 2.5rem;
   margin-bottom: 10px;
+  transition: transform 0.25s ease;
+}
+
+.quick-access-box:hover .qa-icon {
+  transform: scale(1.1);
 }
 
 .quick-access-box p {
   margin: 0;
   font-weight: bold;
-  color: #4b5563;
+  color: var(--app-text-color);
   font-size: 0.95rem;
   line-height: 1.2;
 }
@@ -150,7 +173,7 @@ a {
   justify-content: space-between;
   align-items: center;
   margin-bottom: 20px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--app-border-color);
   padding-bottom: 15px;
 }
 
@@ -158,11 +181,11 @@ a {
   margin: 0;
   font-size: 1.3rem;
   font-weight: bold;
-  color: #333;
+  color: var(--app-text-color);
 }
 
 .column-header a {
-  color: #e67e22;
+  color: #ea580c;
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -190,12 +213,12 @@ a {
 .event-date .day { font-size: 1.3rem; font-weight: bold; line-height: 1; }
 .event-date .month { font-size: 0.8rem; font-weight: 600; margin-top: 2px; }
 
-.date-blue { background-color: #1e3a8a; }
-.date-orange { background-color: #d97706; }
-.date-green { background-color: #15803d; }
+.date-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+.date-orange { background: linear-gradient(135deg, #f97316, #ea580c); }
+.date-green { background: linear-gradient(135deg, #10b981, #059669); }
 
 .event-details {
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--app-border-color);
   padding-bottom: 15px;
   flex-grow: 1;
 }
@@ -211,44 +234,44 @@ a {
   margin: 5px 0;
   font-size: 1.05rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
 }
 
 .event-details p {
   margin: 0;
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
 }
 
 /* Grid de Fichas */
 .fichas-grid {
   display: flex;
   gap: 15px;
-  align-items: stretch; /* Se asegura que todas las tarjetas tengan la misma altura */
+  align-items: stretch;
 }
 
 .fichas-grid > div {
-  flex: 1; /* Cada componente CardPatrimonio ocupará el mismo espacio */
+  flex: 1;
 }
 
 .ficha-card {
   flex: 1;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
-  background-color: #f9fafb;
+  background-color: var(--app-card-bg);
   overflow: hidden;
   display: flex;
   flex-direction: column;
 }
 
 .ficha-img {
-  background-color: #fff;
+  background-color: var(--app-bg);
   height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  border-bottom: 1px solid var(--app-border-color);
 }
 
 .ficha-info {
@@ -259,7 +282,7 @@ a {
   margin: 8px 0 0 0;
   font-size: 0.9rem;
   font-weight: bold;
-  color: #333;
+  color: var(--app-text-color);
   line-height: 1.2;
 }
 
@@ -272,7 +295,7 @@ a {
   font-weight: bold;
 }
 
-.badge-gray { background-color: #e5e7eb; color: #e67e22; }
+.badge-gray { background-color: var(--app-border-color); color: #ea580c; }
 .badge-blue { background-color: #1e3a8a; color: white; }
 .badge-green { background-color: #15803d; color: white; }
 .badge-orange { background-color: #d97706; color: white; }
@@ -293,19 +316,19 @@ a {
 .votes {
   font-size: 0.9rem;
   font-weight: bold;
-  color: #4b5563;
+  color: var(--app-text-muted);
 }
 
 .propuesta-card h4 {
   margin: 0 0 20px 0;
   font-size: 1.1rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   flex-grow: 1;
 }
 
 .progress-container {
-  background-color: #e5e7eb;
+  background-color: var(--app-border-color);
   height: 6px;
   border-radius: 3px;
   margin-bottom: 8px;
@@ -320,27 +343,30 @@ a {
 .progress-text {
   margin: 0;
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
 }
 
 /* RESUMEN DE GESTIÓN */
 .resumen-card {
-  background-color: #4b5563;
-  color: white;
+  background-color: var(--app-card-bg);
+  color: var(--app-text-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   padding: 20px;
+  box-shadow: var(--app-shadow);
 }
 
 .res-title {
   margin: 0 0 10px 0;
   font-size: 0.9rem;
-  color: #d1d5db;
+  color: var(--app-text-muted);
 }
 
 .res-number {
   margin: 0 0 15px 0;
   font-size: 2.2rem;
   font-weight: bold;
+  color: var(--app-text-color);
 }
 
 .res-trend {

@@ -15,21 +15,45 @@ export interface PublicacionPanel {
   id: string;
   fecha: string;
   mensaje: string;
+  tipo: string;
   visible: boolean;
 }
 
 import api from './api';
 
 export const transparenciaService = {
-  obtenerKPIs: async (): Promise<KPI_Transparencia> => {
-    const response = await api.get('/transparencia/kpis');
+  obtenerKPIsGestor: async (): Promise<KPI_Transparencia> => {
+    const response = await api.get('/transparencia/kpis-gestor');
+    return response.data;
+  },
+
+  obtenerKPIsCiudadano: async (): Promise<any> => {
+    const response = await api.get('/transparencia/kpis-ciudadano');
     return response.data;
   },
   
   obtenerPublicaciones: async (): Promise<PublicacionPanel[]> => {
-    // Keep mock for publications for now since it's not in the backend yet
-    return [
-      { id: '1', fecha: '15-05-26', mensaje: 'Nuevo Fondo de Nuevos Emprendedores disponible', visible: true }
-    ];
+    const response = await api.get('/transparencia/publicaciones');
+    return response.data;
+  },
+
+  crearPublicacion: async (data: { mensaje: string, tipo: string }): Promise<any> => {
+    const response = await api.post('/transparencia/publicaciones', data);
+    return response.data;
+  },
+
+  actualizarVisibilidad: async (id: string, visible: boolean): Promise<any> => {
+    const response = await api.patch(`/transparencia/publicaciones/${id}/visibilidad`, { visible });
+    return response.data;
+  },
+
+  obtenerGraficosGestor: async (): Promise<any> => {
+    const response = await api.get('/transparencia/graficos-gestor');
+    return response.data;
+  },
+
+  obtenerGraficosCiudadano: async (): Promise<any> => {
+    const response = await api.get('/transparencia/graficos-ciudadano');
+    return response.data;
   }
 };

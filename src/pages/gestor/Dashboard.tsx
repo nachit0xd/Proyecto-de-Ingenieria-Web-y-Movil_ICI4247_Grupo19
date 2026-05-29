@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { IonPage, IonContent, IonIcon, IonButton, IonSpinner } from '@ionic/react';
+import React from 'react';
+import { IonPage, IonContent, IonIcon, IonSpinner } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
-import { personCircleOutline, searchOutline } from 'ionicons/icons';
+import { searchOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import GestorHeader from '../../components/GestorHeader';
 import './Dashboard.css';
 
 import { useKpisGestor, useActividadReciente } from '../../hooks/useDashboard';
@@ -11,7 +11,8 @@ import { useKpisGestor, useActividadReciente } from '../../hooks/useDashboard';
 // Página principal del gestor municipal, mostrando KPIs clave, botones de acción rápida y una tabla de actividad reciente para facilitar la gestión cultural
 const DashboardGestor: React.FC = () => {
   const history = useHistory();
-  const { logout } = useAuth();
+  const userData = localStorage.getItem('user');
+  const user = userData ? JSON.parse(userData) : null;
 
   const { data: kpis, isLoading: loadKpis } = useKpisGestor();
   const { data: actividades = [], isLoading: loadActividades } = useActividadReciente();
@@ -23,24 +24,20 @@ const DashboardGestor: React.FC = () => {
   };
 
   const getBadgeClass = (estado: string) => {
-    if (estado === 'Aprobado') return 'b-success';
-    if (estado === 'Rechazado') return 'b-danger';
+    if (estado === 'aprobado' || estado === 'publicado') return 'b-success';
+    if (estado === 'rechazado') return 'b-danger';
     return 'b-warning';
+  };
+
+  const formatEstado = (estado: string) => {
+    if (['revision', 'en_revision', 'pendiente'].includes(estado)) return 'Pendiente de revisión';
+    return estado.charAt(0).toUpperCase() + estado.slice(1);
   };
 
   return (
     <IonPage>
       {/* HEADER GLOBAL DEL GESTOR */}
-      <header className="gestor-header">
-        <div className="gestor-brand">
-          <h1>Cultura Municipal</h1>
-          <span className="gestor-role-badge">Gestor Municipal</span>
-        </div>
-        <div className="gestor-user-menu">
-          <IonIcon icon={personCircleOutline} className="avatar-icon" />
-          <IonButton fill="clear" onClick={() => { logout(); history.push('/auth/login'); }}>Cerrar sesión</IonButton>
-        </div>
-      </header>
+      <GestorHeader />
 
       <IonContent fullscreen scrollY={false}>
         <div className="gestor-layout">
@@ -59,7 +56,7 @@ const DashboardGestor: React.FC = () => {
                 {/* Banner de Bienvenida */}
                 <div className="welcome-banner">
                   <div className="welcome-text">
-                    <h2>¡Bienvenido, José Soto!</h2>
+                    <h2>¡Bienvenido, {user?.nombre || 'Gestor'}!</h2>
                     <p>¡Organiza y maneja la aplicación Cultura Municipal desde tu panel de gestión!</p>
                   </div>
                   {kpis && (
@@ -100,9 +97,9 @@ const DashboardGestor: React.FC = () => {
 
                 {/* Fila 2: Botones de Acción Rápida */}
                 <div className="quick-actions-row">
-                  <button className="action-btn"><strong>+ Nueva ficha</strong></button>
-                  <button className="action-btn"><strong>+ Agendar evento</strong></button>
-                  <button className="action-btn"><strong>+ Abrir convocatoria</strong></button>
+                  <button className="action-btn" onClick={() => history.push('/gestor/catalogo')}><strong>+ Nueva ficha</strong></button>
+                  <button className="action-btn" onClick={() => history.push('/gestor/agenda-mapa')}><strong>+ Agendar evento</strong></button>
+                  <button className="action-btn" onClick={() => history.push('/gestor/fondos')}><strong>+ Abrir convocatoria</strong></button>
                 </div>
 
                 {/* Fila 3: Tabla de Actividad Reciente */}
@@ -129,7 +126,8 @@ const DashboardGestor: React.FC = () => {
                             <td>{act.titulo}</td>
                             <td>
                               <span className={`badge-table ${getBadgeClass(act.estado)}`}>
-                                {act.estado === 'Pendiente de revisión' && <IonIcon icon={searchOutline}/>} {act.estado}
+                                {['revision', 'en_revision', 'pendiente'].includes(act.estado) && <IonIcon icon={searchOutline}/>} 
+                                {formatEstado(act.estado)}
                               </span>
                             </td>
                           </tr>

@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { IonContent, IonPage, IonIcon, IonModal, IonButton, IonInput, IonTextarea, IonSelect, IonSelectOption, IonSpinner } from '@ionic/react';
+import React, { useState } from 'react';
+import { useIonToast, IonContent, IonPage, IonIcon, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption, IonSpinner } from '@ionic/react';
 import { downloadOutline, documentTextOutline, alertCircleOutline, checkmarkCircleOutline, closeCircleOutline, chevronBackOutline, checkmarkOutline } from 'ionicons/icons';
 import './Fondos.css';
 
-import { useConvocatoriasCiudadano, usePostulacionesCiudadano } from '../../hooks/useFondos';
-import { PostulacionFondo } from '../../types';
+import { useConvocatoriasCiudadano, usePostulacionesCiudadano, usePostularFondo } from '../../hooks/useFondos';
 
 // La página de fondos culturales muestra convocatorias abiertas, permite postular a ellas y ver el estado de las postulaciones realizadas por el usuario
 const Fondos: React.FC = () => {
@@ -12,6 +11,8 @@ const Fondos: React.FC = () => {
   
   const { data: convocatorias = [], isLoading: loadConvocatorias } = useConvocatoriasCiudadano();
   const { data: postulaciones = [], isLoading: loadPostulaciones } = usePostulacionesCiudadano();
+  const postularFondo = usePostularFondo();
+  const [presentToast] = useIonToast();
 
   const loading = loadConvocatorias || loadPostulaciones;
 
@@ -19,6 +20,7 @@ const Fondos: React.FC = () => {
   const [pasoActual, setPasoActual] = useState(1);
 
   const [formData, setFormData] = useState({
+    rut: '',
     representante: '',
     organizacion: '',
     iniciativa: '',
@@ -28,16 +30,33 @@ const Fondos: React.FC = () => {
     desglose: ''
   });
 
+  const [archivosAdjuntos, setArchivosAdjuntos] = useState<File[]>([]);
+
   const handleInputChange = (campo: string, valor: any) => {
     setFormData(prev => ({ ...prev, [campo]: valor }));
   };
 
-  const abrirModal = () => setMostrarModal(true);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const newFiles = Array.from(e.target.files);
+      setArchivosAdjuntos(prev => [...prev, ...newFiles]);
+    }
+  };
+
+  const [fondoSeleccionado, setFondoSeleccionado] = useState<any>(null);
+
+  const abrirModal = (fondo: any) => {
+    setFondoSeleccionado(fondo);
+    setMostrarModal(true);
+  };
+  
   const cerrarModal = () => {
     setMostrarModal(false);
     setTimeout(() => {
       setPasoActual(1);
-      setFormData({ representante: '', organizacion: '', iniciativa: '', descripcion: '', area: '', presupuesto: '', desglose: '' });
+      setFormData({ rut: '', representante: '', organizacion: '', iniciativa: '', descripcion: '', area: '', presupuesto: '', desglose: '' });
+      setArchivosAdjuntos([]);
+      setFondoSeleccionado(null);
     }, 300);
   };
   const siguientePaso = () => setPasoActual(prev => Math.min(prev + 1, 4));
@@ -147,7 +166,7 @@ const Fondos: React.FC = () => {
                         <p className="fondo-descripcion">Postula a este fondo destinado a impulsar las iniciativas culturales de la comunidad.</p>
                         <div className="fondo-card-footer">
                           <button className="btn-descargar"><IonIcon icon={downloadOutline} /> Descargar Bases</button>
-                          <button className="btn-postular" onClick={abrirModal}>Postular ahora</button>
+                          <button className="btn-postular" onClick={() => abrirModal(conv)}>Postular ahora</button>
                         </div>
                       </div>
                     ))}
@@ -230,6 +249,10 @@ const Fondos: React.FC = () => {
                     <IonInput className="custom-modal-input" placeholder="Ej: Javier Pedro Castillo Pérez" value={formData.representante} onIonInput={(e) => handleInputChange('representante', e.detail.value)} />
                   </div>
                   <div className="input-group">
+                    <label>RUT del representante</label>
+                    <IonInput className="custom-modal-input" placeholder="Ej: 12.345.678-9" value={formData.rut} onIonInput={(e) => handleInputChange('rut', e.detail.value)} />
+                  </div>
+                  <div className="input-group">
                     <label>Nombre de la organización que representa (si aplica)</label>
                     <IonInput className="custom-modal-input" placeholder="Ej: Centro de Baile Artístico..." value={formData.organizacion} onIonInput={(e) => handleInputChange('organizacion', e.detail.value)} />
                   </div>
@@ -262,7 +285,7 @@ const Fondos: React.FC = () => {
                   <div className="input-group">
                     <label>Presupuesto solicitado (CLP)</label>
                     <IonInput className="custom-modal-input" type="number" placeholder="Ej: 300000" value={formData.presupuesto} onIonInput={(e) => handleInputChange('presupuesto', e.detail.value)} />
-                    <span className="help-text">Máximo permitido: $600.000</span>
+                    <span className="help-text">Máximo permitido: {fondoSeleccionado ? formatCurrency(fondoSeleccionado.montoMaximo) : ''}</span>
                   </div>
                   <div className="input-group">
                     <label>Indique el desglose de gastos:</label>
@@ -270,10 +293,24 @@ const Fondos: React.FC = () => {
                   </div>
                   <div className="input-group">
                     <label>Documentos adjuntos:</label>
-                    <div className="file-upload-area">
+                    <div className="file-upload-area" style={{ position: 'relative' }}>
+                      <input 
+                        type="file" 
+                        multiple 
+                        accept=".pdf" 
+                        onChange={handleFileChange}
+                        style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0, cursor: 'pointer' }}
+                      />
                       <p>Toca para adjuntar archivos</p>
                       <span>PDF • máx 5MB por archivo</span>
                     </div>
+                    {archivosAdjuntos.length > 0 && (
+                      <ul style={{ paddingLeft: '20px', margin: '8px 0', fontSize: '0.9rem', color: '#4b5563' }}>
+                        {archivosAdjuntos.map((file, i) => (
+                          <li key={i}>{file.name}</li>
+                        ))}
+                      </ul>
+                    )}
                   </div>
                 </div>
               )}
@@ -294,9 +331,31 @@ const Fondos: React.FC = () => {
             <div className="modal-footer">
               {pasoActual > 1 ? (
                 <>
-                  <button className="btn-modal btn-secondary" onClick={pasoAnterior}>Atrás</button>
+                  <button className="btn-modal btn-secondary" onClick={pasoAnterior} disabled={postularFondo.isPending}>Atrás</button>
                   {pasoActual === 4 ? (
-                    <button className="btn-modal btn-primary" onClick={cerrarModal}>Finalizar</button>
+                    <button className="btn-modal btn-primary" onClick={async () => {
+                      if (!fondoSeleccionado) return;
+                      await postularFondo.mutateAsync({
+                        fondoId: fondoSeleccionado.id,
+                        nombreRepresentante: formData.representante,
+                        rutRepresentante: formData.rut || 'Sin especificar',
+                        nombreOrganizacion: formData.organizacion || 'Persona Natural',
+                        descripcion: formData.descripcion,
+                        presupuestoEstimado: parseInt(formData.presupuesto) || 0,
+                        areaCultural: formData.area,
+                        desglose: formData.desglose,
+                        documentos: JSON.stringify(archivosAdjuntos.map(f => f.name))
+                      });
+                      presentToast({
+                        message: 'Postulación enviada correctamente',
+                        duration: 3000,
+                        color: 'success',
+                        icon: checkmarkCircleOutline
+                      });
+                      cerrarModal();
+                    }} disabled={postularFondo.isPending}>
+                      {postularFondo.isPending ? 'Enviando...' : 'Finalizar'}
+                    </button>
                   ) : (
                     <button className="btn-modal btn-primary" onClick={siguientePaso}>Siguiente</button>
                   )}

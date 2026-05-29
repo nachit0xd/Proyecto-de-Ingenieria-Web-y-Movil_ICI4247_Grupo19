@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { IonPage, IonContent, IonIcon, IonSpinner, IonModal } from '@ionic/react';
-import { personCircleOutline, documentTextOutline, alertCircleOutline } from 'ionicons/icons';
+import { IonPage, IonContent, IonIcon, IonSpinner } from '@ionic/react';
+import { documentTextOutline } from 'ionicons/icons';
 import GestorSidebar from '../../components/GestorSidebar';
+import GestorHeader from '../../components/GestorHeader';
 import Badge, { BadgeVariant } from '../../components/ui/Badge';
 import ConfirmModal from '../../components/ui/ConfirmModal';
 import ActionButton from '../../components/ui/ActionButton';
 import './Propuestas.css';
 
-import { usePropuestasGestor } from '../../hooks/useComunidad';
+import { usePropuestasGestor, useActualizarPropuestaGestor } from '../../hooks/useComunidad';
 import { PropuestaComunidadGestor } from '../../services/comunidad.service';
 
 // Componente principal de la página de Propuestas para gestores municipales
 // Muestra una lista de propuestas culturales enviadas por la comunidad, permite filtrarlas por estado y tomar acciones de aprobación, rechazo o revisión con un modal de confirmación
 const PropuestasGestor: React.FC = () => {
   const { data = [], isLoading: loading } = usePropuestasGestor();
+  const actualizarPropuesta = useActualizarPropuestaGestor();
   const [filtro, setFiltro] = useState<string>('todas');
   const [propuestaActiva, setPropuestaActiva] = useState<PropuestaComunidadGestor | null>(null);
   const [propuestasState, setPropuestasState] = useState<PropuestaComunidadGestor[]>([]);
+  const [nuevoComentario, setNuevoComentario] = useState<string>('');
 
   useEffect(() => {
     if (data.length > 0) {
       setPropuestasState(data);
+      if (propuestaActiva) {
+        // Actualizar propuesta activa si cambiaron los datos
+        const updatedActiva = data.find(p => p.id === propuestaActiva.id);
+        if (updatedActiva) setPropuestaActiva(updatedActiva);
+      }
     }
   }, [data]);
 
-  // Modal State
+  // Estados para controlar el modal de confirmación de acciones sobre propuestas
   const [mostrarModal, setMostrarModal] = useState(false);
   const [accionPendiente, setAccionPendiente] = useState<string>('');
 
@@ -42,6 +50,7 @@ const PropuestasGestor: React.FC = () => {
     const map: any = {
       'pendiente': 'Pendiente',
       'en_revision': 'En revisión',
+      'revision': 'En revisión',
       'aprobado': 'Aprobado',
       'rechazado': 'Rechazado'
     };
@@ -52,6 +61,7 @@ const PropuestasGestor: React.FC = () => {
     const map: Record<string, BadgeVariant> = {
       'pendiente': 'warning',
       'en_revision': 'info',
+      'revision': 'info',
       'aprobado': 'success',
       'rechazado': 'danger'
     };
@@ -63,28 +73,31 @@ const PropuestasGestor: React.FC = () => {
     setMostrarModal(true);
   };
 
-  const confirmarAccion = () => {
+  const confirmarAccion = async () => {
     if (propuestaActiva) {
-      const updatedPropuesta = { ...propuestaActiva, estado: accionPendiente };
-      setPropuestasState(propuestasState.map(p => p.id === propuestaActiva.id ? updatedPropuesta : p));
-      setPropuestaActiva(updatedPropuesta);
+      await actualizarPropuesta.mutateAsync({ 
+        id: propuestaActiva.id, 
+        data: { estado: accionPendiente } 
+      });
     }
     setMostrarModal(false);
+  };
+
+  const handleAgregarComentario = async () => {
+    if (propuestaActiva && nuevoComentario.trim()) {
+      await actualizarPropuesta.mutateAsync({
+        id: propuestaActiva.id,
+        data: { nuevoComentario: nuevoComentario.trim() }
+      });
+      setNuevoComentario('');
+    }
   };
 
   const propuestasFiltradas = propuestasState.filter(p => filtro === 'todas' || p.estado === filtro);
 
   return (
     <IonPage className="propuestas-gestor-page">
-      <header className="gestor-header">
-        <div className="gestor-brand">
-          <h1>Cultura Municipal</h1>
-          <span className="gestor-role-badge">Gestor Municipal</span>
-        </div>
-        <div className="gestor-user-menu">
-          <IonIcon icon={personCircleOutline} className="avatar-icon" />
-        </div>
-      </header>
+      <GestorHeader />
 
       <IonContent fullscreen scrollY={false}>
         <div className="gestor-layout">
@@ -177,8 +190,25 @@ const PropuestasGestor: React.FC = () => {
                           ))}
                         </div>
                       ) : (
-                        <p style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '14px' }}>No hay comentarios todavía.</p>
+                        <p style={{ color: '#9ca3af', fontStyle: 'italic', fontSize: '14px', marginTop: '12px' }}>No hay comentarios todavía.</p>
                       )}
+                      
+                      <div className="add-comment-section" style={{ marginTop: '20px', display: 'flex', gap: '10px' }}>
+                        <input 
+                          type="text" 
+                          value={nuevoComentario}
+                          onChange={(e) => setNuevoComentario(e.target.value)}
+                          placeholder="Añadir un comentario (visible para el ciudadano)..."
+                          style={{ flex: 1, padding: '10px 12px', border: '1px solid var(--app-border-color)', borderRadius: '6px', fontSize: '0.9rem', backgroundColor: 'var(--app-input-bg)', color: 'var(--app-text-color)' }}
+                        />
+                        <button 
+                          onClick={handleAgregarComentario}
+                          disabled={!nuevoComentario.trim() || actualizarPropuesta.isPending}
+                          style={{ padding: '0 20px', backgroundColor: '#3b82f6', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer', fontWeight: 600 }}
+                        >
+                          Enviar
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ) : (

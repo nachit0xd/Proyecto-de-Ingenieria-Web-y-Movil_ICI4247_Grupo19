@@ -1,6 +1,7 @@
 import { Router } from 'express';
+import { Prisma } from '@prisma/client';
 import prisma from '../db';
-import { verifyToken } from '../middleware/auth';
+import { AuthRequest, verifyToken } from '../middleware/auth';
 
 const router = Router();
 
@@ -10,9 +11,22 @@ router.get('/populares', async (req, res) => {
     const propuestas = await prisma.propuesta.findMany({
       orderBy: { votosTotales: 'desc' },
       take: 10,
+      include: { usuario: { select: { nombre: true } } }
     });
-    res.json(propuestas);
-  } catch (error) {
+    const mapped = propuestas.map(p => ({
+      id: p.id,
+      titulo: p.titulo,
+      descripcion: p.descripcion,
+      votos: p.votosTotales,
+      votosTotales: p.votosTotales,
+      categoria: 'Comunidad',
+      autor: p.usuario?.nombre || 'Anónimo',
+      fechaPublicacion: p.fechaCreacion,
+      estado: p.estado,
+      comentariosGestor: p.comentariosGestor
+    }));
+    res.json(mapped);
+  } catch {
     res.status(500).json({ error: 'Error al obtener propuestas populares' });
   }
 });
@@ -22,9 +36,22 @@ router.get('/todas', async (req, res) => {
   try {
     const propuestas = await prisma.propuesta.findMany({
       orderBy: { fechaCreacion: 'desc' },
+      include: { usuario: { select: { nombre: true } } }
     });
-    res.json(propuestas);
-  } catch (error) {
+    const mapped = propuestas.map(p => ({
+      id: p.id,
+      titulo: p.titulo,
+      descripcion: p.descripcion,
+      votos: p.votosTotales,
+      votosTotales: p.votosTotales,
+      categoria: 'Comunidad',
+      autor: p.usuario?.nombre || 'Anónimo',
+      fechaPublicacion: p.fechaCreacion,
+      estado: p.estado,
+      comentariosGestor: p.comentariosGestor
+    }));
+    res.json(mapped);
+  } catch {
     res.status(500).json({ error: 'Error al obtener propuestas' });
   }
 });
@@ -32,7 +59,7 @@ router.get('/todas', async (req, res) => {
 // GET /api/comunidad/mis-votos: Obtener IDs de las propuestas que el usuario ha votado
 router.get('/mis-votos', verifyToken, async (req, res) => {
   try {
-    const idUsuario = (req as any).user?.id;
+    const idUsuario = (req as AuthRequest).user?.id;
     if (!idUsuario) {
       res.status(401).json({ error: 'No autorizado' });
       return;
@@ -41,8 +68,8 @@ router.get('/mis-votos', verifyToken, async (req, res) => {
       where: { idUsuario },
       select: { idPropuesta: true }
     });
-    res.json(votos.map((v: any) => v.idPropuesta));
-  } catch (error) {
+    res.json(votos.map((v) => v.idPropuesta));
+  } catch {
     res.status(500).json({ error: 'Error al obtener mis votos' });
   }
 });
@@ -51,7 +78,7 @@ router.get('/mis-votos', verifyToken, async (req, res) => {
 router.post('/votar/:id', verifyToken, async (req, res) => {
   try {
     const idPropuesta = req.params.id as string;
-    const idUsuario = (req as any).user?.id;
+    const idUsuario = (req as AuthRequest).user?.id;
     if (!idUsuario) {
       res.status(401).json({ error: 'No autorizado' });
       return;
@@ -78,7 +105,7 @@ router.post('/votar/:id', verifyToken, async (req, res) => {
       })
     ]);
     res.json(result[1]);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Error al registrar el voto' });
   }
 });
@@ -87,7 +114,7 @@ router.post('/votar/:id', verifyToken, async (req, res) => {
 router.post('/anular-voto/:id', verifyToken, async (req, res) => {
   try {
     const idPropuesta = req.params.id as string;
-    const idUsuario = (req as any).user?.id;
+    const idUsuario = (req as AuthRequest).user?.id;
     if (!idUsuario) {
       res.status(401).json({ error: 'No autorizado' });
       return;
@@ -114,7 +141,7 @@ router.post('/anular-voto/:id', verifyToken, async (req, res) => {
       })
     ]);
     res.json(result[1]);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Error al anular el voto' });
   }
 });
@@ -122,7 +149,7 @@ router.post('/anular-voto/:id', verifyToken, async (req, res) => {
 // POST /api/comunidad/propuesta (Protected): Crear una propuesta ciudadana
 router.post('/propuesta', verifyToken, async (req, res) => {
   try {
-    const idUsuario = (req as any).user?.id;
+    const idUsuario = (req as AuthRequest).user?.id;
     if (!idUsuario) {
       res.status(401).json({ error: 'No autorizado' });
       return;
@@ -140,7 +167,7 @@ router.post('/propuesta', verifyToken, async (req, res) => {
     });
     
     res.json(propuesta);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Error al crear la propuesta' });
   }
 });
@@ -149,13 +176,22 @@ router.post('/propuesta', verifyToken, async (req, res) => {
 router.put('/propuesta/:id', verifyToken, async (req, res) => {
   try {
     const id = req.params.id as string;
-    const { titulo, descripcion, estado } = req.body;
+    const { titulo, descripcion, estado, nuevoComentario } = req.body;
+    
+    const updateData: Prisma.PropuestaUpdateInput = {};
+    if (titulo !== undefined) updateData.titulo = titulo;
+    if (descripcion !== undefined) updateData.descripcion = descripcion;
+    if (estado !== undefined) updateData.estado = estado;
+    if (nuevoComentario) {
+      updateData.comentariosGestor = { push: nuevoComentario };
+    }
+    
     const propuesta = await prisma.propuesta.update({
       where: { id },
-      data: { titulo, descripcion, estado },
+      data: updateData,
     });
     res.json(propuesta);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Error al actualizar propuesta' });
   }
 });
@@ -165,7 +201,7 @@ router.delete('/propuesta/:id', verifyToken, async (req, res): Promise<void> => 
   try {
     const id = req.params.id as string;
     
-    // Check if exists
+    // Verificar si la propuesta existe antes de eliminarla
     const existing = await prisma.propuesta.findUnique({ where: { id } });
     if (!existing) {
       res.status(404).json({ error: 'Propuesta no encontrada' });
@@ -174,7 +210,7 @@ router.delete('/propuesta/:id', verifyToken, async (req, res): Promise<void> => 
 
     await prisma.propuesta.delete({ where: { id } });
     res.json({ message: 'Propuesta eliminada exitosamente' });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Error al eliminar propuesta' });
   }
 });

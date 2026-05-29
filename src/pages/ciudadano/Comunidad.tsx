@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { IonContent, IonPage, IonSpinner, useIonToast, IonModal, IonInput, IonTextarea, IonSelect, IonSelectOption, IonIcon } from '@ionic/react';
 import { checkmarkCircleOutline, chevronBackOutline } from 'ionicons/icons';
-import { useHistory } from 'react-router-dom';
 import './Comunidad.css';
 
 import { usePropuestasPopulares, usePropuestasCiudadano, useVotarPropuesta, useMisVotos, useAnularVoto, useCrearPropuesta } from '../../hooks/useComunidad';

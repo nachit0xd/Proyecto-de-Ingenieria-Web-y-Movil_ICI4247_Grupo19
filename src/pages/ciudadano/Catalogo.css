@@ -1,19 +1,19 @@
 /* Estilos para la página de catálogo de actividades culturales */
 .catalogo-page {
-  --background: #f9fafb; /* Fondo un poco más gris para resaltar las tarjetas blancas */
+  --background: var(--app-bg);
 }
 
 /* BARRA LATERAL DE FILTROS */
 .filtros-container {
   padding-right: 20px;
-  border-right: 1px solid #e5e7eb;
+  border-right: 1px solid var(--app-border-color);
   height: 100%;
 }
 
 .filtros-container h2 {
   font-size: 1.5rem;
   font-weight: 800;
-  color: #111827;
+  color: var(--app-text-color);
   margin-top: 0;
   margin-bottom: 25px;
 }
@@ -25,7 +25,7 @@
 .filtro-grupo h3 {
   font-size: 1.05rem;
   font-weight: 700;
-  color: #374151;
+  color: var(--app-text-color);
   margin-bottom: 12px;
 }
 
@@ -33,7 +33,7 @@
   --background: transparent;
   --min-height: 38px;
   font-size: 0.95rem;
-  color: #374151;
+  color: var(--app-text-color);
   border-radius: 6px;
   transition: all 0.2s;
   cursor: pointer;
@@ -41,7 +41,7 @@
 }
 
 .filtro-item:hover {
-  --background: #f3f4f6;
+  --background: var(--app-border-color);
 }
 
 .filtro-item ion-checkbox {
@@ -54,13 +54,13 @@
 
 /* Aseguramos que los labels y textos de filtros sean legibles */
 .filtros-container, .filtros-container .filtro-item, .filtros-container h2, .filtros-container h3 {
-  color: #374151;
+  color: var(--app-text-color);
 }
 
 .filtros-container .filtro-item ion-label,
 .filtros-container .filtro-item {
-  --color: #374151;
-  color: #374151;
+  --color: var(--app-text-color);
+  color: var(--app-text-color);
   font-weight: 500;
 }
 
@@ -88,11 +88,11 @@
 
 .custom-searchbar {
   padding: 0;
-  --box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-  --background: #ffffff;
-  --color: #111827;
-  --placeholder-color: #6b7280;
-  border: 1px solid #d1d5db;
+  --box-shadow: var(--app-shadow);
+  --background: var(--app-card-bg);
+  --color: var(--app-text-color);
+  --placeholder-color: var(--app-text-muted);
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   transition: all 0.2s;
 }
@@ -103,8 +103,9 @@
 }
 
 .custom-sort {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
   min-width: 180px;
   padding: 10px 15px;
@@ -114,13 +115,12 @@
 .resultados-count {
   font-size: 1.2rem;
   font-weight: bold;
-  color: #4b5563;
+  color: var(--app-text-muted);
   margin-bottom: 20px;
 }
 
 /* GRILLA DE RESULTADOS */
 .fichas-grid-container {
-  /* Asegura que las tarjetas se estiren para ocupar la misma altura en cada fila */
   align-items: stretch; 
 }
 
@@ -144,20 +144,19 @@
 
 /* Botón de filtros móvil: mantener contraste para texto */
 .btn-filtros-movil {
-  --color: #374151;
+  --color: var(--app-text-color);
 }
 
 /* Forzar contraste en searchbar, select y botón móvil (placeholders nativos) */
-/* Input nativo/placeholder dentro de ion-searchbar */
 .custom-searchbar input,
 .custom-searchbar .searchbar-input,
 .custom-searchbar .searchbar-input-native {
-  color: #374151 !important;
+  color: var(--app-text-color) !important;
 }
 .custom-searchbar input::placeholder,
 .custom-searchbar .searchbar-input::placeholder,
 .custom-searchbar .searchbar-input-native::placeholder {
-  color: #9ca3af !important;
+  color: var(--app-text-muted) !important;
   opacity: 1 !important;
 }
 
@@ -165,13 +164,13 @@
 .custom-sort,
 .custom-sort .select-text,
 .custom-sort .select-placeholder {
-  color: #374151 !important;
+  color: var(--app-text-color) !important;
 }
 
 /* Botón filtros móvil: asegurar color visible en el texto del botón */
 .btn-filtros-movil,
 .btn-filtros-movil .button-inner {
-  color: #374151 !important;
+  color: var(--app-text-color) !important;
 }
 
 @media (max-width: 480px) {

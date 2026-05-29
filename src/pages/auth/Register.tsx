@@ -97,7 +97,7 @@ const Register: React.FC = () => {
 
   // Función para formatear el RUT a medida que el usuario lo va ingresando, asegurando un formato consistente y fácil de leer
   const formatRut = (value: string) => {
-    let clean = value.replace(/[^0-9kK]/gi, '');
+    const clean = value.replace(/[^0-9kK]/gi, '');
     if (clean.length === 0) return '';
     const dv = clean.slice(-1);
     const body = clean.slice(0, -1);

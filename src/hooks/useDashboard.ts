@@ -13,6 +13,8 @@ export const useKpisGestor = () => {
   return useQuery({
     queryKey: ['dashboard', 'kpis', 'gestor'],
     queryFn: dashboardService.obtenerKpisGestor,
+    staleTime: 0,
+    refetchOnMount: 'always'
   });
 };
 
@@ -20,5 +22,7 @@ export const useActividadReciente = () => {
   return useQuery({
     queryKey: ['dashboard', 'actividad'],
     queryFn: dashboardService.obtenerActividadReciente,
+    staleTime: 0,
+    refetchOnMount: 'always'
   });
 };

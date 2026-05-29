@@ -11,6 +11,7 @@ import eventosRoutes from './routes/eventos';
 import fondosRoutes from './routes/fondos';
 import transparenciaRoutes from './routes/transparencia';
 import fichasRoutes from './routes/fichas';
+import dashboardRoutes from './routes/dashboard';
 
 // Crear la aplicación Express
 const app = express();
@@ -32,6 +33,7 @@ app.use('/api/eventos', eventosRoutes);
 app.use('/api/fondos', fondosRoutes);
 app.use('/api/transparencia', transparenciaRoutes);
 app.use('/api/fichas', fichasRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 // Iniciar el servidor
 app.listen(port, () => {

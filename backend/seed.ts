@@ -27,7 +27,7 @@ async function main() {
     }
   });
 
-  const gestor = await prisma.usuario.create({
+  await prisma.usuario.create({
     data: {
       nombre: 'María Gómez (Gestor)',
       email: 'gestor@cultura.cl',
