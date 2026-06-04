@@ -2,58 +2,60 @@ import React, { useState } from 'react';
 import { 
   IonContent, IonPage, IonCheckbox, IonItem, IonLabel, IonIcon
 } from '@ionic/react';
-import { bookmarkOutline, locationOutline } from 'ionicons/icons';
-import Header from '../../components/Header';
+import { bookmarkOutline } from 'ionicons/icons';
+import { useFichasPatrimonio } from '../../hooks/usePatrimonio';
+import FichaModal from '../../components/FichaModal';
+import { FichaPatrimonio } from '../../types/patrimonio';
 import './Mapa.css';
 
-// Simulamos una base de datos de puntos en el mapa
-const PUNTOS_MOCK = [
-  {
-    id: 1,
-    tipo: 'Feria',
-    titulo: 'Feria artesanal del centro',
-    top: '35%',
-    left: '60%',
-    icono: '🎪',
-    color: '#1e3a8a', // Azul
-    horario: 'Sábados 09:00-14:00',
-    lugar: 'Plaza Central',
-    extra: '32 expositores locales'
-  },
-  {
-    id: 2,
-    tipo: 'Cultor',
-    titulo: 'Alfarería de greda',
-    top: '70%',
-    left: '45%',
-    icono: '🏺',
-    color: '#d97706', // Naranja
-    horario: 'Lunes a Viernes',
-    lugar: 'Taller San José',
-    extra: 'Venta directa'
-  },
-  {
-    id: 3,
-    tipo: 'Expresión',
-    titulo: 'Música folclórica',
-    top: '25%',
-    left: '15%',
-    icono: '🎻',
-    color: '#d97706', // Naranja
-    horario: 'Domingos 16:00',
-    lugar: 'Anfiteatro',
-    extra: 'Abierto a todo público'
-  }
-];
+// La página del mapa ciudadano muestra un mapa interactivo con puntos de interés cultural
+// Al hacer clic en un punto, se despliega un panel lateral con detalles y opciones relacionadas
+// También incluye un panel flotante para controlar las capas del mapa (ferias, cultores, espacios patrimoniales) (PENDIENTE)
 
 const Mapa: React.FC = () => {
+  const { data: fichas = [] } = useFichasPatrimonio();
+  
+  // Mapeamos fichas reales a puntos de mapa (coordenadas ficticias por el momento) y asignamos colores e íconos según categoría
+  const [puntos, setPuntos] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    if (fichas.length > 0) {
+      const mapeados = fichas.map((ficha) => {
+        // Coordenadas ficticias 
+        const randomTop = Math.floor(Math.random() * 60 + 20) + '%';
+        const randomLeft = Math.floor(Math.random() * 60 + 20) + '%';
+        
+        let color = '#1e3a8a';
+        let icono = '📍';
+        if (ficha.categoria === 'cultor') { color = '#d97706'; icono = '🏺'; }
+        if (ficha.categoria === 'expresion') { color = '#047857'; icono = '🎻'; }
+        if (ficha.categoria === 'oficio') { color = '#be185d'; icono = '✂️'; }
+        
+        return {
+          id: ficha.id,
+          tipo: ficha.categoria,
+          titulo: ficha.nombre,
+          top: randomTop,
+          left: randomLeft,
+          icono,
+          color,
+          lugar: ficha.ubicacion?.direccion || 'Centro',
+          extra: ficha.estado,
+          fichaOriginal: ficha // Referencia a la ficha original
+        };
+      });
+      setPuntos(mapeados);
+    }
+  }, [fichas]);
+
   // Estado para controlar qué punto está clickeado
   const [puntoActivo, setPuntoActivo] = useState<any | null>(null);
+  
+  // Estado para el modal de vista rápida
+  const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
 
   return (
     <IonPage>
-      <Header />
-      
       {/* scrollY={false} evita que la página haga scroll, el mapa debe ocupar el 100% */}
       <IonContent fullscreen className="mapa-page" scrollY={false}>
         
@@ -82,8 +84,8 @@ const Mapa: React.FC = () => {
               </IonItem>
             </div>
 
-            {/* Marcadores Simulados */}
-            {PUNTOS_MOCK.map((punto) => (
+            {/* Marcadores */}
+            {puntos.map((punto) => (
               <div 
                 key={punto.id}
                 className={`marcador-mapa ${puntoActivo?.id === punto.id ? 'marcador-activo' : ''}`}
@@ -116,7 +118,12 @@ const Mapa: React.FC = () => {
                     {puntoActivo.horario} • {puntoActivo.lugar} • {puntoActivo.extra}
                   </p>
                   
-                  <button className="btn-outline-white">Ver ficha completa</button>
+                  <button 
+                    className="btn-outline-white" 
+                    onClick={() => setSelectedFicha(puntoActivo.fichaOriginal as FichaPatrimonio)}
+                  >
+                    Ver ficha completa
+                  </button>
                 </div>
 
                 <div className="seccion-cercanos">
@@ -155,6 +162,12 @@ const Mapa: React.FC = () => {
 
         </div>
       </IonContent>
+
+      <FichaModal 
+        isOpen={!!selectedFicha} 
+        onClose={() => setSelectedFicha(null)} 
+        ficha={selectedFicha} 
+      />
     </IonPage>
   );
 };

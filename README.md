@@ -12,8 +12,10 @@
 2. [Justificación del Problema](#justificación-del-problema)
 3. [Análisis del Usuario Objetivo](#análisis-del-usuario-objetivo)
 4. [Requerimientos del Sistema](#requerimientos-del-sistema)
-5. [Arquitectura de Navegación y UX](#arquitectura-de-navegación-y-ux)
-6. [Instrucciones de Ejecución](#instrucciones-de-ejecución)
+5. [Arquitectura del Sistema](#arquitectura-del-sistema)
+6. [Arquitectura de Navegación y UX](#arquitectura-de-navegación-y-ux)
+7. [Instrucciones de Ejecución](#instrucciones-de-ejecución)
+
 
 # Introducción al proyecto
  
@@ -83,15 +85,15 @@ El Ciudadano puede ser un vecino, turista o cualquier tipo de persona que accede
 - Conectividad variable (estable en zonas urbanas, limitada en sectores rurales).
 - Nivel de alfabetización digital: heterogéneo.
 
-#### Necesidades Funcionales
-- Explorar catálogo de patrimonio y oficios.
-- Consultar agenda de ferias y eventos.
-- Visualizar mapa cultural de la comuna con información simple de eventos.
-- Proponer iniciativas culturales de forma sencilla.
-- Votar por propuestas de otros ciudadanos.
-- Postular a fondos culturales ofrecidos por la municipalidad.
-- Calificar y comentar fichas y eventos.
-- Consultar indicadores de gestión cultural.
+#### Necesidades Funcionales (Vinculadas al Backend)
+- **Explorar catálogo de patrimonio y oficios:** Lectura dinámica de registros patrimoniales cargados de forma asíncrona desde la base de datos.
+- **Consultar agenda de ferias y eventos:** Acceso a eventos filtrados activamente por mes y año en tiempo real desde el servidor.
+- **Visualizar mapa cultural de la comuna:** Carga georreferenciada de marcadores de ferias y cultores recuperados dinámicamente desde el backend.
+- **Proponer iniciativas culturales de forma sencilla:** Envío de propuestas ciudadanas con persistencia en la BD, asociadas estrictamente a un usuario autenticado.
+- **Votar por propuestas de otros ciudadanos:** Interacción interactiva en tiempo real que previene votos duplicados y actualiza contadores en transacciones seguras de base de datos.
+- **Postular a fondos culturales municipales:** Formulario de múltiples pasos que procesa y almacena datos de postulación, presupuestos y documentos adjuntos persistidos en la BD.
+- **Calificar y comentar fichas patrimoniales:** Sistema de valoraciones (1-5 estrellas) y opiniones que recalculan de forma automatizada los promedios e indicadores en el backend.
+- **Consultar indicadores de gestión cultural:** Acceso directo a KPIs y gráficos de gestión calculados en tiempo real a través del panel de transparencia.
 
 ---
 
@@ -106,16 +108,15 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 - Nivel de alfabetización digital: media-alta.
 - Tiene un tiempo disponible limitado debido a las múltiples responsabilidades de su cargo.
 
-#### Necesidades Funcionales
-- Crear y editar fichas del catálogo patrimonial cultural.
-- Gestionar capas y marcadores del mapa interactivo.
-- Publicar y administrar eventos en la agenda de la plataforma.
-- Crear convocatorias de fondos culturales.
-- Revisar y cambiar estado de postulaciones.
-- Moderar propuestas y comentarios ciudadanos.
-- Configurar y actualizar indicadores del panel de transparencia.
-- Permitir el seguimiento de estado de iniciativas para ciudadanos.
-- Obtener datos sobre participación e impacto cultural de iniciativas para la toma de decisiones.
+#### Necesidades Funcionales (Vinculadas al Backend)
+- **Crear y editar fichas del catálogo patrimonial:** Operaciones CRUD completas y seguras (protegidas por token JWT de rol Gestor) sobre la tabla de Fichas.
+- **Gestionar capas y marcadores del mapa:** Edición en caliente de descripciones y coordenadas que actualiza instantáneamente el visor georreferenciado.
+- **Publicar y administrar eventos en la agenda:** Control total de creación y expiración de actividades culturales en el calendario general.
+- **Crear convocatorias de fondos culturales:** Definición y apertura de convocatorias con presupuestos máximos, cupos y plazos administrados en el servidor.
+- **Revisar y cambiar estado de postulaciones:** Modificación de estados en base de datos (aprobado/rechazado) para el seguimiento inmediato del ciudadano.
+- **Moderar propuestas y comentarios ciudadanos:** Capacidad de supervisión y adición de comentarios formales de retroalimentación de gestión a las propuestas de la comunidad.
+- **Configurar y actualizar indicadores de transparencia:** Panel para la bitácora pública de transparencia (anuncios) y control de visibilidad de las actualizaciones.
+- **Obtener datos sobre participación e impacto cultural:** Acceso a APIs analíticas de KPI y de distribución para alimentar gráficos interactivos (Recharts) que asisten en la toma de decisiones.
 
 # Requerimientos del Sistema
 
@@ -139,6 +140,65 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 
 Para ver una descripción más detallada y completa de los requerimientos funcionales y no-funcionales, consulte el documento [requerimientos.md](requerimientos.md).
 
+---
+
+# Arquitectura del Sistema
+
+El proyecto está diseñado bajo una arquitectura de **Monorepo Dividido (Split Monorepo)**, es decir, un único repositorio central que desacopla la aplicación cliente del servidor de base de datos. Esta estrategia de estructuración facilita el mantenimiento, las pruebas independientes y la escalabilidad de cada capa de la aplicación, ya que es consistente, ordenado y permite una gestión simplificada de dependencias.
+
+```mermaid
+graph TD
+    subgraph Cliente [Cliente: Híbrido Web/Móvil]
+        App[Vite + React 19]
+        Ionic[Ionic React UI Componentes]
+        RQ[TanStack React Query]
+        Ax[Axios HTTP Client]
+    end
+
+    subgraph Servidor [Servidor: API RESTful]
+        Express[Node.js + Express Server]
+        Auth[JWT Middleware verifyToken]
+        Prisma[Prisma Client ORM]
+    end
+
+    subgraph Datos [Persistencia]
+        DB[(Base de Datos SQL)]
+    end
+
+    App --> Ionic
+    App --> RQ
+    RQ --> Ax
+    Ax -->|Peticiones HTTP + JWT Bearer Token| Express
+    Express --> Auth
+    Express --> Prisma
+    Prisma --> DB
+```
+
+### 1. Cliente (Frontend)
+El frontend se encuentra en la raíz del proyecto y consiste en una aplicación de página única (**SPA**) híbrida y responsiva orientada tanto a dispositivos móviles como a ordenadores de escritorio.
+* **Vite + React 19:** Entorno de compilación ultrarrápido y biblioteca de UI declarativa basada en componentes funcionales.
+* **Ionic Framework (React):** Provee componentes de interfaz nativos y adaptativos optimizados tanto para la web móvil como para aplicaciones nativas mediante Capacitor.
+* **TanStack React Query:** Gestiona la sincronización, almacenamiento en caché (*caching*), expiración y mutación del estado remoto sin necesidad de redundancia de llamadas HTTP.
+* **Axios:** Cliente HTTP para la comunicación con el servidor, configurado para adjuntar de manera automática el token JWT desde `localStorage` en cada cabecera.
+* **Recharts:** Biblioteca de gráficos modular y responsiva para mostrar datos interactivos de transparencia y de la comunidad.
+
+### 2. Servidor (Backend)
+El backend se encuentra encapsulado en el directorio `/backend` del proyecto y provee una API REST que centraliza la lógica de negocio y seguridad.
+* **Node.js + Express:** Servidor web ligero, rápido e implementado en TypeScript para garantizar consistencia de tipos estáticos en todo el flujo de trabajo.
+* **JWT Authentication Middleware (`verifyToken`):** Intercepta las solicitudes protegidas y valida los tokens web de JSON firmados, otorgando accesos basados en el rol del usuario (`ciudadano` o `gestor`).
+* **Prisma ORM:** Motor de mapeo objeto-relacional para interactuar con la base de datos de manera tipada y segura, facilitando las consultas de agregación y el manejo de relaciones entre tablas.
+
+### 3. Persistencia (Base de Datos)
+La persistencia de datos está estructurada de forma relacional en una base de datos SQL que cumple con los modelos definidos en `/backend/prisma/schema.prisma`.
+* **Modelos Principales:**
+  * **Autenticación y Perfil:** `Usuario` (RUT, Rol, Contraseña encriptada asíncronamente con `bcryptjs`).
+  * **Participación Ciudadana:** `Propuesta` y `VotoPropuesta` con restricciones de integridad de clave compuesta única para prevenir votos duplicados.
+  * **Patrimonio y Oficios:** `Ficha` (con ubicaciones y multimedia serializados en JSON) y `ValoracionFicha`.
+  * **Agenda Comunal:** `Evento` que almacena geolocalizaciones y fechas de inicio/término.
+  * **Administración y Transparencia:** `Fondo`, `Postulacion` y `PublicacionTransparencia`.
+
+---
+
 # Arquitectura de Navegación y UX
 
 ## Rutas Principales y Secundarias y Relaciones Jerárquicas
@@ -161,9 +221,9 @@ Para ver una descripción más detallada y completa de los requerimientos funcio
     ├── /ciudadano/mapa                             # Mapa interactivo
     ├── /ciudadano/agenda                           # Calendario de eventos
     │   └── /ciudadano/agenda/:id                   # Detalle de un evento 
-    └── /ciudadano/comunidad                        # Hub de participación 
-        ├── /ciudadano/comunidad/propuestas         # Listado y votación de propuestas 
-        └── /ciudadano/comunidad/transparencia      # Información de fondos y postulaciones culturales
+    ├── /ciudadano/fondos                           # Información de fondos y formulario de postulación 
+    ├── /ciudadano/comunidad                       # Listado y votación de propuestas 
+    └── /ciudadano/transparencia                    # Información de gastos y estadísticas municipales
 ```
 
 **Módulo Gestor Municipal**
@@ -171,22 +231,25 @@ Para ver una descripción más detallada y completa de los requerimientos funcio
 /
 └── /gestor
     ├── /gestor/dashboard        # Panel inicial con métricas
-    ├── /gestor/contenido        # Administración de fichas y agenda
-    └── /gestor/postulaciones    # Revisión de fondos de ciudadanos
+    ├── /gestor/catálogo         # Administración del catálogo público
+    ├── /gestor/agenda-y-mapa    # Administración de eventos 
+    ├── /gestor/propuestas       # Gestión de propuestas 
+    ├── /gestor/fondos           # Administración de fondos y convocatorias
+    └── /gestor/transparencia    # Administración de transparencia y datos públicos
 ```
 
 ## Flujo de Navegación entre Funcionalidades
 
 El flujo principal se basa en dos patrones según el rol del usuario:
 
-- **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los cinco dominios principales (Inicio, Catálogo, Mapa, Agenda, Comunidad). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
+- **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los siete dominios principales (Inicio, Catálogo, Mapa, Agenda, Fondos, Comunidad, Transparencia). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
 - **Navegación Vertical (Gestor):** Emplea un Sidebar simple (menú lateral) fijo a la izquierda. Al seleccionar un ítem, el área principal de contenido a la derecha se actualiza, facilitando la gestión de datos pesados sin perder el contexto del menú general.
 
 ## Diferenciación de Acceso según Roles 
 
 El control de acceso se maneja mediante rutas protegidas (Protected Routes) en el router de React, evaluando el token de sesión y los permisos del usuario:
-- **Acceso público (Sin autenticar):** Puede navegar libremente por `/ciudadano/inicio`, `/catalogo`, `/mapa` y `/agenda`. Si intenta interactuar (votar, postular), el flujo lo redirige automáticamente a `/auth/login`.
-- **Usuario Ciudadano (Autenticado):** Mantiene el acceso público y desbloquea permisos de escritura para crear propuestas, votar y comentar fichas dentro de la jerarquía `/ciudadano/comunidad/`.
+- **Acceso público (Sin autenticar):** Puede navegar libremente por `/ciudadano/inicio`, `/catalogo`, `/mapa` y `/agenda`. Si intenta interactuar (votar, postular), el flujo lo redirige automáticamente a `/auth/login` para iniciar sesión y acceder a estas funcionalidades.
+- **Usuario Ciudadano (Autenticado):** Mantiene el acceso público y desbloquea permisos de escritura para crear propuestas, votar y comentar fichas dentro de la jerarquía de Fondos, Propuestas y Transparencia.
 - **Gestor (Autenticado con credenciales municipales):** Es el único rol autorizado para renderizar la jerarquía `/gestor/`. Tiene permisos completos de CRUD (Crear, Leer, Actualizar, Borrar) sobre el catálogo, el mapa y la agenda, además de capacidad de moderación.
 
 ## Task Flow
@@ -248,7 +311,7 @@ Toca acceso rápido → /comunidad/propuestas
     └── Toca "Nueva Propuesta"
           │
           ▼
-      /comunidad/propuestas/postular
+      /comunidad/nueva-propuesta
           │
           ├── [Paso 1] Datos personales
           │     ├── Nombre representante
@@ -260,12 +323,7 @@ Toca acceso rápido → /comunidad/propuestas
           │     ├── Categoría cultural
           │     └── Descripción del proyecto
           │
-          ├── [Paso 3] Presupuesto y documentos
-          │     ├── Monto solicitado (validado contra máximo)
-          │     ├── Desglose de gastos
-          │     └── Adjuntar PDF (acta, estatutos)
-          │
-          └── [Paso 4] Confirmar
+          └── [Paso 3] Confirmar
                 ├── Resumen de todos los datos
                 └── Enviar 
 ```
@@ -284,51 +342,85 @@ En móvil, el ciudadano interactúa en la aplicación con pestañas táctiles gr
 
 Esta arquitectura de navegación maximiza la usabilidad al usar patrones nativos esperados por el usuario (Tabs en móvil, Sidebar en PC). La eficiencia de interacción se logra mediante la carga diferida de los tres grandes módulos; un ciudadano que solo revisa la agenda no descargará el código Javascript del panel administrativo. La claridad estructural se mantiene separando estrictamente los componentes visuales de la lógica de enrutamiento y roles. Finalmente, la escalabilidad está asegurada: agregar una nueva funcionalidad (por ejemplo, un módulo de turismo) solo requiere crear una nueva rama en el árbol de rutas sin afectar el código de los módulos existentes.
 
+## Sistema de Soporte para Modo Oscuro y Adaptabilidad Visual
+
+La aplicación incorpora una experiencia visual adaptativa completa diseñada para responder dinámicamente al contexto de uso del usuario:
+* **Menú Desplegable Responsivo (Drawer):** En resoluciones móviles (< 992px), el menú superior colapsa en un botón de "hamburguesa". Al pulsarlo, emerge un panel lateral con desenfoque de fondo (*backdrop-filter: blur*), enfocando la interacción del usuario sin perder de vista la interfaz subyacente.
+* **Propagación del Tema en CSS Variables:** La alternancia entre Modo Claro y Oscuro (`body.dark-theme`) se propaga instantáneamente por toda la aplicación a través de propiedades personalizadas de CSS (`variables.css`), controlando de forma uniforme colores de fondos, bordes, tipos de letra y campos de formularios de ambas capas (Ciudadano y Gestor).
+* **Gráficos e Indicadores Reactivos:** El sistema emplea un MutationObserver en el componente de Transparencia para escuchar el cambio de clases del DOM e inyectar de manera reactiva colores de alto contraste a los elementos de Recharts (rejillas, Tooltips y etiquetas de ejes) en el Modo Oscuro.
+
+
 # Instrucciones de Ejecución
 
-Este proyecto ha sido desarrollado utilizando **Ionic Framework** con **React** y empaquetado con **Vite**. Para correr el proyecto en tu entorno local, sigue estos pasos:
+Este proyecto ha sido desarrollado bajo un esquema full-stack (Frontend híbrido + Backend API) utilizando **Ionic Framework** con **React**, empaquetado con **Vite**, y un servidor **NodeJS + Express + Prisma ORM**.
 
 ## Pre-requisitos
 
 Asegúrate de tener instalados los siguientes entornos en tu máquina:
 * [Node.js](https://nodejs.org/) (Versión 18.x o superior recomendada)
 * Git
+* Un gestor de base de datos SQL compatible con Prisma (como PostgreSQL).
 
-## Instalación y Despliegue Local
+## Instalación y Configuración Inicial
 
 1. **Clonar el repositorio**
 
-Abre tu terminal y ejecuta el siguiente comando para descargar el código fuente:
-```
+```bash
 git clone https://github.com/nachit0xd/Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19.git
-```
-2. **Navegar al directorio del proyecto**
-
-```
 cd Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19
 ```
-3. **Instalar las dependencias**
 
-Instala todos los paquetes necesarios de npm en el bash para que Ionic y React funcionen correctamente:
-```
+2. **Instalar las dependencias**
+
+Instala los paquetes en el cliente y en el servidor:
+```bash
+# Instalar dependencias del Frontend
 npm install
-```
-4. **Ejecutar el servidor de desarrollo**
 
-Levanta el entorno local utilizando Vite:
+# Instalar dependencias del Backend
+cd backend
+npm install
+cd ..
 ```
-npm run dev
-```
-5. **Visualizar la app**
 
-Una vez que el servidor esté corriendo, abre tu navegador web y pega el enlace de localhost que entrega Vite, debería verse así:
+3. **Configuración de Variables de Entorno (Backend)**
+
+Navega a la carpeta `/backend` y crea tu archivo de configuración `.env` tomando como referencia el ejemplo provisto:
+```bash
+cd backend
+cp .env.example .env
 ```
-http://localhost:5173
+Edita el archivo `.env` configurando tus credenciales de conexión para la base de datos (`DATABASE_URL`) y la firma de tokens de seguridad (`JWT_SECRET`).
+
+4. **Sincronización de Base de Datos y Datos de Semilla (Seed)**
+
+Genera la base de datos estructurada con el esquema relacional de Prisma y ejecuta los datos iniciales de prueba:
+```bash
+npx prisma db push
+npm run seed
+cd ..
 ```
+
+## Ejecución del Entorno de Desarrollo
+
+Para optimizar el flujo de desarrollo, el proyecto incluye un script de ejecución concurrente. Levanta el servidor Express y el servidor de desarrollo de Vite de forma simultánea con un solo comando desde el directorio raíz:
+
+```bash
+npm run dev:all
+```
+
+Esto iniciará automáticamente:
+* **Frontend (Vite):** Disponible en `http://localhost:5173`
+* **Backend API (Express):** Disponible en `http://localhost:3000`
+
+*(Nota: También se pueden ejecutar de forma independiente abriendo dos consolas distintas y corriendo `npm run dev` en el directorio raíz para el frontend, y `npm run dev` en la carpeta `/backend` para el servidor).*
+
 
 ## Prototipo de Diseño en Figma
 
 Antes de la codificación de este proyecto, la arquitectura de la información, la interfaz de usuario (UI) y la experiencia de usuario (UX) fueron prototipados en Figma. El diseño contempla la separación de roles, flujos de tareas (como la creación de propuestas) y la coherencia visual entre dispositivos.
 
-Puedes interactuar con el prototipo navegable aquí:
-[Enlace a Figma](https://www.figma.com/design/FVP8YNPAUVWo16vc55pIOn/Proyecto-ING-Web-y-M%C3%B3vil?node-id=83-430&t=O1oTsBeLjHlMRdXI-1)
+A partir de la entrega parcial 1, se han añadido nuevos prototipos de pantallas, como la pantalla de Fondos del Ciudadano y las pantallas del Gestor Municipal, con cambios que mejoran (respecto a la entrega pasada) la navegación entre pantallas del Ciudadano.
+
+Se puede interactuar con el prototipo navegable aquí (nuevo link, prototipo actualizado):
+[Enlace a Figma](https://www.figma.com/design/zbS9fxfxutZEDHJ8CJblVV/Proyecto-ING-Web-y-M%C3%B3vil-Entrega-Parcial-2?node-id=0-1&t=KLkTDE9nLrQaHELZ-1)

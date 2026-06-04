@@ -1,2 +1,47 @@
-/* For information on how to create your own theme, please refer to:
-http://ionicframework.com/docs/theming/ */
+/* Ionic Variable overrides or additions */
+:root {
+  /* Paleta Modo Claro (Default) */
+  --app-bg: #f8fafc;
+  --app-card-bg: #ffffff;
+  --app-text-color: #1e293b;
+  --app-text-muted: #64748b;
+  --app-border-color: #e2e8f0;
+  --app-header-bg: #1e2536;
+  --app-header-color: #ffffff;
+  --app-sidebar-bg: #ffffff;
+  --app-sidebar-text: #4b5563;
+  --app-input-bg: #ffffff;
+  --app-input-border: #cbd5e1;
+  --app-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+
+  /* Overrides for Ionic components */
+  --ion-background-color: var(--app-bg);
+  --ion-text-color: var(--app-text-color);
+}
+
+/* Paleta Modo Oscuro */
+body.dark-theme, body.dark {
+  --app-bg: #0f172a;
+  --app-card-bg: #1e293b;
+  --app-text-color: #f8fafc;
+  --app-text-muted: #94a3b8;
+  --app-border-color: #334155;
+  --app-header-bg: #0b0f19;
+  --app-header-color: #e2e8f0;
+  --app-sidebar-bg: #1e293b;
+  --app-sidebar-text: #d1d5db;
+  --app-input-bg: #0f172a;
+  --app-input-border: #475569;
+  --app-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -4px rgba(0, 0, 0, 0.3);
+
+  /* Overrides for Ionic components in Dark Mode */
+  --ion-background-color: var(--app-bg);
+  --ion-text-color: var(--app-text-color);
+}
+
+/* Transiciones globales suaves al cambiar de tema */
+body {
+  background-color: var(--app-bg);
+  color: var(--app-text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}

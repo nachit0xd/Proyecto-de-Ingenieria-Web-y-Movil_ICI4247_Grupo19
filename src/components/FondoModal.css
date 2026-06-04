@@ -1,0 +1,137 @@
+/* Estilos para el modal de fondos */
+.fondo-modal {
+  --width: 600px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 12px;
+}
+
+.fondo-modal-content {
+  background: var(--app-card-bg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.fondo-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.fondo-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--app-text-color);
+  font-weight: 600;
+}
+
+.fondo-modal-header .btn-close {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.fondo-modal-header .btn-close:hover {
+  background: var(--app-bg);
+  color: var(--app-text-color);
+}
+
+.fondo-modal-body {
+  padding: 24px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fondo-modal-body .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.fondo-modal-body .form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.fondo-modal-body label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--app-text-color);
+}
+
+.fondo-modal-body input,
+.fondo-modal-body textarea,
+.fondo-modal-body select {
+  padding: 10px 14px;
+  border: 1px solid var(--app-border-color);
+  background: var(--app-input-bg);
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--app-text-color);
+  font-family: inherit;
+  transition: border-color 0.2s;
+}
+
+.fondo-modal-body input:focus,
+.fondo-modal-body textarea:focus,
+.fondo-modal-body select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.fondo-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.btn-cancel {
+  padding: 10px 20px;
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
+  font-weight: 500;
+  color: var(--app-text-color);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+  background: var(--app-bg);
+}
+
+.btn-save {
+  padding: 10px 20px;
+  background: #3b82f6;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-save:hover {
+  background: #2563eb;
+}
+
+.btn-save:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

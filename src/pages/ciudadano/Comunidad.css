@@ -1,5 +1,6 @@
+/* Estilos para la página de comunidad, incluyendo el diseño del modal wizard para crear propuestas */
 .comunidad-page {
-  --background: #f9fafb;
+  --background: var(--app-bg);
 }
 
 /* CABECERA PRINCIPAL */
@@ -13,44 +14,49 @@
 .comunidad-header-row h1 {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
   margin: 0;
 }
 
 .btn-nueva-propuesta {
-  --background: #f97316; /* Naranja */
-  --color: white;
-  --border-radius: 8px;
+  background-color: #f97316;
+  color: white;
+  border-radius: 8px;
   font-weight: bold;
-  text-transform: none;
   font-size: 1.1rem;
-  height: 45px;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.btn-nueva-propuesta:hover {
+  background-color: #ea580c;
 }
 
 /* TABS (Pestañas) */
-.comunidad-tabs {
+.fondos-tabs {
   display: flex;
-  gap: 15px;
+  border-bottom: 2px solid var(--app-border-color);
   margin-bottom: 30px;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 15px;
+  gap: 10px;
 }
 
-.tab-btn {
-  background: white;
-  border: 1px solid #d1d5db;
-  color: #4b5563;
-  padding: 8px 20px;
-  border-radius: 6px;
+.fondo-tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 12px 24px;
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--app-text-muted);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
 }
 
-.tab-btn.active {
-  background: #1f2937;
-  color: white;
-  border-color: #1f2937;
+.fondo-tab-btn.active {
+  color: #f97316;
+  border-bottom-color: #f97316;
 }
 
 /* LISTA DE PROPUESTAS */
@@ -62,6 +68,15 @@
 
 .propuesta-item {
   padding: 25px;
+  background: var(--app-card-bg);
+  border-radius: 8px;
+  border: 1px solid var(--app-border-color);
+  transition: all 0.2s ease;
+}
+
+.propuesta-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--app-shadow);
 }
 
 .propuesta-item-header {
@@ -76,26 +91,26 @@
   gap: 10px;
 }
 
-.badge-lightgreen {
-  background-color: #dcfce7;
-  color: #166534;
-}
+.badge-green { background-color: #dcfce7; color: #166534; }
+.badge-red { background-color: #fee2e2; color: #991b1b; }
+.badge-yellow { background-color: #fef3c7; color: #92400e; }
+.badge-gray { background-color: var(--app-border-color); color: var(--app-text-muted); }
 
 .votos-count {
   font-size: 1.3rem;
   font-weight: bold;
-  color: #1f2937;
+  color: var(--app-text-color);
 }
 
 .propuesta-item h2 {
   font-size: 1.3rem;
   font-weight: bold;
   margin: 0 0 10px 0;
-  color: #1f2937;
+  color: var(--app-text-color);
 }
 
 .propuesta-item p {
-  color: #4b5563;
+  color: var(--app-text-muted);
   line-height: 1.5;
   margin: 0 0 20px 0;
 }
@@ -112,7 +127,7 @@
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--app-border-color);
   padding-top: 15px;
 }
 
@@ -121,7 +136,7 @@
   flex-direction: column;
   gap: 5px;
   font-size: 0.8rem;
-  color: #6b7280;
+  color: var(--app-text-muted);
 }
 
 .btn-accion {
@@ -135,29 +150,32 @@
   border: none;
 }
 
-.bg-lightgray { background-color: #e5e7eb; color: #374151; }
-.bg-lightgray:hover { background-color: #d1d5db; }
+.bg-lightgray { background-color: var(--app-border-color); color: var(--app-text-color); }
+.bg-lightgray:hover { background-color: var(--app-input-border); }
 
-.bg-darkgray { background-color: #d1d5db; color: #4b5563; }
-.bg-darkgray:hover { background-color: #9ca3af; }
+.bg-darkgray { background-color: var(--app-input-border); color: var(--app-text-muted); }
+.bg-darkgray:hover { background-color: var(--app-border-color); }
 
-/* MODAL WIZARD (DISEÑO OSCURO) */
+.bg-green-success { background-color: #22c55e; color: white; cursor: default; }
+
+/* MODAL WIZARD (DISEÑO DINÁMICO) */
 .wizard-modal {
-  --background: rgba(0,0,0,0.6); /* Fondo semi-transparente oscuro */
+  --background: rgba(0,0,0,0.55); /* Fondo semi-transparente oscuro */
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .modal-content-wrapper {
-  background-color: #4b5563; /* Gris oscuro del diseño */
+  background-color: var(--app-card-bg); /* Fondo dinámico */
   width: 90%;
-  max-width: 600px;
-  border-radius: 12px;
-  padding: 30px;
-  color: white;
-  margin: auto; /* Centra el modal en escritorio */
-  box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+  max-width: 640px;
+  border-radius: 16px;
+  padding: 35px;
+  color: var(--app-text-color); /* Texto dinámico */
+  margin: auto;
+  border: 1px solid var(--app-border-color);
+  box-shadow: var(--app-shadow);
   display: flex;
   flex-direction: column;
 }
@@ -166,13 +184,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  border-bottom: 1px solid var(--app-border-color);
+  padding-bottom: 15px;
 }
 
 .modal-header h2 {
-  font-size: 1.4rem;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 800;
   margin: 0;
+  color: var(--app-text-color);
 }
 
 .btn-volver-modal {
@@ -206,38 +227,43 @@
   width: 45px;
   height: 45px;
   border-radius: 50%;
-  background-color: #f3f4f6;
-  color: #4b5563;
+  background-color: var(--app-bg);
+  color: var(--app-text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.2rem;
   font-weight: bold;
-  border: 3px solid transparent;
+  border: 2px solid var(--app-border-color);
   transition: all 0.3s ease;
 }
 
 .step-circle.active {
   border-color: #f97316;
+  color: #f97316;
+  background-color: rgba(249, 115, 22, 0.08);
+  box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.15);
 }
 
 .step-circle.completed {
-  background-color: #22c55e; /* Verde */
+  background-color: #22c55e;
+  border-color: #22c55e;
   color: white;
 }
 
 .step-label {
-  font-size: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
   margin-top: 8px;
-  color: #e5e7eb;
+  color: var(--app-text-muted);
 }
 
 .step-line {
   flex-grow: 1;
   height: 3px;
-  background-color: #9ca3af;
+  background-color: var(--app-border-color);
   margin: 0 10px;
-  margin-top: -20px; /* Alinea con los círculos */
+  margin-top: -20px;
   z-index: 1;
   transition: background-color 0.3s ease;
 }
@@ -249,80 +275,98 @@
 /* Formularios del Modal */
 .modal-body {
   min-height: 250px;
+  flex: 1;
+  overflow-y: auto;
+  padding-right: 10px;
+  margin-bottom: 10px;
 }
 
 .step-content h3 {
-  font-size: 1.1rem;
+  font-size: 1.25rem;
+  font-weight: 700;
   margin-top: 0;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  color: var(--app-text-color);
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .input-group label {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 600;
   margin-bottom: 8px;
-  color: #f3f4f6;
+  color: var(--app-text-color);
 }
 
 /* Estilos mejorados para los inputs del modal */
 .custom-modal-input, .custom-modal-select {
-  --background: #ffffff; /* Fondo completamente blanco */
-  --color: #1f2937 !important; /* Texto en gris oscuro */
-  --placeholder-color: #9ca3af;
+  --background: var(--app-bg);
+  --color: var(--app-text-color);
+  --placeholder-color: var(--app-text-muted);
   --padding-start: 15px;
-  border: 1px solid #d1d5db; /* Borde sutil para definir la caja */
-  border-radius: 6px;
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
   font-size: 0.95rem;
-  margin-top: 5px; /* Separación del label */
+  margin-top: 5px;
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 
-/* Fuerza el color oscuro en el elemento nativo interno de Ionic */
-.custom-modal-input::part(native) {
-  color: #1f2937;
+.custom-modal-input::part(native), .custom-modal-select::part(native) {
+  color: var(--app-text-color) !important;
 }
 
 /* Efecto al hacer clic (focus) */
 .custom-modal-input.ion-focused, .custom-modal-select.ion-focused {
-  border-color: #f97316; /* Borde naranja al seleccionar */
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249,115,22,0.2);
+  --background: var(--app-card-bg);
 }
 
 .help-text {
-  font-size: 0.75rem;
-  color: #d1d5db;
-  margin-top: 5px;
+  font-size: 0.8rem;
+  color: var(--app-text-muted);
+  margin-top: 6px;
 }
 
 .file-upload-area {
-  border: 1px dashed #9ca3af;
-  border-radius: 6px;
-  padding: 20px;
+  border: 2px dashed var(--app-border-color);
+  border-radius: 8px;
+  padding: 30px 20px;
   text-align: center;
   cursor: pointer;
-  background: rgba(255,255,255,0.05);
+  background: var(--app-bg);
+  transition: all 0.2s;
 }
 
-.file-upload-area p { margin: 0 0 5px 0; font-size: 0.9rem; }
-.file-upload-area span { font-size: 0.75rem; color: #9ca3af; }
+.file-upload-area:hover {
+  border-color: #f97316;
+  background: rgba(249, 115, 22, 0.05);
+}
+
+.file-upload-area p { margin: 0 0 5px 0; font-size: 0.9rem; color: var(--app-text-color); }
+.file-upload-area span { font-size: 0.75rem; color: var(--app-text-muted); }
 
 /* Resumen (Paso 4) */
 .resumen-lista {
-  background: rgba(0,0,0,0.1);
+  background: var(--app-bg);
+  border: 1px solid var(--app-border-color);
   border-radius: 8px;
-  padding: 15px;
+  padding: 20px;
 }
 
 .resumen-item {
-  padding: 10px 0;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--app-border-color);
   font-size: 0.95rem;
+  color: var(--app-text-muted);
 }
-.resumen-item:last-child { border-bottom: none; }
-.resumen-item strong { color: #f3f4f6; margin-right: 5px; }
+.resumen-item:last-child { border-bottom: none; padding-bottom: 0; }
+.resumen-item strong { color: var(--app-text-color); margin-right: 5px; }
 
 /* Modal Footer Botones */
 .modal-footer {
@@ -334,23 +378,28 @@
 
 .btn-modal {
   padding: 12px 30px;
-  border-radius: 6px;
-  font-weight: bold;
+  border-radius: 8px;
+  font-weight: 700;
   font-size: 1rem;
   cursor: pointer;
   border: none;
+  transition: all 0.2s;
 }
 
-.btn-secondary { background-color: #d1d5db; color: #374151; }
-.btn-primary { background-color: #f3f4f6; color: #1f2937; }
-.btn-full { width: 150px; }
+.btn-secondary { background-color: var(--app-border-color); color: var(--app-text-color); border: 1px solid var(--app-border-color); }
+.btn-secondary:hover { background-color: var(--app-input-border); }
+
+.btn-primary { background-color: #f97316; color: white; }
+.btn-primary:hover { background-color: #ea580c; transform: translateY(-1px); box-shadow: 0 4px 6px rgba(249,115,22,0.25); }
+
+.btn-full { width: 100%; max-width: 200px; }
 
 /* Modal wizard para evitar recortes y asegurar legibilidad de inputs*/
 .wizard-modal .modal-content-wrapper {
   width: 90%;
   max-width: 640px;
   max-height: calc(100vh - 80px);
-  overflow-y: auto;
+  overflow: hidden;
   padding: 24px;
   box-sizing: border-box;
 }
@@ -364,20 +413,19 @@
   .stepper-container { flex-wrap: wrap; gap: 8px; }
 }
 
-/* Forzar colores de texto y placeholder dentro del modal (IonInput / IonTextarea usan variables CSS) */
 .wizard-modal ion-input,
 .wizard-modal ion-textarea,
 .wizard-modal .custom-modal-input,
 .wizard-modal .custom-modal-select {
-  --background: #ffffff;
-  --color: #1f2937; /* texto oscuro */
-  --placeholder-color: #9ca3af;
+  --background: var(--app-bg);
+  --color: var(--app-text-color);
+  --placeholder-color: var(--app-text-muted);
 }
 
 /* Forzamos color en inputs nativos dentro del modal como seguro adicional */
 .wizard-modal input,
 .wizard-modal textarea {
-  color: #1f2937 !important;
+  color: var(--app-text-color) !important;
 }
 
 /* Reducir el tamaño del header del modal en pantallas pequeñas para evitar que tape contenido */

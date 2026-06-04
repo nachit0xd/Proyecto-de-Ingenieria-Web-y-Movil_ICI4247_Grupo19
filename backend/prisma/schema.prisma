@@ -1,0 +1,127 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id        String   @id @default(uuid())
+  nombre    String
+  email     String   @unique
+  password  String
+  rol       String   // "ciudadano" | "gestor"
+  creadoEn  DateTime @default(now())
+  
+  propuestas Propuesta[]
+}
+
+model Propuesta {
+  id             String          @id @default(uuid())
+  titulo         String
+  descripcion    String
+  estado         String          // "revision" | "aprobado" | "rechazado"
+  votosTotales   Int             @default(0)
+  idUsuario      String
+  fechaCreacion  DateTime        @default(now())
+  comentariosGestor String[]     @default([])
+  
+  usuario        Usuario         @relation(fields: [idUsuario], references: [id])
+  votos          VotoPropuesta[]
+}
+
+model VotoPropuesta {
+  id           String    @id @default(uuid())
+  idUsuario    String
+  idPropuesta  String
+  fechaVoto    DateTime  @default(now())
+
+  propuesta    Propuesta @relation(fields: [idPropuesta], references: [id], onDelete: Cascade)
+  
+  @@unique([idUsuario, idPropuesta])
+}
+
+model Evento {
+  id             String   @id @default(uuid())
+  titulo         String
+  tipo           String   // "patrimonio" | "feria" | "cultor"
+  estado         String   // "activo" | "finalizado"
+  fechaInicio    DateTime
+  fechaFin       DateTime
+  direccion      String?
+  lat            Float?
+  lng            Float?
+  creadoEn       DateTime @default(now())
+}
+
+model Fondo {
+  id             String   @id @default(uuid())
+  titulo         String
+  descripcion    String
+  montoMaximo    Int
+  presupuesto    Int
+  cupos          Int
+  estado         String   // "abierto" | "cerrado"
+  creadoEn       DateTime @default(now())
+  
+  postulaciones  Postulacion[]
+}
+
+model Postulacion {
+  id                   String   @id @default(uuid())
+  fondoId              String
+  nombreRepresentante  String
+  rutRepresentante     String
+  nombreOrganizacion   String
+  descripcion          String
+  presupuestoEstimado  Int
+  estado               String   // "pendiente" | "aprobado" | "rechazado"
+  areaCultural         String?
+  desglose             String?
+  documentos           String?
+  fechaPostulacion     DateTime @default(now())
+  
+  fondo                Fondo    @relation(fields: [fondoId], references: [id], onDelete: Cascade)
+}
+
+model Ficha {
+  id                 String   @id @default(uuid())
+  nombre             String
+  descripcion        String
+  categoria          String   // "oficio" | "lugar" | "cultor" | "expresion"
+  ubicacion          String?  // JSON stringificado o string simple para lat/lng si se desea a futuro
+  multimediaUrl      String?  // JSON stringificado de array de URLs
+  estado             String   // "borrador" | "publicado" | "inactivo"
+  valoracionPromedio Float    @default(0)
+  totalValoraciones  Int      @default(0)
+  fechaCreacion      DateTime @default(now())
+  fechaActualizacion DateTime @updatedAt
+  
+  valoraciones       ValoracionFicha[]
+}
+
+model ValoracionFicha {
+  id           String   @id @default(uuid())
+  valoracion   Int      // 1 a 5
+  usuarioId    String
+  fichaId      String
+  fechaCreacion DateTime @default(now())
+
+  ficha        Ficha    @relation(fields: [fichaId], references: [id], onDelete: Cascade)
+  
+  @@unique([usuarioId, fichaId])
+}
+
+model PublicacionTransparencia {
+  id           String   @id @default(uuid())
+  mensaje      String
+  tipo         String   @default("General")
+  visible      Boolean  @default(true)
+  fecha        DateTime @default(now())
+}

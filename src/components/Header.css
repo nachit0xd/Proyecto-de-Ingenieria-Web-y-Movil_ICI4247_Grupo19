@@ -1,50 +1,298 @@
-/* Color de fondo y texto principal de la cabecera */
-.custom-toolbar {
-  --background: #1e2536; /* Azul oscuro */
-  --color: #ffffff;
-  --min-height: 64px;
-  padding: 0 20px;
+/* Estilos del Header Global */
+.global-header {
+  background-color: var(--app-header-bg);
+  color: var(--app-header-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  height: 64px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+  gap: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: all 0.3s ease;
 }
 
-/* Estilos del Logo / Título */
-.app-logo {
+/* Logo del header */
+.header-brand {
   font-weight: 700;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   letter-spacing: 0.5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #ffffff, #cbd5e1);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  transition: opacity 0.3s ease;
 }
 
-/* Estilos de los botones de navegación */
-.desktop-nav-links ion-button {
-  --color: #e2e8f0;
-  --color-hover: #ffffff;
-  font-weight: 500;
+.header-brand:hover {
+  opacity: 0.85;
+}
+
+/* Navegación horizontal de escritorio */
+.header-nav {
+  display: flex;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
+}
+
+/* Botones de navegación */
+.nav-link {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.75);
   font-size: 0.95rem;
-  text-transform: none; /* Quita las mayúsculas automáticas */
-  margin: 0 5px;
-}
-
-/* Efecto al pasar el mouse por los enlaces */
-.desktop-nav-links ion-button::part(native):hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.25s ease;
   border-radius: 8px;
+  text-transform: none;
 }
 
-/* Botón de perfil de usuario */
-.profile-button ion-button {
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
+
+/* Botón activo */
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  box-shadow: inset 0 -2px 0 #ffffff;
+}
+
+/* Sección de usuario de escritorio */
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-shrink: 0;
+}
+
+.user-avatar-icon {
+  font-size: 2rem;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.user-avatar-icon:hover {
+  transform: scale(1.05);
+}
+
+.logout-btn {
+  --color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.logout-btn:hover {
   --color: #ffffff;
-  margin-left: 15px;
 }
 
-/* COMPORTAMIENTO RESPONSIVE (MÓVIL VS PC) */
+/* Interruptor de Modo Oscuro */
+.theme-toggle-btn {
+  background: none;
+  border: none;
+  color: #f1f5f9;
+  font-size: 1.4rem;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.25s ease;
+}
 
-/* En dispositivos móviles (pantallas menores a 992px), ocultamos los textos 
-   porque usaremos la barra inferior (Tab Bar) para navegar */
+.theme-toggle-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: rotate(15deg);
+}
+
+.vertical-divider {
+  width: 1px;
+  height: 24px;
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* VISIBILIDAD RESPONSIVA */
+.desktop-only {
+  display: flex;
+}
+
+.mobile-only {
+  display: none !important;
+}
+
+/* Ocultar elementos móviles por defecto en escritorio */
+.mobile-drawer, .drawer-overlay {
+  display: none !important;
+}
+
+/* COMPORTAMIENTO MÓVIL (MEDIA QUERIES) */
 @media (max-width: 992px) {
-  .desktop-nav-links {
+  .header-nav {
+    display: none; /* Oculta enlaces de escritorio en pantallas medianas/pequeñas */
+  }
+
+  .header-user {
     display: none;
   }
-  
-  .custom-toolbar {
-    padding: 0 5px; /* Menos padding en móvil */
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-only {
+    display: flex !important;
+  }
+
+  .global-header {
+    padding: 0 20px;
+    height: 56px;
+  }
+
+  .header-brand {
+    font-size: 1.25rem;
+  }
+
+  /* Controles móviles */
+  .mobile-header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .mobile-menu-toggle {
+    background: none;
+    border: none;
+    color: #ffffff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: background-color 0.2s;
+  }
+
+  .mobile-menu-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  /* Cajón Desplegable Móvil (Mobile Drawer) */
+  .mobile-drawer {
+    position: fixed;
+    top: 56px;
+    right: -280px;
+    width: 280px;
+    height: calc(100vh - 56px);
+    background-color: #1e2536; 
+    box-shadow: -4px 0 20px rgba(0, 0, 0, 0.25);
+    z-index: 1001;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: right 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 20px;
+  }
+
+  .mobile-drawer.open {
+    right: 0;
+  }
+
+  /* Enlaces del cajón */
+  .drawer-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .drawer-link {
+    background: none;
+    border: none;
+    color: #e2e8f0;
+    font-size: 1.05rem;
+    font-weight: 500;
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+
+  .drawer-link:hover {
+    background-color: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+    padding-left: 20px;
+  }
+
+  .drawer-link.active {
+    background-color: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    box-shadow: inset 4px 0 0 #ffffff;
+  }
+
+  /* Footer del cajón */
+  .drawer-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .drawer-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #ffffff;
+    font-weight: 600;
+  }
+
+  .drawer-user-info .user-avatar-icon {
+    font-size: 2.2rem;
+  }
+
+  .drawer-logout-btn {
+    background-color: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    color: #f87171;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .drawer-logout-btn:hover {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+  }
+
+  /* Overlay de fondo */
+  .drawer-overlay {
+    display: block !important;
+    position: fixed;
+    top: 56px;
+    left: 0;
+    width: 100vw;
+    height: calc(100vh - 56px);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 1000;
+    transition: opacity 0.3s ease;
   }
 }

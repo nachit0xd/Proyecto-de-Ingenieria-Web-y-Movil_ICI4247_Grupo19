@@ -1,23 +1,12 @@
 import React from 'react';
-import { Redirect, Route } from 'react-router-dom';
+import { Redirect, Route, useLocation } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { 
   IonApp,
-  IonIcon,
-  IonLabel, 
   IonRouterOutlet, 
-  IonTabBar,
-  IonTabButton,
-  IonTabs,
-  setupIonicReact 
+  setupIonicReact
 } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import {
-  home,
-  library,
-  map,
-  calendar,
-  grid 
- } from 'ionicons/icons';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -35,107 +24,109 @@ import '@ionic/react/css/text-transformation.css';
 import '@ionic/react/css/flex-utils.css';
 import '@ionic/react/css/display.css';
 
-/**
- * Ionic Dark Mode
- * -----------------------------------------------------
- * For more info, please see:
- * https://ionicframework.com/docs/theming/dark-mode
- */
-
-/* import '@ionic/react/css/palettes/dark.always.css'; */
-/* import '@ionic/react/css/palettes/dark.class.css'; */
-import '@ionic/react/css/palettes/dark.system.css';
-
 /* Tema global */
 import './theme/variables.css';
 
-// TODO: Importar futuros componentes aquí
+// Imports de componentes y contextos
+import Header from './components/Header';
+import ProtectedRoute from './routes/ProtectedRoute';
+import { AuthProvider } from './context/AuthContext';
+
+// Importaciones estáticas para eliminar Suspense y mejorar transiciones
 import Auth from './pages/auth/Auth';
+import Register from './pages/auth/Register';
 import Inicio from './pages/ciudadano/Inicio';
 import Catalogo from './pages/ciudadano/Catalogo';
 import Mapa from './pages/ciudadano/Mapa';
 import Agenda from './pages/ciudadano/Agenda';  
 import Comunidad from './pages/ciudadano/Comunidad';
+import Fondos from './pages/ciudadano/Fondos';
 import Transparencia from './pages/ciudadano/Transparencia';
 
+import DashboardGestor from './pages/gestor/Dashboard';
+import CatalogoGestor from './pages/gestor/Catalogo';
+import AgendaMapaGestor from './pages/gestor/AgendaMapa';
+import PropuestasGestor from './pages/gestor/Propuestas';
+import FondosGestor from './pages/gestor/Fondos';
+import TransparenciaGestor from './pages/gestor/Transparencia';
 
 setupIonicReact();
 
-/* 1. Layout del Ciudadano (Tabs Inferiores) */
-const CiudadanoTabs: React.FC = () => (
-  <IonTabs>
-    <IonRouterOutlet>
-      {/* Rutas de las pestañas */}
-      <Route exact path="/ciudadano/inicio" component={Inicio} />
-      <Route exact path="/ciudadano/catalogo" component={Catalogo} />
-      <Route exact path="/ciudadano/mapa" component={Mapa} />
-      <Route exact path="/ciudadano/agenda" component={Agenda} />
-      
-      {/* Esta ruta agrupa Propuestas, Fondos y Transparencia en un solo menú */}
-      <Route exact path="/ciudadano/comunidad" component={Comunidad} />
-      <Route exact path="/ciudadano/transparencia" component={Transparencia} />
-      
-      <Route exact path="/ciudadano">
-        <Redirect to="/ciudadano/inicio" />
-      </Route>
-    </IonRouterOutlet>
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+      staleTime: 1000 * 60 * 5,
+    },
+  },
+});
 
-    {/* Barra de navegación inferior (visible en móvil, pero se puede ocultar en desktop) */}
-    <IonTabBar slot="bottom">
-      <IonTabButton tab="inicio" href="/ciudadano/inicio">
-        <IonIcon icon={home} />
-        <IonLabel>Inicio</IonLabel>
-      </IonTabButton>
-      
-      <IonTabButton tab="catalogo" href="/ciudadano/catalogo">
-        <IonIcon icon={library} />
-        <IonLabel>Catálogo</IonLabel>
-      </IonTabButton>
-      
-      <IonTabButton tab="mapa" href="/ciudadano/mapa">
-        <IonIcon icon={map} />
-        <IonLabel>Mapa</IonLabel>
-      </IonTabButton>
-      
-      <IonTabButton tab="agenda" href="/ciudadano/agenda">
-        <IonIcon icon={calendar} />
-        <IonLabel>Agenda</IonLabel>
-      </IonTabButton>
-      
-      <IonTabButton tab="comunidad" href="/ciudadano/comunidad">
-        <IonIcon icon={grid} />
-        <IonLabel>Comunidad</IonLabel>
-      </IonTabButton>
-    </IonTabBar>
-  </IonTabs>
-);
+const AppRouter: React.FC = () => {
+  const location = useLocation();
+  const showHeader = location.pathname.startsWith('/ciudadano');
 
-/* 2. Enrutador Principal (App) */
-const App: React.FC = () => (
-  <IonApp>
-    <IonReactRouter>
-      <IonRouterOutlet>
-        
-        {/* Flujo de Autenticación (Sin Tabs, Sin Sidebar) */}
-        <Route exact path="/auth/login">
-          <Auth />
+  // Detectar tema oscuro al cargar la aplicación
+  React.useEffect(() => {
+    const storedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+      document.body.classList.add('dark-theme', 'dark');
+    } else {
+      document.body.classList.remove('dark-theme', 'dark');
+    }
+  }, []);
+
+  return (
+    <>
+      {showHeader && <Header />}
+
+      <IonRouterOutlet animated={false} style={{ marginTop: showHeader ? '64px' : '0' }}>
+        {/* Rutas de Autenticación */}
+        <Route exact path="/auth/login" component={Auth} />
+        <Route exact path="/auth/register" component={Register} />
+
+        {/* Rutas del Gestor: planificadas en 1er nivel para animaciones suaves */}
+        <ProtectedRoute exact path="/gestor/dashboard" component={DashboardGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/catalogo" component={CatalogoGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
+        <Route exact path="/gestor">
+          <Redirect to="/gestor/dashboard" />
         </Route>
-        
-        {/* Flujo del Gestor Municipal (Layout con Sidebar) */}
-        {/* Aquí luego inyectaremos un componente que contenga el <IonSplitPane> */}
-        <Route path="/gestion" render={() => <div>Layout Gestor Municipal</div>} />
 
-        {/* Flujo Público / Ciudadano (Renderiza el componente de Tabs) */}
-        <Route path="/ciudadano" component={CiudadanoTabs} />
-
-        {/* Redirección por defecto al entrar a la raíz de la app */}
-        <Route exact path="/">
+        {/* Rutas Públicas / Ciudadano */}
+        <Route exact path="/ciudadano/inicio" component={Inicio} />
+        <Route exact path="/ciudadano/catalogo" component={Catalogo} />
+        <Route exact path="/ciudadano/mapa" component={Mapa} />
+        <Route exact path="/ciudadano/agenda" component={Agenda} />
+        <Route exact path="/ciudadano/fondos" component={Fondos} />
+        <Route exact path="/ciudadano/comunidad" component={Comunidad} />
+        <Route exact path="/ciudadano/transparencia" component={Transparencia} />
+        <Route exact path="/ciudadano">
           <Redirect to="/ciudadano/inicio" />
         </Route>
 
+        {/* Ruta base */}
+        <Route exact path="/">
+          <Redirect to="/auth/login" />
+        </Route>
       </IonRouterOutlet>
-    </IonReactRouter>
-  </IonApp>
+    </>
+  );
+};
+
+const App: React.FC = () => (
+  <QueryClientProvider client={queryClient}>
+    <IonApp>
+      <AuthProvider>
+        <IonReactRouter>
+          <AppRouter />
+        </IonReactRouter>
+      </AuthProvider>
+    </IonApp>
+  </QueryClientProvider>
 );
 
 export default App;

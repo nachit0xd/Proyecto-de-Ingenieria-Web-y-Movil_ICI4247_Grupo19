@@ -1,0 +1,170 @@
+/* Estilos para el modal de eventos */
+.evento-modal {
+  --width: 600px;
+  --height: auto;
+  --border-radius: 12px;
+  --box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+.evento-modal .modal-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: var(--app-card-bg);
+  color: var(--app-text-color);
+}
+
+.evento-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid var(--app-border-color);
+}
+
+.evento-modal .modal-header h2 {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--app-text-color);
+}
+
+.evento-modal .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.evento-modal .close-btn:hover {
+  color: var(--app-text-color);
+}
+
+.evento-modal .modal-content {
+  padding: 25px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.evento-modal .form-group {
+  margin-bottom: 20px;
+}
+
+.evento-modal .form-row {
+  display: flex;
+  gap: 15px;
+}
+
+.evento-modal .form-row .form-group {
+  flex: 1;
+}
+
+.evento-modal .form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--app-text-color);
+  margin-bottom: 8px;
+}
+
+.evento-modal .form-group input,
+.evento-modal .form-group select,
+.evento-modal .form-group textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+  background-color: var(--app-input-bg);
+  color: var(--app-text-color);
+}
+
+.evento-modal .form-group input:focus,
+.evento-modal .form-group select:focus,
+.evento-modal .form-group textarea:focus {
+  border-color: #d97706; 
+  background-color: var(--app-card-bg);
+  box-shadow: 0 0 0 2px rgba(217, 119, 6, 0.2);
+}
+
+.evento-modal .modal-footer {
+  padding: 20px 25px;
+  border-top: 1px solid var(--app-border-color);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--app-bg);
+}
+
+.evento-modal .spacer {
+  flex: 1;
+}
+
+.evento-modal .btn-guardar,
+.evento-modal .btn-cancelar,
+.evento-modal .btn-eliminar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+
+.evento-modal .btn-guardar {
+  background-color: #d97706;
+  color: white;
+}
+
+.evento-modal .btn-guardar:hover:not(:disabled) {
+  background-color: #b45309;
+}
+
+.evento-modal .btn-guardar:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.evento-modal .btn-cancelar {
+  background-color: transparent;
+  color: var(--app-text-color);
+  border: 1px solid var(--app-border-color);
+}
+
+.evento-modal .btn-cancelar:hover {
+  background-color: var(--app-border-color);
+}
+
+.evento-modal .btn-eliminar {
+  background-color: transparent;
+  color: #dc2626;
+  padding: 10px;
+}
+
+.evento-modal .btn-eliminar:hover {
+  background-color: rgba(220, 38, 38, 0.1);
+}
+
+@media (max-width: 600px) {
+  .evento-modal {
+    --width: 95%;
+    --height: 90%;
+  }
+  .evento-modal .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+}

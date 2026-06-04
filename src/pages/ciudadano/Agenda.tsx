@@ -1,41 +1,109 @@
 import React, { useState } from 'react';
 import { 
-  IonContent, IonPage, IonIcon 
+  IonContent, IonPage, IonIcon, IonSpinner
 } from '@ionic/react';
 import { chevronBackOutline, chevronForwardOutline, bookmarkOutline } from 'ionicons/icons';
-import Header from '../../components/Header';
 import './Agenda.css';
 
-// Base de datos simulada de eventos para este mes
-const EVENTOS_MES = [
-  {
-    id: 1,
-    dia: 25,
-    mes: 'JUN',
-    categoria: 'Feria artesanal',
-    titulo: 'Feria del libro usado',
-    horario: '12:00-18:00',
-    lugar: 'Parque Libertad'
-  }
+import { useEventos } from '../../hooks/useEventos';
+
+const MESES = [
+  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
 
 const Agenda: React.FC = () => {
-  // Estado para saber qué día pinchó el usuario (iniciamos en el 13 como en tu imagen)
-  const [diaSeleccionado, setDiaSeleccionado] = useState<number>(13);
+  const { data: eventos = [], isLoading: loading } = useEventos();
 
-  // Filtramos si hay eventos para el día seleccionado
-  const eventosDelDia = EVENTOS_MES.filter(evento => evento.dia === diaSeleccionado);
+  // Fecha actual 
+  const hoy = new Date();
   
-  // Filtramos eventos futuros desde el día seleccionado
-  const proximosEventos = EVENTOS_MES.filter(evento => evento.dia >= diaSeleccionado);
+  // Estado para el mes y año que estamos visualizando en el calendario
+  const [viewDate, setViewDate] = useState(new Date(hoy.getFullYear(), hoy.getMonth(), 1));
+  
+  // Estado para el día seleccionado explícitamente por el usuario
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
-  // Generamos un array del 1 al 30 para pintar los días (simplificado para el prototipo)
-  const diasDelMes = Array.from({ length: 30 }, (_, i) => i + 1);
+  const viewYear = viewDate.getFullYear();
+  const viewMonth = viewDate.getMonth();
+
+  const handlePrevMonth = () => {
+    setViewDate(new Date(viewYear, viewMonth - 1, 1));
+  };
+
+  const handleNextMonth = () => {
+    setViewDate(new Date(viewYear, viewMonth + 1, 1));
+  };
+
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setViewDate(new Date(viewYear, parseInt(e.target.value), 1));
+  };
+
+  const handleYearChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setViewDate(new Date(parseInt(e.target.value), viewMonth, 1));
+  };
+
+  // Cálculos para dibujar el calendario
+  const daysInMonth = new Date(viewYear, viewMonth + 1, 0).getDate();
+  const firstDayOfMonth = new Date(viewYear, viewMonth, 1).getDay(); 
+
+  // Array para los "huecos" vacíos antes del primer día del mes
+  const emptyDays = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+  // Array de los días del mes actual
+  const daysArray = Array.from({ length: daysInMonth }, (_, i) => i + 1);
+
+  const isHoy = (dia: number) => {
+    return hoy.getDate() === dia && hoy.getMonth() === viewMonth && hoy.getFullYear() === viewYear;
+  };
+
+  const isSelected = (dia: number) => {
+    return selectedDate && selectedDate.getDate() === dia && selectedDate.getMonth() === viewMonth && selectedDate.getFullYear() === viewYear;
+  };
+
+  const tieneEvento = (dia: number) => {
+    return eventos.some(e => {
+      const eDate = new Date(e.fechaInicio);
+      return eDate.getDate() === dia && eDate.getMonth() === viewMonth && eDate.getFullYear() === viewYear;
+    });
+  };
+
+  const handleSelectDay = (dia: number) => {
+    // Si ya estaba seleccionado, lo deseleccionamos
+    if (isSelected(dia)) {
+      setSelectedDate(null);
+    } else {
+      setSelectedDate(new Date(viewYear, viewMonth, dia));
+    }
+  };
+
+  const formatTime = (date: any) => new Date(date).toLocaleString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  const formatDay = (date: any) => new Date(date).getDate();
+  const formatMonthShort = (date: any) => new Date(date).toLocaleString('es-ES', { month: 'short' }).toUpperCase();
+
+  // Filtrado de la barra derecha
+  let eventosMostrados = [];
+  let sidebarTitle = '';
+
+  if (selectedDate) {
+    // Si hay un día seleccionado, mostrar solo los de ese día
+    eventosMostrados = eventos.filter(e => {
+      const eDate = new Date(e.fechaInicio);
+      return eDate.getDate() === selectedDate.getDate() && 
+             eDate.getMonth() === selectedDate.getMonth() && 
+             eDate.getFullYear() === selectedDate.getFullYear();
+    });
+    sidebarTitle = `Eventos para el ${selectedDate.getDate()} de ${MESES[selectedDate.getMonth()]}`;
+  } else {
+    // Mostrar próximos eventos a partir de hoy, ordenados por fecha, limitando a 5
+    eventosMostrados = [...eventos]
+      .filter(e => new Date(e.fechaInicio).getTime() >= hoy.setHours(0,0,0,0))
+      .sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime())
+      .slice(0, 5);
+    sidebarTitle = 'Próximos eventos';
+  }
 
   return (
     <IonPage>
-      <Header />
-      
       <IonContent fullscreen className="agenda-page">
         <div className="agenda-layout">
           
@@ -44,110 +112,100 @@ const Agenda: React.FC = () => {
             <h1 className="agenda-titulo">Agenda cultural</h1>
             
             <div className="calendario-card outline-box">
-              {/* Controles del mes */}
               <div className="calendario-header">
-                <IonIcon icon={chevronBackOutline} className="nav-icon" />
+                <button className="nav-btn" onClick={handlePrevMonth}>
+                  <IonIcon icon={chevronBackOutline} />
+                </button>
                 <div className="selectores-fecha">
-                  <select className="fecha-select" defaultValue="junio">
-                    <option value="junio">Junio</option>
-                    <option value="julio">Julio</option>
+                  <select className="fecha-select" value={viewMonth} onChange={handleMonthChange}>
+                    {MESES.map((mes, index) => (
+                      <option key={index} value={index}>{mes}</option>
+                    ))}
                   </select>
-                  <select className="fecha-select" defaultValue="2026">
-                    <option value="2026">2026</option>
+                  <select className="fecha-select" value={viewYear} onChange={handleYearChange}>
+                    {[viewYear - 1, viewYear, viewYear + 1, viewYear + 2].map(year => (
+                      <option key={year} value={year}>{year}</option>
+                    ))}
                   </select>
                 </div>
-                <IonIcon icon={chevronForwardOutline} className="nav-icon" />
+                <button className="nav-btn" onClick={handleNextMonth}>
+                  <IonIcon icon={chevronForwardOutline} />
+                </button>
               </div>
 
-              {/* Días de la semana */}
               <div className="dias-semana">
                 <span>Do</span><span>Lu</span><span>Ma</span><span>Mi</span>
                 <span>Ju</span><span>Vi</span><span>Sa</span>
               </div>
 
-              {/* Grilla numérica del mes */}
-              <div className="dias-grilla">
-                {/* Días vacíos previos */}
-                <span className="dia-vacio"></span>
-
-                {diasDelMes.map(dia => {
-                  // Lógica para asignar clases CSS dependiendo del día
-                  let claseExtra = '';
-                  if (dia === 9) claseExtra = 'dia-hoy'; // Naranja
-                  else if (dia === 13 || dia === 25) claseExtra = 'dia-con-evento'; // Azul
-                  
-                  if (dia === diaSeleccionado) claseExtra += ' dia-seleccionado'; // Contorno
-                  
-                  return (
-                    <button 
-                      key={dia} 
-                      className={`dia-btn ${claseExtra}`}
-                      onClick={() => setDiaSeleccionado(dia)}
-                    >
-                      {dia}
-                    </button>
-                  );
-                })}
-
-                {/* Días grises del próximo mes */}
-                <span className="dia-vacio">1</span>
-                <span className="dia-vacio">2</span>
-                <span className="dia-vacio">3</span>
-                <span className="dia-vacio">4</span>
-              </div>
-            </div>
-          </div>
-
-          {/* ZONA DERECHA: BARRA LATERAL (Detalle) */}
-          <div className="agenda-sidebar">
-            
-            {/* Sección 1: Eventos del día seleccionado */}
-            <div className="eventos-dia-zona">
-              {eventosDelDia.length === 0 ? (
-                <div className="empty-state">
-                  <h3>No hay eventos agendados para este día</h3>
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '3rem' }}>
+                  <IonSpinner name="crescent" />
                 </div>
               ) : (
-                <div className="lista-eventos-dia">
-                  <h3>Eventos para hoy</h3>
-                  {eventosDelDia.map(evento => (
-                    <div className="evento-horizontal-card" key={`hoy-${evento.id}`}>
-                      {/* Reutilizamos el estilo de tarjeta del diseño */}
-                      <div className="evento-fecha-bloque">
-                        <span className="dia">{evento.dia}</span>
-                        <span className="mes">{evento.mes}</span>
-                      </div>
-                      <div className="evento-info-bloque">
-                        <span className="categoria-texto color-orange">{evento.categoria}</span>
-                        <h4>{evento.titulo}</h4>
-                        <p>{evento.horario} • {evento.lugar}</p>
-                      </div>
-                      <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
-                    </div>
+                <div className="dias-grilla">
+                  {emptyDays.map(empty => (
+                    <span key={`empty-${empty}`} className="dia-vacio"></span>
                   ))}
+
+                  {daysArray.map(dia => {
+                    let claseExtra = '';
+                    if (isHoy(dia)) claseExtra += ' dia-hoy'; 
+                    else if (tieneEvento(dia)) claseExtra += ' dia-con-evento'; 
+                    
+                    if (isSelected(dia)) claseExtra += ' dia-seleccionado'; 
+                    
+                    return (
+                      <button 
+                        key={dia} 
+                        className={`dia-btn ${claseExtra}`}
+                        onClick={() => handleSelectDay(dia)}
+                      >
+                        {dia}
+                      </button>
+                    );
+                  })}
                 </div>
               )}
             </div>
+          </div>
 
-            <div className="divisor-sidebar"></div>
+          {/* ZONA DERECHA: BARRA LATERAL */}
+          <div className="agenda-sidebar">
+            <div className="sidebar-header-info">
+              <h3 className="sidebar-subtitulo">{sidebarTitle}</h3>
+              {selectedDate && (
+                <button className="btn-clear-date" onClick={() => setSelectedDate(null)}>
+                  Ver próximos eventos
+                </button>
+              )}
+            </div>
 
-            {/* Sección 2: Próximos Eventos */}
-            <div className="proximos-eventos-zona">
-              <h3 className="sidebar-subtitulo">Próximos eventos</h3>
-              
-              <div className="evento-horizontal-card">
-                <div className="evento-fecha-bloque bg-blue">
-                  <span className="dia">25</span>
-                  <span className="mes">JUN</span>
+            <div className="lista-eventos-sidebar">
+              {loading ? (
+                <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem' }}>
+                  <IonSpinner name="crescent" color="light" />
                 </div>
-                <div className="evento-info-bloque">
-                  <span className="categoria-texto color-orange">Feria artesanal</span>
-                  <h4>Feria del libro usado</h4>
-                  <p>12:00-18:00 • Parque Libertad</p>
+              ) : eventosMostrados.length === 0 ? (
+                <div className="empty-state">
+                  <p>No hay eventos agendados.</p>
                 </div>
-                <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
-              </div>
-
+              ) : (
+                eventosMostrados.map((evento, idx) => (
+                  <div className="evento-horizontal-card" key={evento.id || idx}>
+                    <div className="evento-fecha-bloque bg-blue">
+                      <span className="dia">{formatDay(evento.fechaInicio)}</span>
+                      <span className="mes">{formatMonthShort(evento.fechaInicio)}</span>
+                    </div>
+                    <div className="evento-info-bloque">
+                      <span className="categoria-texto color-orange">{evento.tipo}</span>
+                      <h4>{evento.titulo}</h4>
+                      <p>{formatTime(evento.fechaInicio)} - {formatTime(evento.fechaFin)} • {evento.direccion || 'Centro'}</p>
+                    </div>
+                    <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

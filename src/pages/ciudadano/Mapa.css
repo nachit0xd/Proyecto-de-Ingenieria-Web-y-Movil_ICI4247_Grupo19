@@ -1,3 +1,5 @@
+/* Estilos para la página del mapa ciudadano. Incluye el diseño del mapa, panel de capas, marcadores y el panel lateral de detalles */
+
 /* CONTENEDOR PRINCIPAL */
 .mapa-page {
   --background: #1f2937; /* Fondo oscuro detrás por si algo falla */
@@ -18,7 +20,7 @@
   background-image: 
     linear-gradient(white 2px, transparent 2px),
     linear-gradient(90deg, white 2px, transparent 2px);
-  background-size: 33% 33%; /* Simula las calles/cuadras de tu diseño */
+  background-size: 33% 33%; /* Simula las calles/cuadras */
   transition: all 0.3s ease; /* Suaviza el cambio de tamaño */
 }
 

@@ -1,15 +1,102 @@
-import React, { useState } from 'react';
-import {
-  IonContent, IonPage, IonGrid, IonRow, IonCol,
-  IonText, IonSegment, IonSegmentButton, IonLabel,
-  IonItem, IonInput, IonButton, IonCheckbox,
-  IonIcon, IonSelect, IonSelectOption
+import React, { useEffect, useState } from 'react';
+import { useHistory, useLocation } from 'react-router-dom';
+import { IonContent, IonPage, IonGrid, IonRow, IonCol, IonText, IonSegment, IonSegmentButton, IonLabel,
+IonItem, IonInput, IonButton, IonCheckbox
 } from '@ionic/react';
-import { checkmarkCircle, closeCircle, personCircleOutline } from 'ionicons/icons';
+import { UserRole } from '../../services/auth.service';
+import { useAuth } from '../../context/AuthContext';
 import './Auth.css';
 
+// Esta página maneja el login de usuarios, con un diseño simple e intuitivo.
+// El formulario de login permite a los usuarios ingresar con su correo y contraseña, o usar Clave Única (pendiente de implementar).
+// El formulario de registro solicita información básica para crear una cuenta, con validaciones simples para mejorar la experiencia del usuario.
+
+interface LoginFormState {
+  email: string;
+  password: string;
+}
+
+type FormErrors<T extends string> = Partial<Record<T, string>>;
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// Validaciones de los formularios de login y registro, con mensajes de error claros para guiar al usuario a corregir los campos
+const validateLogin = (form: LoginFormState): FormErrors<'email' | 'password'> => {
+  const errors: FormErrors<'email' | 'password'> = {};
+
+  if (!form.email.trim()) {
+    errors.email = 'El correo es obligatorio.';
+  } else if (!emailRegex.test(form.email.trim())) {
+    errors.email = 'Ingresa un correo válido.';
+  }
+
+  if (!form.password.trim()) {
+    errors.password = 'La contraseña es obligatoria.';
+  } else if (form.password.trim().length < 6) {
+    errors.password = 'La contraseña debe tener al menos 6 caracteres.';
+  }
+
+  return errors;
+};
+
 const Auth: React.FC = () => {
+  const history = useHistory();
+  const location = useLocation<{ from?: string }>();
+  const { login, isAuthenticated, role } = useAuth();
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const [loginForm, setLoginForm] = useState<LoginFormState>({
+    email: '',
+    password: ''
+  });
+  const [loginErrors, setLoginErrors] = useState<FormErrors<'email' | 'password'>>({});
+  const [isSubmittingLogin, setIsSubmittingLogin] = useState(false);
+  const [authError, setAuthError] = useState('');
+
+    useEffect(() => {
+      if (isAuthenticated && role) {
+        // Redirigir a la ruta destino después de autenticarse
+        const destination = resolveDestination(role);
+        history.replace(destination);
+      }
+    }, [isAuthenticated, role, history, location.state?.from]);
+
+  const resolveDestination = (nextRole: UserRole) => {
+    const from = location.state?.from;
+
+    if (!from) {
+      return nextRole === 'gestor' ? '/gestor/dashboard' : '/ciudadano/inicio';
+    }
+
+    if (nextRole === 'gestor' && from.startsWith('/gestor')) {
+      return from;
+    }
+
+    if (nextRole === 'ciudadano' && from.startsWith('/ciudadano')) {
+      return from;
+    }
+
+    return nextRole === 'gestor' ? '/gestor/dashboard' : '/ciudadano/inicio';
+  };
+
+  const handleLogin = async () => {
+    const errors = validateLogin(loginForm);
+    setLoginErrors(errors);
+    setAuthError('');
+
+    if (Object.keys(errors).length > 0) {
+      return;
+    }
+
+    setIsSubmittingLogin(true);
+
+    try {
+      await login(loginForm.email.trim(), loginForm.password.trim());
+    } catch {
+      setAuthError('No fue posible iniciar sesión. Intenta nuevamente.');
+    } finally {
+      setIsSubmittingLogin(false);
+    }
+  };
 
   return (
     <IonPage>
@@ -35,10 +122,17 @@ const Auth: React.FC = () => {
             <IonCol size="12" sizeMd="6" className="auth-form-side">
               <div className="form-container">
                 
-                {/* Selector de modo */}
-                <IonSegment 
-                  value={authMode} 
-                  onIonChange={(e) => setAuthMode(e.detail.value as any)}
+                {/* Selector de modo (redirige a registro) */}
+                <IonSegment
+                  value={authMode}
+                  onIonChange={(e) => {
+                    const v = e.detail.value as string;
+                    if (v === 'register') {
+                      history.push('/auth/register');
+                    } else {
+                      setAuthMode('login');
+                    }
+                  }}
                   className="auth-segment"
                 >
                   <IonSegmentButton value="login">
@@ -49,7 +143,7 @@ const Auth: React.FC = () => {
                   </IonSegmentButton>
                 </IonSegment>
 
-                {authMode === 'login' ? (
+                {authMode === 'login' && (
                   <div className="auth-content fade-in">
                     <h2>Bienvenido de vuelta</h2>
                     <p>Accede para participar en iniciativas culturales de tu comuna.</p>
@@ -64,13 +158,47 @@ const Auth: React.FC = () => {
 
                     <IonItem lines="none" className="custom-input">
                       <IonLabel position="stacked">Correo electrónico</IonLabel>
-                      <IonInput type="email" placeholder="sebastian@email.com"></IonInput>
+                      <IonInput
+                        type="email"
+                        value={loginForm.email}
+                        onIonInput={(e) => {
+                          const value = e.detail.value ?? '';
+                          setLoginForm((prev) => ({ ...prev, email: value }));
+                          if (loginErrors.email) {
+                            setLoginErrors((prev) => ({ ...prev, email: undefined }));
+                          }
+                        }}
+                        placeholder="sebastian@email.com"
+                      />
                     </IonItem>
+                    {loginErrors.email && (
+                      <IonText color="danger">
+                        <p>{loginErrors.email}</p>
+                      </IonText>
+                    )}
 
                     <IonItem lines="none" className="custom-input">
                       <IonLabel position="stacked">Contraseña</IonLabel>
-                      <IonInput type="password" placeholder="**********"></IonInput>
+                      <IonInput
+                        type="password"
+                        value={loginForm.password}
+                        onIonInput={(e) => {
+                          const value = e.detail.value ?? '';
+                          setLoginForm((prev) => ({ ...prev, password: value }));
+                          if (loginErrors.password) {
+                            setLoginErrors((prev) => ({ ...prev, password: undefined }));
+                          }
+                        }}
+                        placeholder="**********"
+                      />
                     </IonItem>
+                    {loginErrors.password && (
+                      <IonText color="danger">
+                        <p>{loginErrors.password}</p>
+                      </IonText>
+                    )}
+
+
 
                     <div className="auth-options">
                       <IonItem lines="none" className="checkbox-item">
@@ -80,78 +208,24 @@ const Auth: React.FC = () => {
                       <a href="#">¿Olvidaste tu contraseña?</a>
                     </div>
 
-                    <IonButton expand="block" className="main-auth-btn">
-                      Ingresar
+                    {authError && (
+                      <IonText color="danger">
+                        <p>{authError}</p>
+                      </IonText>
+                    )}
+
+                    <IonButton
+                      expand="block"
+                      className="main-auth-btn"
+                      onClick={handleLogin}
+                      disabled={isSubmittingLogin}
+                    >
+                      {isSubmittingLogin ? 'Ingresando...' : 'Ingresar'}
                     </IonButton>
                     
                     <p className="switch-text">
-                      ¿No tienes cuenta? <a onClick={() => setAuthMode('register')}>Regístrate aquí</a>
+                      ¿No tienes cuenta? <a onClick={() => history.push('/auth/register')}>Regístrate aquí</a>
                     </p>
-                  </div>
-                ) : (
-                  <div className="auth-content fade-in">
-                    <h2>Crear cuenta</h2>
-                    <p>Completa tus datos para unirte a la plataforma.</p>
-
-                    {/* Inputs limpios sin validaciones forzadas */}
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Nombre de usuario</IonLabel>
-                      <IonInput placeholder="Ej. seba_gonzales"></IonInput>
-                    </IonItem>
-
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">RUT</IonLabel>
-                      <IonInput placeholder="Ej. 12.345.678-9"></IonInput>
-                    </IonItem>
-
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Correo electrónico</IonLabel>
-                      <IonInput type="email" placeholder="ejemplo@correo.com"></IonInput>
-                    </IonItem>
-
-                    {/* Desplegable de Regiones */}
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Región</IonLabel>
-                      <IonSelect placeholder="Seleccionar región" interface="popover">
-                        <IonSelectOption value="valparaiso">Región de Valparaíso</IonSelectOption>
-                        <IonSelectOption value="metropolitana">Región Metropolitana</IonSelectOption>
-                        <IonSelectOption value="coquimbo">Región de Coquimbo</IonSelectOption>
-                        <IonSelectOption value="biobio">Región del Biobío</IonSelectOption>
-                      </IonSelect>
-                    </IonItem>
-
-                    {/* Desplegable de Comunas */}
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Comuna</IonLabel>
-                      <IonSelect placeholder="Seleccionar comuna" interface="popover">
-                        <IonSelectOption value="vinadelmar">Viña del Mar</IonSelectOption>
-                        <IonSelectOption value="valparaiso_comuna">Valparaíso</IonSelectOption>
-                        <IonSelectOption value="quilpue">Quilpué</IonSelectOption>
-                        <IonSelectOption value="villaalemana">Villa Alemana</IonSelectOption>
-                        <IonSelectOption value="santiago">Santiago</IonSelectOption>
-                      </IonSelect>
-                    </IonItem>
-
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Contraseña</IonLabel>
-                      <IonInput type="password" placeholder="**********"></IonInput>
-                    </IonItem>
-
-                    <IonItem lines="none" className="custom-input">
-                      <IonLabel position="stacked">Confirmar contraseña</IonLabel>
-                      <IonInput type="password" placeholder="**********"></IonInput>
-                    </IonItem>
-
-                    <IonItem lines="none" className="checkbox-item">
-                      <IonCheckbox slot="start"></IonCheckbox>
-                      <IonLabel className="ion-text-wrap">
-                        Acepto los términos y condiciones y la política de privacidad.
-                      </IonLabel>
-                    </IonItem>
-
-                    <IonButton expand="block" className="main-auth-btn">
-                      Crear cuenta
-                    </IonButton>
                   </div>
                 )}
               </div>

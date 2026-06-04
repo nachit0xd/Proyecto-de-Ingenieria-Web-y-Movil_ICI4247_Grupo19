@@ -1,0 +1,339 @@
+/* ESTILOS PARA LA PÁGINA DE PROPUESTAS DEL GESTOR */
+.propuestas-gestor-page {
+  --page-bg: var(--app-bg);
+  --card-bg: var(--app-card-bg);
+  --border-color: var(--app-border-color);
+  --text-main: var(--app-text-color);
+  --text-muted: var(--app-text-muted);
+  color: var(--text-main);
+  background-color: var(--page-bg);
+}
+
+.propuestas-gestor-page ion-content {
+  --background: var(--page-bg);
+  color: var(--text-main);
+}
+
+/* Master-Detail Layout */
+.master-detail-layout {
+  display: flex;
+  height: 100%;
+  gap: 20px;
+}
+
+.master-column {
+  flex: 0 0 400px;
+  display: flex;
+  flex-direction: column;
+  background: var(--page-bg);
+  border-right: 1px solid var(--border-color);
+  padding-right: 20px;
+}
+
+.detail-column {
+  flex: 1;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Header & Filters */
+.propuestas-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-top: 0;
+  margin-bottom: 20px;
+}
+
+.propuestas-filters {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.filter-btn {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 13px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn.active {
+  background: var(--ion-color-primary, #3b82f6);
+  color: white;
+  border-color: var(--ion-color-primary, #3b82f6);
+}
+
+.sort-select {
+  padding: 6px 12px;
+  border: 1px solid var(--app-border-color);
+  border-radius: 6px;
+  background: var(--app-card-bg);
+  font-size: 13px;
+  color: var(--text-main);
+  outline: none;
+}
+
+/* List of Proposals */
+.propuestas-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.propuesta-card-mini {
+  background: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  border-radius: 6px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.propuesta-card-mini::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+}
+
+.propuesta-card-mini.status-pendiente::before { background-color: #f59e0b; }
+.propuesta-card-mini.status-en_revision::before { background-color: #3b82f6; }
+.propuesta-card-mini.status-aprobado::before { background-color: #10b981; }
+.propuesta-card-mini.status-rechazado::before { background-color: #ef4444; }
+
+.propuesta-card-mini:hover, .propuesta-card-mini.active {
+  border-color: #9ca3af;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.prop-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.prop-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.badge-votos {
+  background: #e5e7eb;
+  color: #374151;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 500;
+}
+
+.prop-card-meta {
+  font-size: 13px;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.prop-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.prop-card-footer p {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.badge-status-small {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.badge-status-small.pendiente { background: #fef3c7; color: #d97706; }
+.badge-status-small.en_revision { background: #dbeafe; color: #2563eb; }
+.badge-status-small.aprobado { background: #d1fae5; color: #059669; }
+.badge-status-small.rechazado { background: #fee2e2; color: #dc2626; }
+
+/* Detail View */
+.empty-detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.empty-detail ion-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.detail-header {
+  margin-bottom: 24px;
+}
+
+.detail-header h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0 0 8px 0;
+}
+
+.detail-meta {
+  color: var(--text-muted);
+  font-size: 14px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.detail-section h3 {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0 0 12px 0;
+}
+
+.detail-desc {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #374151;
+  margin: 0;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-action-gestor {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.btn-en-revision {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-en-revision:hover { background: #d1d5db; }
+
+.btn-aprobar {
+  background: var(--app-card-bg);
+  border-color: #10b981;
+  color: #10b981;
+}
+
+.btn-aprobar:hover { background: #f0fdf4; }
+
+.btn-rechazar {
+  background: #e5e7eb;
+  color: #374151;
+  border-color: #d1d5db;
+}
+
+.btn-rechazar:hover { background: #fee2e2; border-color: #ef4444; color: #ef4444; }
+
+.gestor-comments-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.gestor-comments-list li {
+  position: relative;
+  padding-left: 16px;
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+
+.gestor-comments-list li::before {
+  content: '•';
+  position: absolute;
+  left: 0;
+  color: #9ca3af;
+}
+
+/* Modal Confirmation */
+.confirm-modal-content {
+  padding: 24px;
+  text-align: center;
+}
+
+.confirm-modal-content h3 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  color: var(--text-main);
+}
+
+.confirm-modal-content p {
+  color: var(--text-muted);
+  margin-bottom: 24px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-modal-cancel {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: 1px solid var(--app-border-color);
+  background: var(--app-card-bg);
+  color: var(--app-text-color);
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-modal-confirm {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  background: #2563eb;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+}

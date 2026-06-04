@@ -1,3 +1,4 @@
+/* Estilos para la página de autenticación (Login/Registro) */
 /* Modo claro y Variables de base */
 .auth-page {
   --background: #ffffff;
@@ -8,7 +9,7 @@
 /* Lado visual (Izquierda) */
 .auth-visual-side {
   height: 100vh;
-  background-image: url('/fondo-login.png'); 
+  background-image: url('/fondo-login.png'); /* Ruta de la imagen de fondo */
   background-size: cover;
   background-position: center;
   position: relative;

@@ -1,5 +1,6 @@
+/* Estilos para la página de Agenda del Ciudadano */
 .agenda-page {
-  --background: #ffffff;
+  --background: var(--app-bg);
 }
 
 .agenda-layout {
@@ -14,20 +15,28 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; 
+  background: var(--app-bg);
 }
 
 .agenda-titulo {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #3f3f46;
-  margin-bottom: 30px;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--app-text-color);
+  margin-bottom: 40px;
+  align-self: flex-start;
+  max-width: 800px;
+  width: 100%;
 }
 
 .calendario-card {
   width: 100%;
-  max-width: 450px;
-  padding: 30px;
-  border-radius: 16px;
+  max-width: 600px; /* Más ancho */
+  padding: 40px;
+  border-radius: 20px;
+  background-color: var(--app-card-bg);
+  box-shadow: var(--app-shadow);
+  border: 1px solid var(--app-border-color);
 }
 
 .calendario-header {
@@ -37,10 +46,23 @@
   margin-bottom: 30px;
 }
 
-.nav-icon {
-  font-size: 1.5rem;
-  color: #18181b;
+.nav-btn {
+  background: var(--app-bg);
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
+  color: var(--app-text-color);
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: var(--app-border-color);
+  color: var(--app-text-color);
 }
 
 .selectores-fecha {
@@ -51,22 +73,25 @@
 .fecha-select {
   padding: 8px 15px;
   border-radius: 8px;
-  border: 1px solid #d4d4d8;
+  border: 1px solid var(--app-border-color);
   font-size: 1.1rem;
   font-weight: 500;
-  background-color: white;
+  background-color: var(--app-card-bg);
   cursor: pointer;
   outline: none;
-  color: #1f2937; /* Forzar color oscuro en el texto del select */
+  color: var(--app-text-color);
 }
 
-.fecha-select option { color: #1f2937; }
+.fecha-select option { 
+  background-color: var(--app-card-bg);
+  color: var(--app-text-color); 
+}
 
 .dias-semana {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
-  color: #374151; /* Más contraste para abreviaturas de días */
+  color: var(--app-text-color);
   font-weight: 500;
   margin-bottom: 15px;
 }
@@ -78,7 +103,7 @@
 }
 
 .dia-vacio {
-  color: #d4d4d8;
+  color: var(--app-text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -91,7 +116,7 @@
   height: 45px;
   border-radius: 8px;
   font-size: 1.1rem;
-  color: #27272a;
+  color: var(--app-text-color);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -100,7 +125,7 @@
 }
 
 .dia-btn:hover {
-  background-color: #f4f4f5;
+  background-color: var(--app-border-color);
 }
 
 /* Colores de estado del calendario */
@@ -117,72 +142,100 @@
 .dia-con-evento:hover { background-color: #1e3a8a; }
 
 .dia-seleccionado {
-  border-color: #fbbf24; /* Contorno amarillo/naranja */
+  border-color: #f59e0b; /* Contorno amarillo/naranja */
   transform: scale(1.1);
   font-weight: bold;
 }
 
 /* ZONA DERECHA: BARRA LATERAL */
 .agenda-sidebar {
-  width: 400px; /* Ancho fijo */
-  background-color: #4b5563; /* Gris oscuro */
+  width: 450px; 
+  background-color: var(--app-header-bg);
+  border-left: 1px solid var(--app-border-color);
   color: white;
   padding: 40px;
   display: flex;
   flex-direction: column;
+  box-shadow: -5px 0 20px rgba(0,0,0,0.1);
+  z-index: 10;
 }
 
-.eventos-dia-zona {
-  min-height: 200px;
+.sidebar-header-info {
   display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.empty-state h3 {
-  text-align: center;
-  font-size: 1.1rem;
-  line-height: 1.5;
-  font-weight: 600;
-  color: #ffffff;
-}
-
-.divisor-sidebar {
-  height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
-  margin: 30px 0;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
 }
 
 .sidebar-subtitulo {
-  font-size: 1.1rem;
-  font-weight: bold;
-  margin-bottom: 20px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0;
+  color: white;
+}
+
+.btn-clear-date {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #cbd5e1;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  align-self: flex-start;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-clear-date:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.lista-eventos-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.empty-state {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
 }
 
 /* Tarjeta horizontal de evento en el sidebar */
 .evento-horizontal-card {
   display: flex;
-  background-color: #3f3f46; /* Gris un tono más claro que el fondo */
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 8px;
-  padding: 15px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
   align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.evento-horizontal-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background-color: rgba(255, 255, 255, 0.12);
 }
 
 .evento-fecha-bloque {
-  width: 50px;
-  height: 55px;
-  border-radius: 6px;
+  width: 55px;
+  height: 60px;
+  border-radius: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin-right: 15px;
+  margin-right: 16px;
   flex-shrink: 0;
 }
-.evento-fecha-bloque.bg-blue { background-color: #1d4ed8; }
+.evento-fecha-bloque.bg-blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
 
-.evento-fecha-bloque .dia { font-size: 1.2rem; font-weight: bold; line-height: 1; }
+.evento-fecha-bloque .dia { font-size: 1.4rem; font-weight: 800; line-height: 1; }
 .evento-fecha-bloque .mes { font-size: 0.75rem; font-weight: 600; }
 
 .evento-info-bloque {
@@ -193,12 +246,13 @@
   margin: 3px 0;
   font-size: 1rem;
   font-weight: bold;
+  color: white;
 }
 
 .evento-info-bloque p {
   margin: 0;
   font-size: 0.75rem;
-  color: #d4d4d8;
+  color: #cbd5e1;
 }
 
 .bookmark-icon {
@@ -217,6 +271,8 @@
   .agenda-sidebar {
     width: 100%;
     padding: 20px;
+    border-left: none;
+    border-top: 1px solid var(--app-border-color);
   }
   
   .calendario-container {

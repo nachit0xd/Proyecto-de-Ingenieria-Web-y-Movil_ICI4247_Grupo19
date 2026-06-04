@@ -1,0 +1,332 @@
+/* REUTILIZACIÓN DE LAYOUT BASE */
+@import url('./Dashboard.css');
+
+/* ESTILOS PARA LA PÁGINA DE CATÁLOGO DEL GESTOR */
+/* ENCABEZADO DE CATÁLOGO */
+.catalogo-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.section-title {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: var(--app-text-color);
+  margin: 0 0 5px 0;
+}
+
+.section-subtitle-count {
+  font-size: 0.95rem;
+  color: var(--app-text-muted);
+  margin: 0;
+}
+
+.btn-crear-ficha {
+  background-color: #e37e33; /* Color naranja de los botones principales */
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-crear-ficha:hover {
+  background-color: #c25e17;
+}
+
+/* BARRA DE HERRAMIENTAS (Filtros) */
+.catalogo-toolbar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 25px;
+  align-items: center;
+}
+
+.search-box-container {
+  position: relative;
+  flex: 1;
+  background-color: var(--app-input-bg);
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-box-container:focus-within {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+}
+
+.search-icon-inside {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #9ca3af;
+  font-size: 1.2rem;
+}
+
+.toolbar-search-input {
+  width: 100%;
+  padding: 12px 15px 12px 45px;
+  border: none;
+  background-color: transparent;
+  color: var(--app-text-color);
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.toolbar-select {
+  padding: 12px 20px;
+  border: 1px solid var(--app-border-color);
+  border-radius: 6px;
+  background-color: var(--app-input-bg);
+  color: var(--app-text-color);
+  font-size: 0.95rem;
+  outline: none;
+  cursor: pointer;
+  min-width: 200px;
+}
+
+.btn-exportar-catalogo {
+  background: transparent;
+  border: 1px solid var(--app-border-color);
+  padding: 11px;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  color: var(--app-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-exportar-catalogo:hover {
+  background-color: #f3f4f6;
+}
+
+/* DISEÑO DE LA DATA TABLE */
+.table-scroll-container {
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.catalogo-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--app-card-bg);
+  text-align: left;
+}
+
+.catalogo-table th {
+  background-color: var(--app-bg);
+  color: var(--app-text-color);
+  font-weight: 700;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--app-border-color);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.catalogo-table td {
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--app-border-color);
+  color: var(--app-text-muted);
+  font-size: 0.95rem;
+  vertical-align: middle;
+}
+
+.catalogo-table tbody tr:hover td {
+  background-color: var(--app-bg);
+}
+
+/* CELDAS ESPECÍFICAS */
+.cell-avatar {
+  padding-right: 0 !important;
+}
+
+.avatar-placeholder-blue {
+  width: 32px;
+  height: 32px;
+  background-color: #eff6ff;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  border: 1px solid #bfdbfe;
+}
+
+.cell-name {
+  color: var(--app-text-color) !important;
+}
+
+.cell-date {
+  color: #64748b;
+  font-size: 0.9rem;
+}
+
+/* BADGES Y CONTROLES DE ESTADO */
+.badge-categoria-cultor {
+  background-color: #f97316;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.btn-status-toggle {
+  border: 1px solid #cbd5e1;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  min-width: 85px;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.btn-status-toggle.v-visible {
+  background-color: var(--app-card-bg);
+  color: var(--app-text-color);
+}
+
+.btn-status-toggle.v-oculto {
+  background-color: var(--app-bg);
+  color: var(--app-text-muted);
+}
+
+/* BOTONES DE ACCIONES (ICONOS) */
+.cell-actions {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  align-items: center;
+  border-bottom: none; 
+}
+
+.action-icon-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s;
+}
+
+.action-icon-btn:hover {
+  color: #1e293b;
+}
+
+.action-icon-btn.delete-btn:hover {
+  color: #ef4444; /* Rojo para el botón eliminar */
+}
+
+/* ESTILOS DE LOS MODALES */
+.wizard-modal {
+  --width: 500px;
+  --height: auto;
+  --max-height: 90vh;
+  --border-radius: 12px;
+}
+
+.modal-content-wrapper {
+  background: var(--app-card-bg);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 25px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: var(--app-text-color);
+  margin: 0;
+}
+
+.modal-body {
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--app-text-color);
+  margin-bottom: 8px;
+}
+
+.custom-modal-input,
+.custom-modal-select {
+  --background: var(--app-input-bg);
+  --padding-start: 15px;
+  --padding-end: 15px;
+  border: 1px solid var(--app-border-color);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.custom-modal-select {
+  width: 100%;
+  padding: 14px 15px;
+  background-color: var(--app-input-bg);
+  color: var(--app-text-color);
+}
+
+.btn-modal {
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  border: none;
+}
+
+.btn-modal.btn-secondary {
+  background-color: #e5e7eb;
+  color: #4b5563;
+}
+
+.btn-modal.btn-secondary:hover {
+  background-color: #d1d5db;
+}
+
+.btn-modal.btn-primary {
+  background-color: #f97316;
+  color: white;
+}
+
+.btn-modal.btn-primary:hover {
+  background-color: #ea580c;
+}
+.btn-modal.btn-primary:disabled {
+  background-color: #fdba74;
+  cursor: not-allowed;
+}
