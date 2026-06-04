@@ -67,9 +67,9 @@
 }
 
 .filter-btn.active {
-  background: var(--text-main);
+  background: var(--ion-color-primary, #3b82f6);
   color: white;
-  border-color: var(--text-main);
+  border-color: var(--ion-color-primary, #3b82f6);
 }
 
 .sort-select {

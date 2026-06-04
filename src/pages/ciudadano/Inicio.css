@@ -16,14 +16,17 @@ a {
 
 /* BANNER DE BIENVENIDA */
 .welcome-banner {
-  background-color: #1a2235; /* Azul oscuro - se mantiene estático por el contraste del banner */
-  color: white;
+  background-color: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  box-shadow: var(--app-shadow);
+  color: var(--app-text-color);
   border-radius: 12px;
   padding: 35px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-top: 10px;
+  transition: all 0.3s ease;
 }
 
 .welcome-text h2 {
@@ -31,10 +34,11 @@ a {
   font-weight: bold;
   font-size: 1.8rem;
   letter-spacing: 0.5px;
+  color: var(--app-text-color);
 }
 
 .welcome-text p {
-  color: #d1d5db;
+  color: var(--app-text-muted);
   max-width: 480px;
   line-height: 1.5;
   margin-bottom: 25px;
@@ -43,17 +47,8 @@ a {
 
 .btn-outline {
   --border-radius: 6px;
-  --border-width: 1px;
-  --border-color: rgba(255, 255, 255, 0.5);
-  --color: #ffffff;
-  font-weight: 500;
   margin-right: 15px;
-  transition: all 0.2s ease-in-out;
-}
-
-.btn-outline:hover {
-  --background: rgba(255, 255, 255, 0.15);
-  --border-color: #ffffff;
+  font-weight: 500;
 }
 
 .welcome-stats {
@@ -72,11 +67,12 @@ a {
   font-size: 3rem;
   font-weight: 700;
   line-height: 1.1;
+  color: var(--app-text-color);
 }
 
 .stat-label {
   font-size: 0.9rem;
-  color: #d1d5db;
+  color: var(--app-text-muted);
   margin-top: 5px;
 }
 

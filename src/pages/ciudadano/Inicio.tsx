@@ -73,8 +73,8 @@ const Inicio: React.FC = () => {
                   <h2>¡Bienvenido, {user?.nombre || 'Ciudadano'}!</h2>
                   <p>Explora el patrimonio local de tu comuna, descubre oficios tradicionales y participa en las decisiones culturales de tu municipio</p>
                   <div className="banner-actions">
-                    <IonButton color="light" fill="outline" className="btn-outline" routerLink="/ciudadano/catalogo">Explorar catálogo</IonButton>
-                    <IonButton color="light" fill="outline" className="btn-outline" routerLink="/ciudadano/agenda">Ver agenda</IonButton>
+                    <IonButton color="primary" fill="outline" className="btn-outline" routerLink="/ciudadano/catalogo">Explorar catálogo</IonButton>
+                    <IonButton color="primary" fill="outline" className="btn-outline" routerLink="/ciudadano/agenda">Ver agenda</IonButton>
                   </div>
                 </div>
                 
