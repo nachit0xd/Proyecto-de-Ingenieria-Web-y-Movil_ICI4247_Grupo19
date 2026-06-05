@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { 
-  IonContent, IonPage, IonIcon, IonSpinner
+  IonContent, IonPage, IonIcon, IonSpinner, IonToast
 } from '@ionic/react';
-import { chevronBackOutline, chevronForwardOutline, bookmarkOutline } from 'ionicons/icons';
+import { chevronBackOutline, chevronForwardOutline, bookmarkOutline, bookmark } from 'ionicons/icons';
 import './Agenda.css';
 
 import { useEventos } from '../../hooks/useEventos';
@@ -23,6 +23,28 @@ const Agenda: React.FC = () => {
   
   // Estado para el día seleccionado explícitamente por el usuario
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  // Eventos Guardados (Favoritos, símbolo de bookmark)
+  const [savedEvents, setSavedEvents] = useState<string[]>(() => {
+    const saved = localStorage.getItem('saved_events');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [showToast, setShowToast] = useState(false);
+  const [toastMsg, setToastMsg] = useState('');
+
+  const handleToggleSave = (eventoId: string) => {
+    let newSaved = [...savedEvents];
+    if (newSaved.includes(eventoId)) {
+      newSaved = newSaved.filter(id => id !== eventoId);
+      setToastMsg('Evento removido de tus guardados');
+    } else {
+      newSaved.push(eventoId);
+      setToastMsg('Evento guardado en tu perfil');
+    }
+    setSavedEvents(newSaved);
+    localStorage.setItem('saved_events', JSON.stringify(newSaved));
+    setShowToast(true);
+  };
 
   const viewYear = viewDate.getFullYear();
   const viewMonth = viewDate.getMonth();
@@ -202,7 +224,16 @@ const Agenda: React.FC = () => {
                       <h4>{evento.titulo}</h4>
                       <p>{formatTime(evento.fechaInicio)} - {formatTime(evento.fechaFin)} • {evento.direccion || 'Centro'}</p>
                     </div>
-                    <IonIcon icon={bookmarkOutline} className="bookmark-icon" />
+                    <IonIcon 
+                      icon={savedEvents.includes(evento.id) ? bookmark : bookmarkOutline} 
+                      className="bookmark-icon" 
+                      onClick={() => handleToggleSave(evento.id)}
+                      style={{ 
+                        cursor: 'pointer', 
+                        fontSize: '1.5rem',
+                        color: savedEvents.includes(evento.id) ? 'var(--ion-color-primary)' : 'var(--app-text-muted)' 
+                      }}
+                    />
                   </div>
                 ))
               )}
@@ -211,6 +242,13 @@ const Agenda: React.FC = () => {
 
         </div>
       </IonContent>
+      <IonToast
+        isOpen={showToast}
+        onDidDismiss={() => setShowToast(false)}
+        message={toastMsg}
+        duration={2000}
+        color="success"
+      />
     </IonPage>
   );
 };

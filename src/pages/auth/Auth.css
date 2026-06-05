@@ -29,21 +29,26 @@
 .brand-header h2 {
   color: white;
   margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .hero-text h1 {
-  font-size: 3rem;
-  font-weight: 400;
+  font-size: 4rem;
+  font-weight: 800;
   color: white;
-  letter-spacing: 2px;
-  margin-bottom: 10px;
+  letter-spacing: -1px;
+  margin-bottom: 15px;
+  line-height: 1.1;
 }
 
 .hero-text p {
-  color: white;
-  font-size: 1.2rem;
-  max-width: 450px;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1.25rem;
+  max-width: 500px;
   line-height: 1.6;
+  font-weight: 400;
 }
 
 /* Lado formulario (Derecha) */

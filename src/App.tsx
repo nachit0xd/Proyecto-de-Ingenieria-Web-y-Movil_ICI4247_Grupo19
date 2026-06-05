@@ -32,23 +32,37 @@ import Header from './components/Header';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
-// Importaciones estáticas para eliminar Suspense y mejorar transiciones
-import Auth from './pages/auth/Auth';
-import Register from './pages/auth/Register';
-import Inicio from './pages/ciudadano/Inicio';
-import Catalogo from './pages/ciudadano/Catalogo';
-import Mapa from './pages/ciudadano/Mapa';
-import Agenda from './pages/ciudadano/Agenda';  
-import Comunidad from './pages/ciudadano/Comunidad';
-import Fondos from './pages/ciudadano/Fondos';
-import Transparencia from './pages/ciudadano/Transparencia';
+import { IonSpinner } from '@ionic/react';
 
-import DashboardGestor from './pages/gestor/Dashboard';
-import CatalogoGestor from './pages/gestor/Catalogo';
-import AgendaMapaGestor from './pages/gestor/AgendaMapa';
-import PropuestasGestor from './pages/gestor/Propuestas';
-import FondosGestor from './pages/gestor/Fondos';
-import TransparenciaGestor from './pages/gestor/Transparencia';
+// Función helper para envolver los componentes lazy con Suspense y mantener limpio el router
+const withSuspense = (Component: React.LazyExoticComponent<any>) => (props: any) => (
+  <React.Suspense fallback={<div style={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><IonSpinner name="crescent" /></div>}>
+    <Component {...props} />
+  </React.Suspense>
+);
+
+// Importaciones dinámicas (Code Splitting) para mejorar el rendimiento inicial de la aplicación
+// --- Rutas del Ciudadano (con carga diferida) ---
+const Auth = withSuspense(React.lazy(() => import('./pages/auth/Auth')));
+const Register = withSuspense(React.lazy(() => import('./pages/auth/Register')));
+const Inicio = withSuspense(React.lazy(() => import('./pages/ciudadano/Inicio')));
+const Catalogo = withSuspense(React.lazy(() => import('./pages/ciudadano/Catalogo')));
+const Mapa = withSuspense(React.lazy(() => import('./pages/ciudadano/Mapa')));
+const Agenda = withSuspense(React.lazy(() => import('./pages/ciudadano/Agenda')));  
+const Comunidad = withSuspense(React.lazy(() => import('./pages/ciudadano/Comunidad')));
+const Fondos = withSuspense(React.lazy(() => import('./pages/ciudadano/Fondos')));
+const Transparencia = withSuspense(React.lazy(() => import('./pages/ciudadano/Transparencia')));
+
+// --- Rutas del Gestor (con carga diferida) ---
+const DashboardGestor = withSuspense(React.lazy(() => import('./pages/gestor/Dashboard')));
+const CatalogoGestor = withSuspense(React.lazy(() => import('./pages/gestor/Catalogo')));
+const AgendaMapaGestor = withSuspense(React.lazy(() => import('./pages/gestor/AgendaMapa')));
+const PropuestasGestor = withSuspense(React.lazy(() => import('./pages/gestor/Propuestas')));
+const FondosGestor = withSuspense(React.lazy(() => import('./pages/gestor/Fondos')));
+const TransparenciaGestor = withSuspense(React.lazy(() => import('./pages/gestor/Transparencia')));
+const PerfilGestor = withSuspense(React.lazy(() => import('./pages/gestor/Perfil')));
+const PerfilCiudadano = withSuspense(React.lazy(() => import('./pages/ciudadano/Perfil')));
+const NotFound = withSuspense(React.lazy(() => import('./pages/NotFound')));
 
 setupIonicReact();
 
@@ -92,6 +106,7 @@ const AppRouter: React.FC = () => {
         <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
         <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
         <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
+        <ProtectedRoute exact path="/gestor/perfil" component={PerfilGestor} allowedRoles={['gestor']} />
         <Route exact path="/gestor">
           <Redirect to="/gestor/dashboard" />
         </Route>
@@ -104,6 +119,7 @@ const AppRouter: React.FC = () => {
         <Route exact path="/ciudadano/fondos" component={Fondos} />
         <Route exact path="/ciudadano/comunidad" component={Comunidad} />
         <Route exact path="/ciudadano/transparencia" component={Transparencia} />
+        <Route exact path="/ciudadano/perfil" component={PerfilCiudadano} />
         <Route exact path="/ciudadano">
           <Redirect to="/ciudadano/inicio" />
         </Route>

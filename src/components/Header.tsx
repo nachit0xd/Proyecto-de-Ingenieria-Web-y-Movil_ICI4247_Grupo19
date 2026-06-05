@@ -67,7 +67,7 @@ const Header: React.FC = () => {
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>
         <div className="vertical-divider"></div>
-        <IonIcon icon={personCircleOutline} className="user-avatar-icon" title="Perfil" />
+        <IonIcon icon={personCircleOutline} className="user-avatar-icon" title="Perfil" onClick={() => navigateTo('/ciudadano/perfil')} style={{ cursor: 'pointer' }} />
         <button className="theme-toggle-btn" style={{ marginLeft: '5px' }} onClick={() => { logout(); history.push('/auth/login'); }} title="Cerrar sesión">
           <IonIcon icon={logOutOutline} />
         </button>
@@ -96,9 +96,9 @@ const Header: React.FC = () => {
         </nav>
         
         <div className="drawer-footer">
-          <div className="drawer-user-info">
+          <div className="drawer-user-info" onClick={() => navigateTo('/ciudadano/perfil')} style={{ cursor: 'pointer' }}>
             <IonIcon icon={personCircleOutline} className="user-avatar-icon" />
-            <span>Perfil Ciudadano</span>
+            <span>Mi Perfil</span>
           </div>
           <button className="drawer-logout-btn" onClick={() => { logout(); history.push('/auth/login'); setMenuOpen(false); }}>
             Cerrar sesión

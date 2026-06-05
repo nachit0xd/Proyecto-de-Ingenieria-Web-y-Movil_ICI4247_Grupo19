@@ -64,7 +64,7 @@ const GestorHeader: React.FC = () => {
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>
         <div className="vertical-divider" style={{ width: '1px', height: '24px', backgroundColor: 'rgba(255,255,255,0.15)' }}></div>
-        <IonIcon icon={personCircleOutline} className="avatar-icon" style={{ fontSize: '2rem', color: 'white' }} title="Perfil" />
+        <IonIcon icon={personCircleOutline} className="avatar-icon" style={{ fontSize: '2rem', color: 'white', cursor: 'pointer' }} title="Perfil" onClick={() => history.push('/gestor/perfil')} />
         <button className="theme-toggle-btn" onClick={() => { logout(); history.push('/auth/login'); }} title="Cerrar sesión">
           <IonIcon icon={logOutOutline} />
         </button>
