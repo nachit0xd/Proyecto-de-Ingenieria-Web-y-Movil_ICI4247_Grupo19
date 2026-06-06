@@ -2,9 +2,17 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../db';
+import rateLimit from 'express-rate-limit';
 
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'secret_super_seguro_cultura';
+
+// Rate limiter: sirve para prevenir ataques de fuerza bruta en el inicio de sesión
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos de ventana
+  max: 5, // Limita cada IP a 5 peticiones por ventana de 15 min
+  message: { error: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intenta de nuevo en 15 minutos.' }
+});
 
 // POST /api/auth/register: Registrar un nuevo usuario
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
@@ -45,7 +53,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 });
 
 // POST /api/auth/login: Iniciar sesión
-router.post('/login', async (req: Request, res: Response): Promise<void> => {
+router.post('/login', loginLimiter, async (req: Request, res: Response): Promise<void> => { // Aplicamos el rate limiter solo a esta ruta de login
   try {
     const { email, password } = req.body;
     console.log(`Login attempt for email: ${email}`);

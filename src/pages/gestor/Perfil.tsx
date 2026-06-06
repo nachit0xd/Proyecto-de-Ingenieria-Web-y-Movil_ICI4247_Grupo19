@@ -39,18 +39,34 @@ const PerfilGestor: React.FC = () => {
   };
 
   // Función para manejar el cambio de avatar, convirtiendo la imagen seleccionada y almacenándola en localStorage (simulando una subida al backend)
-  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        setAvatar(base64String);
-        localStorage.setItem('avatar_gestor', base64String);
-        setToastMessage('Avatar actualizado');
+      const formData = new FormData();
+      formData.append('image', file);
+      
+      setToastMessage('Subiendo imagen a la nube...');
+      setShowToast(true);
+
+      try {
+        const res = await fetch('http://localhost:3000/api/upload', {
+          method: 'POST',
+          body: formData,
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          setAvatar(data.imageUrl);
+          localStorage.setItem('avatar_gestor', data.imageUrl);
+          setToastMessage('Avatar guardado exitosamente');
+        } else {
+          setToastMessage('Error al subir avatar: ' + (data.error || ''));
+        }
         setShowToast(true);
-      };
-      reader.readAsDataURL(file);
+      } catch (err) {
+        setToastMessage('Error de red al subir la imagen');
+        setShowToast(true);
+      }
     }
   };
 

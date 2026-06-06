@@ -1,9 +1,42 @@
 import React, { useState, useEffect } from 'react';
-import { IonModal, IonIcon, IonToast } from '@ionic/react';
+import { IonModal, IonIcon, IonToast, IonItem, IonLabel, IonInput, IonSelect, IonSelectOption, IonDatetime, IonButton } from '@ionic/react';
 import { closeOutline, calendarOutline, mapOutline, saveOutline, trashOutline } from 'ionicons/icons';
 import { useCrearEvento, useEditarEvento, useEliminarEvento } from '../hooks/useEventos';
 import { EventoCultural } from '../types';
+import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet';
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
 import './EventoModal.css';
+
+// Importamos los íconos de Leaflet para evitar problemas con Vite y React-Leaflet en modales
+import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
+import markerIcon from 'leaflet/dist/images/marker-icon.png';
+import markerShadow from 'leaflet/dist/images/marker-shadow.png';
+
+// Configuración de los íconos de Leaflet para que funcionen correctamente en el modal
+delete (L.Icon.Default.prototype as any)._getIconUrl;
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl: markerIcon2x,
+  iconUrl: markerIcon,
+  shadowUrl: markerShadow,
+});
+
+const LocationPicker = ({ position, setPosition }: { position: [number, number], setPosition: (pos: [number, number]) => void }) => {
+  useMapEvents({
+    click(e) {
+      setPosition([e.latlng.lat, e.latlng.lng]);
+    },
+  });
+  return <Marker position={position} />;
+};
+
+const MapResizer = () => {
+  const map = useMap();
+  useEffect(() => {
+    setTimeout(() => map.invalidateSize(), 250);
+  }, [map]);
+  return null;
+};
 
 interface EventoModalProps {
   isOpen: boolean;
@@ -11,7 +44,8 @@ interface EventoModalProps {
   eventoAEditar: EventoCultural | null;
 }
 
-// Modal para crear o editar eventos culturales
+// Modal para crear o editar eventos culturales, con campos para título, categoría, estado, fechas, dirección y ubicación en el mapa.
+// También permite eliminar eventos existentes.
 const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEditar }) => {
   const [formData, setFormData] = useState({
     titulo: '',
@@ -20,8 +54,8 @@ const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEdita
     fechaInicio: '',
     fechaFin: '',
     direccion: '',
-    lat: -33.0472, // Coordenadas dummy
-    lng: -71.6127,
+    lat: -33.4489, 
+    lng: -70.6693,
   });
 
   const [toastMessage, setToastMessage] = useState('');
@@ -29,7 +63,7 @@ const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEdita
   const editarEvento = useEditarEvento();
   const eliminarEvento = useEliminarEvento();
 
-  // Cuando se abre el modal para editar, cargar los datos del evento en el formulario
+  // Cuando se abre el modal para editar, carga los datos del evento en el formulario
   useEffect(() => {
     if (eventoAEditar) {
       setFormData({
@@ -39,8 +73,8 @@ const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEdita
         fechaInicio: new Date(eventoAEditar.fechaInicio).toISOString().slice(0, 16),
         fechaFin: new Date(eventoAEditar.fechaFin).toISOString().slice(0, 16),
         direccion: eventoAEditar.direccion || '',
-        lat: eventoAEditar.lat || -33.0472,
-        lng: eventoAEditar.lng || -71.6127,
+        lat: eventoAEditar.lat || -33.4489,
+        lng: eventoAEditar.lng || -70.6693,
       });
     } else {
       setFormData({
@@ -50,8 +84,8 @@ const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEdita
         fechaInicio: '',
         fechaFin: '',
         direccion: '',
-        lat: -33.0472,
-        lng: -71.6127,
+        lat: -33.4489,
+        lng: -70.6693,
       });
     }
   }, [eventoAEditar, isOpen]);
@@ -173,6 +207,26 @@ const EventoModal: React.FC<EventoModalProps> = ({ isOpen, onClose, eventoAEdita
               onChange={handleChange} 
               placeholder="Ej. Plaza de Armas s/n" 
             />
+          </div>
+
+          {/* Mapa para seleccionar ubicación exacta del evento */}
+          <div className="form-group">
+            <label>Ubicación exacta en el Mapa</label>
+            <div style={{ height: '250px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--app-border-color)', marginTop: '10px' }}>
+              {isOpen && (
+                <MapContainer center={[formData.lat, formData.lng]} zoom={14} style={{ height: '100%', width: '100%' }}>
+                  <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                  <MapResizer />
+                  <LocationPicker 
+                    position={[formData.lat, formData.lng]} 
+                    setPosition={(pos) => setFormData({...formData, lat: pos[0], lng: pos[1]})} 
+                  />
+                </MapContainer>
+              )}
+            </div>
+            <p style={{ fontSize: '0.8rem', color: 'var(--app-text-muted)', marginTop: '5px' }}>
+              Haz clic en el mapa para fijar el pin en la ubicación del evento.
+            </p>
           </div>
         </div>
 
