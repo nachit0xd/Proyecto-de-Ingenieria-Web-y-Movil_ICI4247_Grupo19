@@ -1,12 +1,11 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { getUserRole, isAuthenticated, login as loginService, logout as logoutService, UserRole } from '../services/auth.service';
 
-// Contexto de autenticación para manejar el estado de autenticación y rol del usuario en toda la aplicación
-
 interface User {
   id: string;
   nombre: string;
-  rol: string;
+  rol: 'ciudadano' | 'gestor';
+  email?: string;
 }
 
 interface AuthContextValue {
@@ -17,6 +16,8 @@ interface AuthContextValue {
   logout: () => void;
 }
 
+// Contexto de autenticación para manejar el estado de autenticación y rol del usuario en toda la aplicación. 
+// Proporciona funciones de login y logout, y almacena la información del usuario autenticado.
 const getStoredUser = (): User | null => {
   const userStr = localStorage.getItem('user');
   if (!userStr) return null;

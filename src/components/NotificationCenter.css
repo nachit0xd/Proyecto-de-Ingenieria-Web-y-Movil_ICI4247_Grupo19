@@ -1,0 +1,128 @@
+/* Estilos para el Centro de Notificaciones */
+.notification-trigger {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin-right: 15px;
+  margin-left: 5px;
+}
+
+.notification-icon {
+  font-size: 1.5rem;
+  color: white;
+  transition: color 0.2s ease;
+}
+
+.notification-trigger:hover .notification-icon {
+  color: #e0e0e0;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -5px;
+  right: -8px;
+  font-size: 0.7rem;
+  padding: 3px 6px;
+  border-radius: 10px;
+  border: 2px solid var(--app-bg-color);
+}
+
+/* Estilos para el popover de notificaciones */
+.notification-popover {
+  --width: 320px;
+  --max-height: 450px;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 15px;
+  border-bottom: 1px solid var(--app-border-color);
+  background-color: var(--app-card-bg);
+}
+
+.notification-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: var(--app-text-color);
+}
+
+.mark-all-btn {
+  background: none;
+  border: none;
+  color: var(--ion-color-primary);
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.mark-all-btn:hover {
+  text-decoration: underline;
+}
+
+.notification-list {
+  padding: 0;
+  background-color: var(--app-card-bg);
+}
+
+.no-notifications {
+  padding: 30px 15px;
+  text-align: center;
+  color: var(--app-text-muted);
+  font-style: italic;
+}
+
+.notification-item {
+  --padding-start: 10px;
+  --inner-padding-end: 10px;
+  --background: var(--app-card-bg);
+}
+
+.notification-item.unread {
+  --background: rgba(var(--ion-color-primary-rgb), 0.05);
+}
+
+.notification-item.read h2 {
+  font-weight: normal;
+  color: var(--app-text-muted);
+}
+
+.notification-item h2 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: var(--app-text-color);
+}
+
+.notification-item p {
+  font-size: 0.85rem;
+  color: var(--app-text-muted);
+  line-height: 1.3;
+}
+
+.notif-date {
+  font-size: 0.75rem;
+  color: var(--app-text-muted);
+  display: block;
+  margin-top: 6px;
+  opacity: 0.8;
+}
+
+.notif-icon-container {
+  font-size: 1.5rem;
+  margin-right: 12px;
+}
+
+.unread-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--ion-color-primary);
+  border-radius: 50%;
+  margin-left: 8px;
+}

@@ -3,6 +3,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import { IonIcon } from '@ionic/react';
 import { personCircleOutline, menuOutline, closeOutline, moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
 import { useAuth } from '../context/AuthContext';
+import NotificationCenter from './NotificationCenter';
 import './Header.css';
 
 // El Header es un componente del ciudadano adaptado responsivamente para móviles mediante menú hamburguesa lateral, y con soporte dinámico para el cambio de Modo Claro / Modo Oscuro
@@ -63,6 +64,7 @@ const Header: React.FC = () => {
       </nav>
 
       <div className="header-user desktop-only">
+        <NotificationCenter rol="ciudadano" />
         <button className="theme-toggle-btn" onClick={toggleTheme} title="Cambiar tema">
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>
@@ -75,6 +77,7 @@ const Header: React.FC = () => {
 
       {/* Controles de Cabecera Móvil (Mobile) */}
       <div className="mobile-header-controls mobile-only">
+        <NotificationCenter rol="ciudadano" />
         <button className="theme-toggle-btn" onClick={toggleTheme} title="Cambiar tema">
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>

@@ -3,6 +3,7 @@ import { IonIcon } from '@ionic/react';
 import { personCircleOutline, menuOutline, closeOutline, moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
 import { useAuth } from '../context/AuthContext';
 import { useHistory } from 'react-router-dom';
+import NotificationCenter from './NotificationCenter';
 
 // GestorHeader es la barra de herramientas del Gestor Municipal adaptada con un toggle de Modo Oscuro y un disparador móvil para alternar la visibilidad de la barra lateral (sidebar)
 const GestorHeader: React.FC = () => {
@@ -60,6 +61,9 @@ const GestorHeader: React.FC = () => {
       </div>
 
       <div className="gestor-user-menu" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <div className="gestor-header-controls">
+          <NotificationCenter rol="gestor" />
+        </div>
         <button className="theme-toggle-btn" onClick={toggleTheme} title="Cambiar tema">
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>

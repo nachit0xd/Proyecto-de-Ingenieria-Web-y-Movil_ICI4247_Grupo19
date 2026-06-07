@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { 
   IonContent, IonPage, IonGrid, IonRow, IonCol, IonButton, IonSpinner
 } from '@ionic/react';
@@ -13,8 +14,10 @@ import { usePropuestasPopulares } from '../../hooks/useComunidad';
 import { useResumenGestion } from '../../hooks/useDashboard';
 import { useAuth } from '../../context/AuthContext';
 
-// Página de inicio para ciudadanos, mostrando un resumen del patrimonio local, próximos eventos, propuestas populares y estadísticas de gestión cultural
+// Página de inicio para ciudadanos, mostrando un resumen del patrimonio local, próximos eventos, propuestas populares y estadísticas de gestión cultural.
+// Incluye un banner de bienvenida personalizado, acceso rápido a secciones clave, y tarjetas destacadas para fomentar la participación ciudadana.
 const Inicio: React.FC = () => {
+  const history = useHistory();
   const { user } = useAuth();
   const [selectedFicha, setSelectedFicha] = useState<FichaPatrimonio | null>(null);
   const { data: fichas = [], isLoading: loadingFichas } = useFichasPatrimonio();
@@ -107,22 +110,22 @@ const Inicio: React.FC = () => {
           
           <IonRow className="ion-justify-content-center">
             <IonCol size="4" sizeMd="2">
-              <a href="/ciudadano/catalogo" className="quick-access-box" style={{textDecoration: 'none', color: 'inherit'}}>
+              <div className="quick-access-box" onClick={() => history.push('/ciudadano/catalogo')} style={{cursor: 'pointer'}}>
                 <div className="qa-icon">📖</div>
                 <p>Catálogo<br/>patrimonial</p>
-              </a>
+              </div>
             </IonCol>
             <IonCol size="4" sizeMd="2">
-              <a href="/ciudadano/mapa" className="quick-access-box" style={{textDecoration: 'none', color: 'inherit'}}>
+              <div className="quick-access-box" onClick={() => history.push('/ciudadano/mapa')} style={{cursor: 'pointer'}}>
                 <div className="qa-icon">🗺️</div>
                 <p>Mapa<br/>cultural</p>
-              </a>
+              </div>
             </IonCol>
             <IonCol size="4" sizeMd="2">
-              <a href="/ciudadano/agenda" className="quick-access-box" style={{textDecoration: 'none', color: 'inherit'}}>
+              <div className="quick-access-box" onClick={() => history.push('/ciudadano/agenda')} style={{cursor: 'pointer'}}>
                 <div className="qa-icon">📅</div>
                 <p>Agenda<br/>cultural</p>
-              </a>
+              </div>
             </IonCol>
           </IonRow>
 
@@ -133,7 +136,7 @@ const Inicio: React.FC = () => {
               <div className="box-container outline-box">
                 <div className="column-header">
                   <h3>Próximos eventos</h3>
-                  <a href="/ciudadano/agenda">Ver agenda &gt;</a>
+                  <span style={{cursor: 'pointer', color: 'var(--ion-color-primary)'}} className="color-orange" onClick={() => history.push('/ciudadano/agenda')}>Ver agenda &gt;</span>
                 </div>
                 
                 <div className="event-list">
@@ -159,7 +162,7 @@ const Inicio: React.FC = () => {
               <div className="box-container outline-box">
                 <div className="column-header">
                   <h3>Fichas destacadas</h3>
-                  <a href="/ciudadano/catalogo">Ver catálogo &gt;</a>
+                  <span style={{cursor: 'pointer', color: 'var(--ion-color-primary)'}} className="color-orange"onClick={() => history.push('/ciudadano/catalogo')}>Ver catálogo &gt;</span>
                 </div>
                 
                 <div className="fichas-grid">
@@ -182,7 +185,7 @@ const Inicio: React.FC = () => {
           <IonRow className="section-header margin-top-large">
             <IonCol size="12" className="flex-header">
               <h3>Propuestas más votadas</h3>
-              <a href="/ciudadano/comunidad">Ver todas &gt;</a>
+              <span style={{cursor: 'pointer', color: 'var(--ion-color-primary)'}} className="color-orange" onClick={() => history.push('/ciudadano/comunidad')}>Ver todas &gt;</span>
             </IonCol>
           </IonRow>
 
@@ -208,7 +211,7 @@ const Inicio: React.FC = () => {
           <IonRow className="section-header margin-top-large">
             <IonCol size="12" className="flex-header">
               <h3>Resumen de gestión cultural</h3>
-              <a href="/ciudadano/transparencia" className="color-orange">Ver transparencia &gt;</a>
+              <span style={{cursor: 'pointer', color: 'var(--ion-color-primary)'}} className="color-orange" onClick={() => history.push('/ciudadano/transparencia')}>Ver transparencia &gt;</span>
             </IonCol>
           </IonRow>
 

@@ -77,7 +77,9 @@ const queryClient = new QueryClient({
 
 const AppRouter: React.FC = () => {
   const location = useLocation();
-  const showHeader = location.pathname.startsWith('/ciudadano');
+  // Mostramos el Header solo en rutas que comienzan con /ciudadano o en la raíz si la ruta inicial era /ciudadano, todo esto para evitar mostrar el header en la pantalla de login.
+  const initialPath = window.location.pathname;
+  const showHeader = location.pathname.startsWith('/ciudadano') || (location.pathname === '/' && initialPath.startsWith('/ciudadano'));
 
   // Detectar tema oscuro al cargar la aplicación
   React.useEffect(() => {
@@ -94,41 +96,43 @@ const AppRouter: React.FC = () => {
     <>
       {showHeader && <Header />}
 
-      <IonRouterOutlet animated={false} style={{ marginTop: showHeader ? '64px' : '0' }}>
-        {/* Rutas de Autenticación */}
-        <Route exact path="/auth/login" component={Auth} />
-        <Route exact path="/auth/register" component={Register} />
+      <div style={{ position: 'relative', marginTop: showHeader ? '64px' : '0', height: showHeader ? 'calc(100vh - 64px)' : '100vh' }}>
+        <IonRouterOutlet animated={false}>
+          {/* Rutas de Autenticación */}
+          <Route exact path="/auth/login" component={Auth} />
+          <Route exact path="/auth/register" component={Register} />
 
-        {/* Rutas del Gestor: planificadas en 1er nivel para animaciones suaves */}
-        <ProtectedRoute exact path="/gestor/dashboard" component={DashboardGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/catalogo" component={CatalogoGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/perfil" component={PerfilGestor} allowedRoles={['gestor']} />
-        <Route exact path="/gestor">
-          <Redirect to="/gestor/dashboard" />
-        </Route>
+          {/* Rutas del Gestor: planificadas en 1er nivel para animaciones suaves */}
+          <ProtectedRoute exact path="/gestor/dashboard" component={DashboardGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/catalogo" component={CatalogoGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/perfil" component={PerfilGestor} allowedRoles={['gestor']} />
+          <Route exact path="/gestor">
+            <Redirect to="/gestor/dashboard" />
+          </Route>
 
-        {/* Rutas Públicas / Ciudadano */}
-        <Route exact path="/ciudadano/inicio" component={Inicio} />
-        <Route exact path="/ciudadano/catalogo" component={Catalogo} />
-        <Route exact path="/ciudadano/mapa" component={Mapa} />
-        <Route exact path="/ciudadano/agenda" component={Agenda} />
-        <Route exact path="/ciudadano/fondos" component={Fondos} />
-        <Route exact path="/ciudadano/comunidad" component={Comunidad} />
-        <Route exact path="/ciudadano/transparencia" component={Transparencia} />
-        <Route exact path="/ciudadano/perfil" component={PerfilCiudadano} />
-        <Route exact path="/ciudadano">
-          <Redirect to="/ciudadano/inicio" />
-        </Route>
+          {/* Rutas Públicas / Ciudadano */}
+          <Route exact path="/ciudadano/inicio" component={Inicio} />
+          <Route exact path="/ciudadano/catalogo" component={Catalogo} />
+          <Route exact path="/ciudadano/mapa" component={Mapa} />
+          <Route exact path="/ciudadano/agenda" component={Agenda} />
+          <Route exact path="/ciudadano/fondos" component={Fondos} />
+          <Route exact path="/ciudadano/comunidad" component={Comunidad} />
+          <Route exact path="/ciudadano/transparencia" component={Transparencia} />
+          <Route exact path="/ciudadano/perfil" component={PerfilCiudadano} />
+          <Route exact path="/ciudadano">
+            <Redirect to="/ciudadano/inicio" />
+          </Route>
 
-        {/* Ruta base */}
-        <Route exact path="/">
-          <Redirect to="/auth/login" />
-        </Route>
-      </IonRouterOutlet>
+          {/* Ruta base */}
+          <Route exact path="/">
+            <Redirect to="/auth/login" />
+          </Route>
+        </IonRouterOutlet>
+      </div>
     </>
   );
 };

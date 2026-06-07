@@ -21,7 +21,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 // Configuración segura de CORS (con Whitelist, que permite solo orígenes específicos)
-const allowedOrigins = ['http://localhost:5173', 'http://localhost:8100', 'capacitor://localhost'];
+const allowedOrigins = ['http://localhost:5173', 'http://localhost:8100', 'capacitor://localhost', 'http://localhost:8080'];
 app.use(cors({
   origin: (origin, callback) => {
     // Se permite origin undefined para llamadas de servidor a servidor o herramientas de desarrollo locales
