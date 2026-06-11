@@ -30,6 +30,7 @@ services:
     environment:
       # Apuntamos a 'db' en lugar de 'localhost' porque están en la misma red de Docker
       - DATABASE_URL=postgresql://postgres:BaseD567@db:5432/cultura-municipal
+      - JWT_SECRET=secret_super_seguro_cultura
     depends_on:
       db:
         condition: service_healthy

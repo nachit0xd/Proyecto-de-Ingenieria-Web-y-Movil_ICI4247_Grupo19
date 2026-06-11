@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import prisma from '../db';
-import { verifyToken } from '../middleware/auth';
+import { verifyToken, requireRole } from '../middleware/auth';
 
 const router = Router();
 
@@ -71,7 +71,7 @@ router.get('/postulaciones', async (req, res) => {
 });
 
 // POST /api/fondos/postular: Crear una nueva postulación
-router.post('/postular', async (req, res) => {
+router.post('/postular', verifyToken, async (req, res) => {
   try {
     const data = req.body;
     const nuevaPostulacion = await prisma.postulacion.create({
@@ -95,7 +95,7 @@ router.post('/postular', async (req, res) => {
 });
 
 // PATCH /api/fondos/postulaciones/:id/estado: Actualizar el estado de una postulación
-router.patch('/postulaciones/:id/estado', verifyToken, async (req, res) => {
+router.patch('/postulaciones/:id/estado', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
@@ -110,7 +110,7 @@ router.patch('/postulaciones/:id/estado', verifyToken, async (req, res) => {
 });
 
 // POST /api/fondos/convocatoria: Crear un nuevo fondo (Gestor)
-router.post('/convocatoria', verifyToken, async (req, res) => {
+router.post('/convocatoria', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { titulo, descripcion, montoMaximo, presupuesto, cupos, estado } = req.body;
     const nuevoFondo = await prisma.fondo.create({
@@ -123,7 +123,7 @@ router.post('/convocatoria', verifyToken, async (req, res) => {
 });
 
 // PUT /api/fondos/convocatoria/:id: Editar un fondo existente (Gestor)
-router.put('/convocatoria/:id', verifyToken, async (req, res) => {
+router.put('/convocatoria/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { id } = req.params;
     const { titulo, descripcion, montoMaximo, presupuesto, cupos, estado } = req.body;
@@ -138,7 +138,7 @@ router.put('/convocatoria/:id', verifyToken, async (req, res) => {
 });
 
 // DELETE /api/fondos/convocatoria/:id: Eliminar un fondo (Gestor)
-router.delete('/convocatoria/:id', verifyToken, async (req, res) => {
+router.delete('/convocatoria/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { id } = req.params;
     await prisma.fondo.delete({ where: { id: id as string } });

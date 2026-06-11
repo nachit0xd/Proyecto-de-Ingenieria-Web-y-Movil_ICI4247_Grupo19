@@ -2,6 +2,7 @@ import { Router } from 'express';
 import multer from 'multer';
 import { v2 as cloudinary } from 'cloudinary';
 import { CloudinaryStorage } from 'multer-storage-cloudinary';
+import { verifyToken } from '../middleware/auth';
 
 // Este router maneja la subida de imágenes, utilizando Cloudinary si las credenciales están configuradas, o un almacenamiento en memoria como fallback para desarrollo.
 const router = Router();
@@ -28,7 +29,7 @@ const cloudStorage = hasCloudinary ? new CloudinaryStorage({
 const upload = multer({ storage: cloudStorage });
 
 // POST /api/upload: Endpoint para subir una imagen. El campo del formulario debe llamarse 'image'.
-router.post('/', upload.single('image'), (req, res) => {
+router.post('/', verifyToken, upload.single('image'), (req, res) => {
   try {
     if (!req.file) {
        res.status(400).json({ error: 'No se recibió ninguna imagen' });

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { Prisma } from '@prisma/client';
 import prisma from '../db';
-import { AuthRequest, verifyToken } from '../middleware/auth';
+import { AuthRequest, verifyToken, requireRole } from '../middleware/auth';
 
 const router = Router();
 
@@ -173,7 +173,7 @@ router.post('/propuesta', verifyToken, async (req, res) => {
 });
 
 // PUT /api/comunidad/propuesta/:id (Protected): Actualizar una propuesta
-router.put('/propuesta/:id', verifyToken, async (req, res) => {
+router.put('/propuesta/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const id = req.params.id as string;
     const { titulo, descripcion, estado, nuevoComentario } = req.body;
@@ -197,7 +197,7 @@ router.put('/propuesta/:id', verifyToken, async (req, res) => {
 });
 
 // DELETE /api/comunidad/propuesta/:id (Protected): Eliminar una propuesta
-router.delete('/propuesta/:id', verifyToken, async (req, res): Promise<void> => {
+router.delete('/propuesta/:id', verifyToken, requireRole(['gestor']), async (req, res): Promise<void> => {
   try {
     const id = req.params.id as string;
     

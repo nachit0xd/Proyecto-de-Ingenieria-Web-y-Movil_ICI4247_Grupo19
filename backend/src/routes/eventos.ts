@@ -1,6 +1,6 @@
-﻿import { Router } from 'express';
+import { Router } from 'express';
 import prisma from '../db';
-import { verifyToken } from '../middleware/auth';
+import { verifyToken, requireRole } from '../middleware/auth';
 
 const router = Router();
 
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 });
 
 // POST /api/eventos: Crear un nuevo evento (Gestor)
-router.post('/', verifyToken, async (req, res) => {
+router.post('/', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { titulo, tipo, estado, fechaInicio, fechaFin, direccion, lat, lng } = req.body;
     const nuevoEvento = await prisma.evento.create({
@@ -39,7 +39,7 @@ router.post('/', verifyToken, async (req, res) => {
 });
 
 // PUT /api/eventos/:id: Editar un evento
-router.put('/:id', verifyToken, async (req, res) => {
+router.put('/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { id } = req.params;
     const { titulo, tipo, estado, fechaInicio, fechaFin, direccion, lat, lng } = req.body;
@@ -63,7 +63,7 @@ router.put('/:id', verifyToken, async (req, res) => {
 });
 
 // DELETE /api/eventos/:id: Eliminar evento
-router.delete('/:id', verifyToken, async (req, res) => {
+router.delete('/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const { id } = req.params;
     await prisma.evento.delete({ where: { id: id as string } });
