@@ -125,22 +125,30 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 # Requerimientos del Sistema
 
 ## Requerimientos Funcionales
-| ID | Nombre | Roles | Descripción Breve |
-|----|--------|-------|-------------------|
-| RF01 | Catálogo de Patrimonio y Oficios | Ciudadano / Gestor | Fichas didácticas de elementos culturales con multimedia y georreferencia |
-| RF02 | Mapa Interactivo Cultural | Ciudadano / Gestor | Mapa con capas diferenciadas de ferias, cultores y espacios patrimoniales |
-| RF03 | Agenda Cultural Comunal | Ciudadano / Gestor | Calendario centrado en ferias, talleres y eventos con favoritos |
-| RF04 | Postulación a Fondos Culturales | Ciudadano / Gestor | Formulario de múltiples pasos para postulación con seguimiento de estado |
-| RF05 | Propuestas Ciudadanas | Ciudadano / Gestor | Iniciativas ciudadanas con votación y escalamiento a convocatorias |
-| RF06 | Panel de Transparencia | Ciudadano / Gestor | Indicadores públicos de gestión cultural actualizados |
-| RF07 | Valoración y Comentarios | Ciudadano / Gestor | Sistema de valoración con estrellas y comentarios moderados sobre fichas y eventos |
+| ID | Nombre del Requisito | Roles | Descripción Breve | Prioridad |
+|----|-----------|-------|-------------|-----------|
+| **RF01** | **Catálogo de Patrimonio y Oficios** | Ciudadano / Gestor | Fichas didácticas de elementos culturales con multimedia y georreferencia. | Alta |
+| **RF02** | **Mapa Interactivo Cultural** | Ciudadano / Gestor | Mapa con capas diferenciadas de ferias, cultores y espacios patrimoniales. | Alta |
+| **RF03** | **Agenda Cultural Comunal** | Ciudadano / Gestor | Calendario centrado en ferias, talleres y eventos con filtros y detalles. | Alta |
+| **RF04** | **Postulación a Fondos** | Ciudadano / Gestor | Formulario de múltiples pasos para postulación con seguimiento de estado, y panel de revisión para el Gestor. | Alta |
+| **RF05** | **Propuestas Ciudadanas** | Ciudadano / Gestor | Iniciativas ciudadanas con votación comunitaria y escalamiento a convocatorias mediante moderación del Gestor. | Alta |
+| **RF06** | **Panel de Transparencia** | Ciudadano / Gestor | Indicadores públicos de gestión cultural, finanzas y actualizaciones administrativas. | Media |
+| **RF07** | **Valoración y Comentarios** | Ciudadano / Gestor | Sistema de valoración con estrellas (1-5) y comentarios sobre fichas, recalculando el promedio automáticamente. | Media |
+| **RF08** | **Gestión de Identidad (Autenticación)** | Ciudadano / Gestor | El sistema debe permitir el registro seguro e inicio de sesión de usuarios utilizando correo electrónico y contraseña. | Alta |
+| **RF09** | **Diferenciación de Roles (Autorización)** | Sistema | El sistema debe separar jerárquicamente las vistas y capacidades de escritura, garantizando que el Gestor posea acceso administrativo (CRUD) y el Ciudadano acceso participativo. | Alta |
+| **RF10** | **Centro de Notificaciones** | Ciudadano / Gestor | Campana interactiva para alertar sobre cambios de estado en fondos, propuestas y eventos. | Baja |
+| **RF11** | **Gestión Multimedia** | Ciudadano / Gestor | Capacidad de actualizar fotos de perfil y adjuntar imágenes a las propuestas y fichas (Cloudinary). | Media |
 
 ## Requerimientos No Funcionales
-| ID | Tipo | Criterio Clave |
-|----|------|----------------|
-| RNF01 | Rendimiento | Carga ≤3s en 4G, soporte 100 usuarios simultáneos |
-| RNF02 | Seguridad | HTTPS, Clave Única OAuth, rate limiting |
-| RNF03 | Usabilidad | Accesibilidad universal, lenguaje simple, feedback ≤1s |
+| ID | Categoría | Requisito y Criterio Medible |
+|----|-----------|-------------|
+| **RNF01** | **Rendimiento** | **Tiempo de carga inicial:** La interfaz SPA debe cargar su estructura base (*First Contentful Paint*) en **≤ 1.5 segundos** en conexiones 4G estándar. |
+| **RNF02** | **Escalabilidad** | **Concurrencia:** La API construida en Express.js junto a la base de datos PostgreSQL debe soportar sin degradación al menos **100 usuarios interactuando simultáneamente**. |
+| **RNF03** | **Autenticación** | **Límite de peticiones (Rate Limiting):** El endpoint de login debe bloquear la IP del cliente tras **5 intentos fallidos en una ventana de 15 minutos** para prevenir ataques de fuerza bruta. |
+| **RNF04** | **Autorización o RBAC** | **Tolerancia Cero a Intrusiones:** El **100% de los endpoints administrativos** (POST, PUT, DELETE) deben rechazar solicitudes (Código HTTP 403/401) si el token JWT no contiene la inyección encriptada del rol `gestor`. |
+| **RNF05** | **Infraestructura** | **Fail-Fast de Secretos:** El tiempo de apagado del servidor debe ser de **0 segundos** tras su compilación si no se detecta la variable de entorno `JWT_SECRET`, previniendo arranques vulnerables. |
+| **RNF06** | **Usabilidad** | **Retroalimentación de UI:** El tiempo de feedback del sistema ante interacciones críticas (enviar formularios, votar) no debe superar **1 segundo** sin mostrar un indicador de carga visual (*Spinner* o *Toast*). |
+| **RNF07** | **Portabilidad** | **Tiempo de Despliegue:** El sistema completo (Base de Datos, Backend y Frontend Nginx) debe poder compilarse y levantarse en **≤ 3 minutos** en un servidor nuevo utilizando exclusivamente el comando `docker compose up`. |
 
 Para ver una descripción más detallada y completa de los requerimientos funcionales y no-funcionales, consulte el documento [requerimientos.md](requerimientos.md).
 
