@@ -1,0 +1,30 @@
+/* Estilos para el perfil del ciudadano */
+.profile-card {
+  background-color: var(--app-card-bg);
+  border: 1px solid var(--app-border-color);
+  box-shadow: var(--app-shadow);
+  border-radius: 12px;
+}
+.profile-card ion-card-title {
+  color: var(--app-text-color);
+  font-weight: bold;
+}
+.profile-input {
+  --background: transparent;
+  --color: var(--app-text-color);
+  margin-bottom: 10px;
+}
+.profile-input ion-label {
+  color: var(--app-text-muted) !important;
+}
+.profile-input ion-input {
+  --background: var(--app-input-bg);
+  --padding-start: 10px;
+  border: 1px solid var(--app-input-border);
+  border-radius: 6px;
+  margin-top: 8px;
+}
+.profile-item-clean {
+  --background: transparent;
+  --inner-padding-end: 0;
+}

@@ -32,23 +32,37 @@ import Header from './components/Header';
 import ProtectedRoute from './routes/ProtectedRoute';
 import { AuthProvider } from './context/AuthContext';
 
-// Importaciones estáticas para eliminar Suspense y mejorar transiciones
-import Auth from './pages/auth/Auth';
-import Register from './pages/auth/Register';
-import Inicio from './pages/ciudadano/Inicio';
-import Catalogo from './pages/ciudadano/Catalogo';
-import Mapa from './pages/ciudadano/Mapa';
-import Agenda from './pages/ciudadano/Agenda';  
-import Comunidad from './pages/ciudadano/Comunidad';
-import Fondos from './pages/ciudadano/Fondos';
-import Transparencia from './pages/ciudadano/Transparencia';
+import { IonSpinner } from '@ionic/react';
 
-import DashboardGestor from './pages/gestor/Dashboard';
-import CatalogoGestor from './pages/gestor/Catalogo';
-import AgendaMapaGestor from './pages/gestor/AgendaMapa';
-import PropuestasGestor from './pages/gestor/Propuestas';
-import FondosGestor from './pages/gestor/Fondos';
-import TransparenciaGestor from './pages/gestor/Transparencia';
+// Función helper para envolver los componentes lazy con Suspense y mantener limpio el router
+const withSuspense = (Component: React.LazyExoticComponent<any>) => (props: any) => (
+  <React.Suspense fallback={<div style={{ display: 'flex', height: '100%', justifyContent: 'center', alignItems: 'center' }}><IonSpinner name="crescent" /></div>}>
+    <Component {...props} />
+  </React.Suspense>
+);
+
+// Importaciones dinámicas (Code Splitting) para mejorar el rendimiento inicial de la aplicación
+// --- Rutas del Ciudadano (con carga diferida) ---
+const Auth = withSuspense(React.lazy(() => import('./pages/auth/Auth')));
+const Register = withSuspense(React.lazy(() => import('./pages/auth/Register')));
+const Inicio = withSuspense(React.lazy(() => import('./pages/ciudadano/Inicio')));
+const Catalogo = withSuspense(React.lazy(() => import('./pages/ciudadano/Catalogo')));
+const Mapa = withSuspense(React.lazy(() => import('./pages/ciudadano/Mapa')));
+const Agenda = withSuspense(React.lazy(() => import('./pages/ciudadano/Agenda')));  
+const Comunidad = withSuspense(React.lazy(() => import('./pages/ciudadano/Comunidad')));
+const Fondos = withSuspense(React.lazy(() => import('./pages/ciudadano/Fondos')));
+const Transparencia = withSuspense(React.lazy(() => import('./pages/ciudadano/Transparencia')));
+
+// --- Rutas del Gestor (con carga diferida) ---
+const DashboardGestor = withSuspense(React.lazy(() => import('./pages/gestor/Dashboard')));
+const CatalogoGestor = withSuspense(React.lazy(() => import('./pages/gestor/Catalogo')));
+const AgendaMapaGestor = withSuspense(React.lazy(() => import('./pages/gestor/AgendaMapa')));
+const PropuestasGestor = withSuspense(React.lazy(() => import('./pages/gestor/Propuestas')));
+const FondosGestor = withSuspense(React.lazy(() => import('./pages/gestor/Fondos')));
+const TransparenciaGestor = withSuspense(React.lazy(() => import('./pages/gestor/Transparencia')));
+const PerfilGestor = withSuspense(React.lazy(() => import('./pages/gestor/Perfil')));
+const PerfilCiudadano = withSuspense(React.lazy(() => import('./pages/ciudadano/Perfil')));
+const NotFound = withSuspense(React.lazy(() => import('./pages/NotFound')));
 
 setupIonicReact();
 
@@ -63,7 +77,9 @@ const queryClient = new QueryClient({
 
 const AppRouter: React.FC = () => {
   const location = useLocation();
-  const showHeader = location.pathname.startsWith('/ciudadano');
+  // Mostramos el Header solo en rutas que comienzan con /ciudadano o en la raíz si la ruta inicial era /ciudadano, todo esto para evitar mostrar el header en la pantalla de login.
+  const initialPath = window.location.pathname;
+  const showHeader = location.pathname.startsWith('/ciudadano') || (location.pathname === '/' && initialPath.startsWith('/ciudadano'));
 
   // Detectar tema oscuro al cargar la aplicación
   React.useEffect(() => {
@@ -80,39 +96,43 @@ const AppRouter: React.FC = () => {
     <>
       {showHeader && <Header />}
 
-      <IonRouterOutlet animated={false} style={{ marginTop: showHeader ? '64px' : '0' }}>
-        {/* Rutas de Autenticación */}
-        <Route exact path="/auth/login" component={Auth} />
-        <Route exact path="/auth/register" component={Register} />
+      <div style={{ position: 'relative', marginTop: showHeader ? '64px' : '0', height: showHeader ? 'calc(100vh - 64px)' : '100vh' }}>
+        <IonRouterOutlet animated={false}>
+          {/* Rutas de Autenticación */}
+          <Route exact path="/auth/login" component={Auth} />
+          <Route exact path="/auth/register" component={Register} />
 
-        {/* Rutas del Gestor: planificadas en 1er nivel para animaciones suaves */}
-        <ProtectedRoute exact path="/gestor/dashboard" component={DashboardGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/catalogo" component={CatalogoGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
-        <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
-        <Route exact path="/gestor">
-          <Redirect to="/gestor/dashboard" />
-        </Route>
+          {/* Rutas del Gestor: planificadas en 1er nivel para animaciones suaves */}
+          <ProtectedRoute exact path="/gestor/dashboard" component={DashboardGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/catalogo" component={CatalogoGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/agenda-mapa" component={AgendaMapaGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/propuestas" component={PropuestasGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/fondos" component={FondosGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/transparencia" component={TransparenciaGestor} allowedRoles={['gestor']} />
+          <ProtectedRoute exact path="/gestor/perfil" component={PerfilGestor} allowedRoles={['gestor']} />
+          <Route exact path="/gestor">
+            <Redirect to="/gestor/dashboard" />
+          </Route>
 
-        {/* Rutas Públicas / Ciudadano */}
-        <Route exact path="/ciudadano/inicio" component={Inicio} />
-        <Route exact path="/ciudadano/catalogo" component={Catalogo} />
-        <Route exact path="/ciudadano/mapa" component={Mapa} />
-        <Route exact path="/ciudadano/agenda" component={Agenda} />
-        <Route exact path="/ciudadano/fondos" component={Fondos} />
-        <Route exact path="/ciudadano/comunidad" component={Comunidad} />
-        <Route exact path="/ciudadano/transparencia" component={Transparencia} />
-        <Route exact path="/ciudadano">
-          <Redirect to="/ciudadano/inicio" />
-        </Route>
+          {/* Rutas Públicas / Ciudadano */}
+          <Route exact path="/ciudadano/inicio" component={Inicio} />
+          <Route exact path="/ciudadano/catalogo" component={Catalogo} />
+          <Route exact path="/ciudadano/mapa" component={Mapa} />
+          <Route exact path="/ciudadano/agenda" component={Agenda} />
+          <Route exact path="/ciudadano/fondos" component={Fondos} />
+          <Route exact path="/ciudadano/comunidad" component={Comunidad} />
+          <Route exact path="/ciudadano/transparencia" component={Transparencia} />
+          <Route exact path="/ciudadano/perfil" component={PerfilCiudadano} />
+          <Route exact path="/ciudadano">
+            <Redirect to="/ciudadano/inicio" />
+          </Route>
 
-        {/* Ruta base */}
-        <Route exact path="/">
-          <Redirect to="/auth/login" />
-        </Route>
-      </IonRouterOutlet>
+          {/* Ruta base */}
+          <Route exact path="/">
+            <Redirect to="/auth/login" />
+          </Route>
+        </IonRouterOutlet>
+      </div>
     </>
   );
 };

@@ -17,11 +17,15 @@
   flex: 1; /* Ocupa todo el espacio disponible */
   position: relative;
   background-color: #e5f5d8; /* Verde claro tipo terreno */
-  background-image: 
-    linear-gradient(white 2px, transparent 2px),
-    linear-gradient(90deg, white 2px, transparent 2px);
-  background-size: 33% 33%; /* Simula las calles/cuadras */
   transition: all 0.3s ease; /* Suaviza el cambio de tamaño */
+  display: flex; /* Ayuda a que el mapa ocupe todo el espacio */
+}
+
+/* Fuerza el tamaño del contenedor de Leaflet para evitar tiles grises */
+.leaflet-container {
+  height: 100% !important;
+  width: 100% !important;
+  z-index: 1;
 }
 
 /* PANEL FLOTANTE (Capas) */

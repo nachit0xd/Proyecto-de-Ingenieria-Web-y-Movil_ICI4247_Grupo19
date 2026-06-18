@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Configuración de Axios, una biblioteca para hacer solicitudes HTTP
 const api = axios.create({
-  baseURL: 'http://localhost:3000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:3000/api',
 });
 
 // Request Interceptor: se ejecuta antes de cada solicitud para agregar el token de autenticación

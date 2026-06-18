@@ -8,7 +8,10 @@
 }
 
 .public-modal-wrapper {
-  background: white;
+  background-color: var(--app-card-bg);
+  background-color: color-mix(in srgb, var(--app-card-bg) 95%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   height: 100%;
   display: flex;
   flex-direction: column;

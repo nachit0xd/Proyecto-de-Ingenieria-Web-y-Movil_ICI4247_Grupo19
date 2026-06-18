@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { fondosService } from '../services/fondos.service';
+import { crearNotificacionGlobal } from './useNotificaciones';
 
 // Hooks personalizados para manejar la lógica de negocio relacionada con los fondos concursables, sus convocatorias y postulaciones.
 export const usePostulacionesCiudadano = () => {
@@ -70,13 +71,27 @@ export const useEliminarFondo = () => {
   });
 };
 
+// Hook para que el gestor pueda actualizar el estado de una postulación (aprobada, rechazada, en revisión) y agregar comentarios.
 export const useActualizarEstadoPostulacion = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, estado }: { id: string, estado: string }) => fondosService.actualizarEstadoPostulacion(id, estado),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['fondos', 'postulaciones', 'gestor'] });
       queryClient.invalidateQueries({ queryKey: ['fondos', 'convocatorias', 'gestor'] });
+      
+      let estadoLegible = variables.estado;
+      if (estadoLegible === 'aprobado') estadoLegible = 'Aprobada';
+      if (estadoLegible === 'rechazado') estadoLegible = 'Rechazada';
+      if (estadoLegible === 'revision') estadoLegible = 'En revisión';
+      
+      // Creamos una notificación global para el ciudadano que hizo la postulación, informándole del cambio de estado
+      crearNotificacionGlobal({
+        titulo: 'Actualización de Fondo',
+        mensaje: `Tu postulación a fondo concursable ha sido marcada como: ${estadoLegible}.`,
+        tipo: 'fondo',
+        para: 'ciudadano'
+      });
     },
   });
 };

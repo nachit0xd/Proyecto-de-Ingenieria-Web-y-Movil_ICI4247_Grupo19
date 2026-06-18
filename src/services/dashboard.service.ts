@@ -1,4 +1,5 @@
 // Servicio para manejar las operaciones relacionadas con el dashboard del gestor, como obtener resúmenes, KPIs y actividad reciente
+import api from './api';
 
 export interface ResumenGestion {
   fichasPublicadas: number;
@@ -27,22 +28,18 @@ export interface ActividadReciente {
   estado: string;
 }
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
-
+// Función para obtener el resumen de gestión del dashboard, incluyendo KPIs y actividad reciente
 export const dashboardService = {
   obtenerResumenGestion: async (): Promise<ResumenGestion> => {
-    const res = await fetch(`${API_URL}/dashboard/ciudadano`);
-    if (!res.ok) throw new Error('Error al obtener resumen de gestión');
-    return res.json();
+    const res = await api.get('/dashboard/ciudadano');
+    return res.data;
   },
   obtenerKpisGestor: async (): Promise<KpisGestor> => {
-    const res = await fetch(`${API_URL}/dashboard/kpis`);
-    if (!res.ok) throw new Error('Error al obtener KPIs');
-    return res.json();
+    const res = await api.get('/dashboard/kpis');
+    return res.data;
   },
   obtenerActividadReciente: async (): Promise<ActividadReciente[]> => {
-    const res = await fetch(`${API_URL}/dashboard/actividad`);
-    if (!res.ok) throw new Error('Error al obtener actividad');
-    return res.json();
+    const res = await api.get('/dashboard/actividad');
+    return res.data;
   }
 };

@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  # Base de Datos PostgreSQL
+  db:
+    image: postgres:15-alpine
+    container_name: cultura_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: BaseD567 # IMPORTANTE: Debe coincidir con la contraseña en el backend
+      POSTGRES_DB: cultura-municipal
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Servidor Backend (Node.js/Express)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: cultura_backend
+    ports:
+      - "3000:3000"
+    environment:
+      # Apuntamos a 'db' en lugar de 'localhost' porque están en la misma red de Docker
+      - DATABASE_URL=postgresql://postgres:BaseD567@db:5432/cultura-municipal
+      - JWT_SECRET=secret_super_seguro_cultura
+    depends_on:
+      db:
+        condition: service_healthy
+    # Ejecutamos prisma db push para asegurar que las tablas existan antes de levantar el server
+    command: sh -c "npx prisma db push && npm start"
+
+  # Cliente Frontend (React/Nginx)
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:3000/api
+    container_name: cultura_frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  pgdata:

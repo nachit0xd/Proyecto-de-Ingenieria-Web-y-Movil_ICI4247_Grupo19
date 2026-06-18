@@ -3,6 +3,7 @@ import { IonIcon } from '@ionic/react';
 import { personCircleOutline, menuOutline, closeOutline, moonOutline, sunnyOutline, logOutOutline } from 'ionicons/icons';
 import { useAuth } from '../context/AuthContext';
 import { useHistory } from 'react-router-dom';
+import NotificationCenter from './NotificationCenter';
 
 // GestorHeader es la barra de herramientas del Gestor Municipal adaptada con un toggle de Modo Oscuro y un disparador móvil para alternar la visibilidad de la barra lateral (sidebar)
 const GestorHeader: React.FC = () => {
@@ -60,11 +61,14 @@ const GestorHeader: React.FC = () => {
       </div>
 
       <div className="gestor-user-menu" style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+        <div className="gestor-header-controls">
+          <NotificationCenter rol="gestor" />
+        </div>
         <button className="theme-toggle-btn" onClick={toggleTheme} title="Cambiar tema">
           <IonIcon icon={isDark ? sunnyOutline : moonOutline} />
         </button>
         <div className="vertical-divider" style={{ width: '1px', height: '24px', backgroundColor: 'rgba(255,255,255,0.15)' }}></div>
-        <IonIcon icon={personCircleOutline} className="avatar-icon" style={{ fontSize: '2rem', color: 'white' }} title="Perfil" />
+        <IonIcon icon={personCircleOutline} className="avatar-icon" style={{ fontSize: '2rem', color: 'white', cursor: 'pointer' }} title="Perfil" onClick={() => history.push('/gestor/perfil')} />
         <button className="theme-toggle-btn" onClick={() => { logout(); history.push('/auth/login'); }} title="Cerrar sesión">
           <IonIcon icon={logOutOutline} />
         </button>

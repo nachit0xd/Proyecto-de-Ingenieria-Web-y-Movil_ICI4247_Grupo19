@@ -2,14 +2,26 @@ import { Router, Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import prisma from '../db';
+import rateLimit from 'express-rate-limit';
 
 const router = Router();
-const JWT_SECRET = process.env.JWT_SECRET || 'secret_super_seguro_cultura';
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET) {
+  console.error("FATAL ERROR: JWT_SECRET is not defined in .env file");
+  process.exit(1);
+}
+
+// Rate limiter: sirve para prevenir ataques de fuerza bruta en el inicio de sesión
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos de ventana
+  max: 5, // Limita cada IP a 5 peticiones por ventana de 15 min
+  message: { error: 'Demasiados intentos de inicio de sesión desde esta IP, por favor intenta de nuevo en 15 minutos.' }
+});
 
 // POST /api/auth/register: Registrar un nuevo usuario
 router.post('/register', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { nombre, email, password, rol } = req.body;
+    const { nombre, email, password } = req.body;
     console.log(`Register attempt for email: ${email}`);
     
     // Verificar si el email ya está registrado
@@ -24,18 +36,18 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create user
+    // Creamos un usuario nuevo con rol "ciudadano" por defecto para evitar un escalamiento de privilegios
     const newUser = await prisma.usuario.create({
       data: {
         nombre,
         email,
         password: hashedPassword,
-        rol: rol || 'ciudadano',
+        rol: 'ciudadano', // Forzamos el rol ciudadano para evitar un escalamiento de privilegios
       }
     });
 
     // Crear token JWT
-    const token = jwt.sign({ id: newUser.id, email: newUser.email }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: newUser.id, email: newUser.email, rol: newUser.rol }, JWT_SECRET, { expiresIn: '1d' });
 
     res.status(201).json({ token, user: { id: newUser.id, nombre: newUser.nombre, rol: newUser.rol } });
   } catch (error) {
@@ -45,7 +57,7 @@ router.post('/register', async (req: Request, res: Response): Promise<void> => {
 });
 
 // POST /api/auth/login: Iniciar sesión
-router.post('/login', async (req: Request, res: Response): Promise<void> => {
+router.post('/login', loginLimiter, async (req: Request, res: Response): Promise<void> => { // Aplicamos el rate limiter solo a esta ruta de login
   try {
     const { email, password } = req.body;
     console.log(`Login attempt for email: ${email}`);
@@ -67,7 +79,7 @@ router.post('/login', async (req: Request, res: Response): Promise<void> => {
     }
 
     // Crear token JWT
-    const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1d' });
+    const token = jwt.sign({ id: user.id, email: user.email, rol: user.rol }, JWT_SECRET, { expiresIn: '1d' });
     console.log(`Login successful for: ${email}`);
     res.status(200).json({ token, user: { id: user.id, nombre: user.nombre, rol: user.rol } });
   } catch (error) {

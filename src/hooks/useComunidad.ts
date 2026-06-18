@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { comunidadService } from '../services/comunidad.service';
+import { crearNotificacionGlobal } from './useNotificaciones';
 
 // Hooks personalizados para manejar la lógica de negocio relacionada con la comunidad y sus propuestas.
 export const usePropuestasGestor = () => {
@@ -62,13 +63,27 @@ export const useCrearPropuesta = () => {
   });
 };
 
+// Hook para que el gestor pueda actualizar el estado de una propuesta (aprobada, rechazada, en revisión) y agregar comentarios.
 export const useActualizarPropuestaGestor = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ id, data }: { id: string, data: { estado?: string, nuevoComentario?: string } }) => 
       comunidadService.actualizarPropuestaGestor(id, data),
-    onSuccess: () => {
+    onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['propuestas'] });
+      if (variables.data.estado) {
+        let estadoLegible = variables.data.estado;
+        if (estadoLegible === 'aprobada') estadoLegible = 'Aprobada';
+        if (estadoLegible === 'rechazada') estadoLegible = 'Rechazada';
+        
+        // Creamos una notificación global para el ciudadano que hizo la propuesta, informándole del cambio de estado
+        crearNotificacionGlobal({
+          titulo: 'Actualización de Propuesta',
+          mensaje: `Tu propuesta ha cambiado a estado: ${estadoLegible}.`,
+          tipo: 'propuesta',
+          para: 'ciudadano'
+        });
+      }
     },
   });
 };

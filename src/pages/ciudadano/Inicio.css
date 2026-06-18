@@ -191,6 +191,14 @@ a {
   display: flex;
   margin-bottom: 20px;
   align-items: flex-start;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+  padding: 8px;
+  border-radius: 8px;
+}
+
+.event-item:hover {
+  transform: translateX(4px);
+  background-color: var(--app-bg);
 }
 
 .event-date {
@@ -258,6 +266,14 @@ a {
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+}
+
+.ficha-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  border-color: #ea580c;
 }
 
 .ficha-img {

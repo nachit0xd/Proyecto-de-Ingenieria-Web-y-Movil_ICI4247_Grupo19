@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import prisma from '../db';
+import { verifyToken, requireRole } from '../middleware/auth';
 
 const router = Router();
 
-router.get('/kpis', async (req, res) => {
+router.get('/kpis', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const [postulacionesPendientes, propuestasPorModerar, fichasActivas] = await Promise.all([
       prisma.postulacion.count({ where: { estado: 'pendiente' } }),
@@ -41,7 +42,7 @@ router.get('/kpis', async (req, res) => {
   }
 });
 
-router.get('/actividad', async (req, res) => {
+router.get('/actividad', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const dateLimit = new Date();
     dateLimit.setDate(dateLimit.getDate() - 7); 
@@ -93,7 +94,7 @@ router.get('/actividad', async (req, res) => {
   }
 });
 
-router.get('/ciudadano', async (req, res) => {
+router.get('/ciudadano/:id', verifyToken, requireRole(['gestor']), async (req, res) => {
   try {
     const startOfMonth = new Date();
     startOfMonth.setDate(1);

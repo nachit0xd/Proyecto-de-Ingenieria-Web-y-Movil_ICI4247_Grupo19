@@ -94,6 +94,8 @@ El Ciudadano puede ser un vecino, turista o cualquier tipo de persona que accede
 - **Postular a fondos culturales municipales:** Formulario de múltiples pasos que procesa y almacena datos de postulación, presupuestos y documentos adjuntos persistidos en la BD.
 - **Calificar y comentar fichas patrimoniales:** Sistema de valoraciones (1-5 estrellas) y opiniones que recalculan de forma automatizada los promedios e indicadores en el backend.
 - **Consultar indicadores de gestión cultural:** Acceso directo a KPIs y gráficos de gestión calculados en tiempo real a través del panel de transparencia.
+- **Gestión de Perfil:** Vista dedicada para actualizar datos personales y subir de forma segura fotografías de perfil.
+- **Centro de Notificaciones:** Sistema reactivo de notificaciones persistentes para recibir alertas sobre el cambio de estado de fondos postulados y propuestas emitidas.
 
 ---
 
@@ -117,26 +119,36 @@ El Gestor Municipal puede ser un funcionario de la Dirección de Cultura, Direcc
 - **Moderar propuestas y comentarios ciudadanos:** Capacidad de supervisión y adición de comentarios formales de retroalimentación de gestión a las propuestas de la comunidad.
 - **Configurar y actualizar indicadores de transparencia:** Panel para la bitácora pública de transparencia (anuncios) y control de visibilidad de las actualizaciones.
 - **Obtener datos sobre participación e impacto cultural:** Acceso a APIs analíticas de KPI y de distribución para alimentar gráficos interactivos (Recharts) que asisten en la toma de decisiones.
+- **Gestión de Perfil:** Vista institucional para mantener actualizados los datos de contacto y foto de perfil del funcionario.
+- **Centro de Notificaciones:** Campana interactiva para el monitoreo de alertas administrativas e interacciones ciudadanas destacadas.
 
 # Requerimientos del Sistema
 
 ## Requerimientos Funcionales
-| ID | Nombre | Roles | Descripción Breve |
-|----|--------|-------|-------------------|
-| RF01 | Catálogo de Patrimonio y Oficios | Ciudadano / Gestor | Fichas didácticas de elementos culturales con multimedia y georreferencia |
-| RF02 | Mapa Interactivo Cultural | Ciudadano / Gestor | Mapa con capas diferenciadas de ferias, cultores y espacios patrimoniales |
-| RF03 | Agenda Cultural Comunal | Ciudadano / Gestor | Calendario centrado en ferias, talleres y eventos con favoritos |
-| RF04 | Postulación a Fondos Culturales | Ciudadano / Gestor | Formulario de múltiples pasos para postulación con seguimiento de estado |
-| RF05 | Propuestas Ciudadanas | Ciudadano / Gestor | Iniciativas ciudadanas con votación y escalamiento a convocatorias |
-| RF06 | Panel de Transparencia | Ciudadano / Gestor | Indicadores públicos de gestión cultural actualizados |
-| RF07 | Valoración y Comentarios | Ciudadano / Gestor | Sistema de valoración con estrellas y comentarios moderados sobre fichas y eventos |
+| ID | Nombre del Requisito | Roles | Descripción Breve | Prioridad |
+|----|-----------|-------|-------------|-----------|
+| **RF01** | **Catálogo de Patrimonio y Oficios** | Ciudadano / Gestor | Fichas didácticas de elementos culturales con multimedia y georreferencia. | Alta |
+| **RF02** | **Mapa Interactivo Cultural** | Ciudadano / Gestor | Mapa con capas diferenciadas de ferias, cultores y espacios patrimoniales. | Alta |
+| **RF03** | **Agenda Cultural Comunal** | Ciudadano / Gestor | Calendario centrado en ferias, talleres y eventos con filtros y detalles. | Alta |
+| **RF04** | **Postulación a Fondos** | Ciudadano / Gestor | Formulario de múltiples pasos para postulación con seguimiento de estado, y panel de revisión para el Gestor. | Alta |
+| **RF05** | **Propuestas Ciudadanas** | Ciudadano / Gestor | Iniciativas ciudadanas con votación comunitaria y escalamiento a convocatorias mediante moderación del Gestor. | Alta |
+| **RF06** | **Panel de Transparencia** | Ciudadano / Gestor | Indicadores públicos de gestión cultural, finanzas y actualizaciones administrativas. | Media |
+| **RF07** | **Valoración y Comentarios** | Ciudadano / Gestor | Sistema de valoración con estrellas (1-5) y comentarios sobre fichas, recalculando el promedio automáticamente. | Media |
+| **RF08** | **Gestión de Identidad (Autenticación)** | Ciudadano / Gestor | El sistema debe permitir el registro seguro e inicio de sesión de usuarios utilizando correo electrónico y contraseña. | Alta |
+| **RF09** | **Diferenciación de Roles (Autorización)** | Sistema | El sistema debe separar jerárquicamente las vistas y capacidades de escritura, garantizando que el Gestor posea acceso administrativo (CRUD) y el Ciudadano acceso participativo. | Alta |
+| **RF10** | **Centro de Notificaciones** | Ciudadano / Gestor | Campana interactiva para alertar sobre cambios de estado en fondos, propuestas y eventos. | Baja |
+| **RF11** | **Gestión Multimedia** | Ciudadano / Gestor | Capacidad de actualizar fotos de perfil y adjuntar imágenes a las propuestas y fichas (Cloudinary). | Media |
 
 ## Requerimientos No Funcionales
-| ID | Tipo | Criterio Clave |
-|----|------|----------------|
-| RNF01 | Rendimiento | Carga ≤3s en 4G, soporte 100 usuarios simultáneos |
-| RNF02 | Seguridad | HTTPS, Clave Única OAuth, rate limiting |
-| RNF03 | Usabilidad | Accesibilidad universal, lenguaje simple, feedback ≤1s |
+| ID | Categoría | Requisito y Criterio Medible |
+|----|-----------|-------------|
+| **RNF01** | **Rendimiento** | **Tiempo de carga inicial:** La interfaz SPA debe cargar su estructura base (*First Contentful Paint*) en **≤ 1.5 segundos** en conexiones 4G estándar. |
+| **RNF02** | **Escalabilidad** | **Concurrencia:** La API construida en Express.js junto a la base de datos PostgreSQL debe soportar sin degradación al menos **100 usuarios interactuando simultáneamente**. |
+| **RNF03** | **Autenticación** | **Límite de peticiones (Rate Limiting):** El endpoint de login debe bloquear la IP del cliente tras **5 intentos fallidos en una ventana de 15 minutos** para prevenir ataques de fuerza bruta. |
+| **RNF04** | **Autorización o RBAC** | **Tolerancia Cero a Intrusiones:** El **100% de los endpoints administrativos** (POST, PUT, DELETE) deben rechazar solicitudes (Código HTTP 403/401) si el token JWT no contiene la inyección encriptada del rol `gestor`. |
+| **RNF05** | **Infraestructura** | **Fail-Fast de Secretos:** El tiempo de apagado del servidor debe ser de **0 segundos** tras su compilación si no se detecta la variable de entorno `JWT_SECRET`, previniendo arranques vulnerables. |
+| **RNF06** | **Usabilidad** | **Retroalimentación de UI:** El tiempo de feedback del sistema ante interacciones críticas (enviar formularios, votar) no debe superar **1 segundo** sin mostrar un indicador de carga visual (*Spinner* o *Toast*). |
+| **RNF07** | **Portabilidad** | **Tiempo de Despliegue:** El sistema completo (Base de Datos, Backend y Frontend Nginx) debe poder compilarse y levantarse en **≤ 3 minutos** en un servidor nuevo utilizando exclusivamente el comando `docker compose up`. |
 
 Para ver una descripción más detallada y completa de los requerimientos funcionales y no-funcionales, consulte el documento [requerimientos.md](requerimientos.md).
 
@@ -179,14 +191,15 @@ El frontend se encuentra en la raíz del proyecto y consiste en una aplicación 
 * **Vite + React 19:** Entorno de compilación ultrarrápido y biblioteca de UI declarativa basada en componentes funcionales.
 * **Ionic Framework (React):** Provee componentes de interfaz nativos y adaptativos optimizados tanto para la web móvil como para aplicaciones nativas mediante Capacitor.
 * **TanStack React Query:** Gestiona la sincronización, almacenamiento en caché (*caching*), expiración y mutación del estado remoto sin necesidad de redundancia de llamadas HTTP.
-* **Axios:** Cliente HTTP para la comunicación con el servidor, configurado para adjuntar de manera automática el token JWT desde `localStorage` en cada cabecera.
+* **Axios y Variables de Entorno:** Cliente HTTP instanciado globalmente (`api.ts`) que adjunta automáticamente el token JWT como cabecera *Bearer* y abstrae la URL del servidor mediante `VITE_API_URL`.
 * **Recharts:** Biblioteca de gráficos modular y responsiva para mostrar datos interactivos de transparencia y de la comunidad.
 
 ### 2. Servidor (Backend)
 El backend se encuentra encapsulado en el directorio `/backend` del proyecto y provee una API REST que centraliza la lógica de negocio y seguridad.
 * **Node.js + Express:** Servidor web ligero, rápido e implementado en TypeScript para garantizar consistencia de tipos estáticos en todo el flujo de trabajo.
-* **JWT Authentication Middleware (`verifyToken`):** Intercepta las solicitudes protegidas y valida los tokens web de JSON firmados, otorgando accesos basados en el rol del usuario (`ciudadano` o `gestor`).
-* **Prisma ORM:** Motor de mapeo objeto-relacional para interactuar con la base de datos de manera tipada y segura, facilitando las consultas de agregación y el manejo de relaciones entre tablas.
+* **Seguridad Avanzada (Control de Acceso RBAC & JWT):** Implementación estricta de autorización basada en roles (RBAC). Los tokens JWT inyectan el rol encriptado para prevenir el escalamiento de privilegios. Las contraseñas están protegidas con `bcrypt` y los ataques XSS son mitigados.
+* **Método Fail-Fast:** El servidor exige estrictamente las variables de entorno de seguridad (`JWT_SECRET`) apagándose inmediatamente si no existen, garantizando cero exposición a vulnerabilidades por defecto.
+* **Prisma ORM:** Motor de mapeo objeto-relacional para interactuar con la base de datos de manera tipada y segura, previniendo inyecciones SQL y facilitando el manejo de relaciones.
 
 ### 3. Persistencia (Base de Datos)
 La persistencia de datos está estructurada de forma relacional en una base de datos SQL que cumple con los modelos definidos en `/backend/prisma/schema.prisma`.
@@ -196,6 +209,7 @@ La persistencia de datos está estructurada de forma relacional en una base de d
   * **Patrimonio y Oficios:** `Ficha` (con ubicaciones y multimedia serializados en JSON) y `ValoracionFicha`.
   * **Agenda Comunal:** `Evento` que almacena geolocalizaciones y fechas de inicio/término.
   * **Administración y Transparencia:** `Fondo`, `Postulacion` y `PublicacionTransparencia`.
+* **Servicios Externos (Cloudinary):** Integración nativa con la API de Cloudinary para el procesamiento y alojamiento en la nube de todas las cargas de imágenes pesadas, aliviando la carga del servidor principal.
 
 ---
 
@@ -244,6 +258,7 @@ El flujo principal se basa en dos patrones según el rol del usuario:
 
 - **Navegación Horizontal (Ciudadano):** Utiliza un Tab Bar superior estático para cambiar rápidamente entre los siete dominios principales (Inicio, Catálogo, Mapa, Agenda, Fondos, Comunidad, Transparencia). La navegación hacia vistas secundarias (ejemplo: ver el detalle de un artesano) utiliza Stack Navigation (empuja una nueva vista sobre la actual con un botón nativo de "Atrás" en la cabecera).
 - **Navegación Vertical (Gestor):** Emplea un Sidebar simple (menú lateral) fijo a la izquierda. Al seleccionar un ítem, el área principal de contenido a la derecha se actualiza, facilitando la gestión de datos pesados sin perder el contexto del menú general.
+- **Rendimiento SPA Optimizado:** Toda la transición entre vistas erradica el patrón *Full Page Reload* mediante el uso de `history.push()` de React Router. Esto inyecta el contenido de forma instantánea sin parpadeos, optimizando el *First Contentful Paint* y garantizando una experiencia completamente nativa.
 
 ## Diferenciación de Acceso según Roles 
 
@@ -350,77 +365,66 @@ La aplicación incorpora una experiencia visual adaptativa completa diseñada pa
 * **Gráficos e Indicadores Reactivos:** El sistema emplea un MutationObserver en el componente de Transparencia para escuchar el cambio de clases del DOM e inyectar de manera reactiva colores de alto contraste a los elementos de Recharts (rejillas, Tooltips y etiquetas de ejes) en el Modo Oscuro.
 
 
-# Instrucciones de Ejecución
+# Instrucciones de Despliegue y Ejecución
 
-Este proyecto ha sido desarrollado bajo un esquema full-stack (Frontend híbrido + Backend API) utilizando **Ionic Framework** con **React**, empaquetado con **Vite**, y un servidor **NodeJS + Express + Prisma ORM**.
+La aplicación está completamente orquestada con **Docker** para asegurar un despliegue completo, rápido y sin problemas de compatibilidad de dependencias entre entornos operativos.
 
 ## Pre-requisitos
 
 Asegúrate de tener instalados los siguientes entornos en tu máquina:
-* [Node.js](https://nodejs.org/) (Versión 18.x o superior recomendada)
+* [Docker Desktop](https://www.docker.com/products/docker-desktop/) (o como alternativa el daemon de Docker activado).
 * Git
-* Un gestor de base de datos SQL compatible con Prisma (como PostgreSQL).
 
-## Instalación y Configuración Inicial
+## Paso a Paso (Despliegue Local con Docker)
 
 1. **Clonar el repositorio**
-
 ```bash
 git clone https://github.com/nachit0xd/Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19.git
 cd Proyecto-de-Ingenieria-Web-y-Movil_ICI4247_Grupo19
 ```
 
-2. **Instalar las dependencias**
-
-Instala los paquetes en el cliente y en el servidor:
-```bash
-# Instalar dependencias del Frontend
-npm install
-
-# Instalar dependencias del Backend
-cd backend
-npm install
-cd ..
-```
-
-3. **Configuración de Variables de Entorno (Backend)**
-
-Navega a la carpeta `/backend` y crea tu archivo de configuración `.env` tomando como referencia el ejemplo provisto:
+2. **Configuración de Seguridad (`.env`)**
+Navega a la carpeta `/backend`, copia el archivo de ejemplo y agrega tu cadena secreta JWT (para esto, el sistema utiliza filosofía Fail-Fast, si no hay clave secreta, el backend no arrancará para protegerte):
 ```bash
 cd backend
 cp .env.example .env
 ```
-Edita el archivo `.env` configurando tus credenciales de conexión para la base de datos (`DATABASE_URL`) y la firma de tokens de seguridad (`JWT_SECRET`).
+Abre el archivo `.env` recién creado y asegúrate de que contenga:
+```env
+DATABASE_URL="postgresql://postgres:BaseD567@db:5432/cultura-municipal"
+JWT_SECRET="tusecretoseguro123"
+```
 
-4. **Sincronización de Base de Datos y Datos de Semilla (Seed)**
-
-Genera la base de datos estructurada con el esquema relacional de Prisma y ejecuta los datos iniciales de prueba:
+3. **Construir y Levantar Contenedores**
+Vuelve a la raíz del proyecto y dile a Docker que inicie toda la infraestructura. Este proceso creará 3 contenedores interconectados en una misma red:
 ```bash
-npx prisma db push
-npm run seed
 cd ..
+docker compose up -d --build
 ```
+La construcción es extremadamente ligera gracias al uso de compilación Multi-Stage (es decir, NodeJS transpila a estáticos y Nginx Alpine los sirve) y políticas estrictas de `.dockerignore`.
 
-## Ejecución del Entorno de Desarrollo
-
-Para optimizar el flujo de desarrollo, el proyecto incluye un script de ejecución concurrente. Levanta el servidor Express y el servidor de desarrollo de Vite de forma simultánea con un solo comando desde el directorio raíz:
-
+4. **Inyección de Base de Datos**
+Una vez que veas en consola que los 3 contenedores están sanos (`Started`), necesitamos construir el esquema de Prisma y poblar la base de datos con usuarios y fichas de prueba. Ejecuta estos dos comandos para enviar las instrucciones directo al contenedor del backend:
 ```bash
-npm run dev:all
+docker exec cultura_backend npx prisma db push
+docker exec cultura_backend npx ts-node seed.ts
 ```
 
-Esto iniciará automáticamente:
-* **Frontend (Vite):** Disponible en `http://localhost:5173`
-* **Backend API (Express):** Disponible en `http://localhost:3000`
+### Puertos Expuestos
 
-*(Nota: También se pueden ejecutar de forma independiente abriendo dos consolas distintas y corriendo `npm run dev` en el directorio raíz para el frontend, y `npm run dev` en la carpeta `/backend` para el servidor).*
+Con esto la aplicación ya está activa. Puedes acceder a través de tu navegador a las siguientes direcciones locales:
+* **Frontend SPA (Nginx):** `http://localhost:8080` (usa este puerto para navegar por la app).
+* **Backend API (Express):** `http://localhost:3000`
+* **Base de Datos (PostgreSQL):** `localhost:5432`
+
+## Ejecución tradicional sin Docker (Modo Desarrollo)
+
+En caso de preferir trabajar manipulando el código en tiempo real y levantar los servidores por separado con NodeJS, puedes ejecutar `npm run dev:all` en el directorio raíz. Asegúrate de tener un gestor SQL propio corriendo localmente e instala las dependencias (`npm install`) en la raíz y en el backend previamente.
 
 
 ## Prototipo de Diseño en Figma
 
 Antes de la codificación de este proyecto, la arquitectura de la información, la interfaz de usuario (UI) y la experiencia de usuario (UX) fueron prototipados en Figma. El diseño contempla la separación de roles, flujos de tareas (como la creación de propuestas) y la coherencia visual entre dispositivos.
 
-A partir de la entrega parcial 1, se han añadido nuevos prototipos de pantallas, como la pantalla de Fondos del Ciudadano y las pantallas del Gestor Municipal, con cambios que mejoran (respecto a la entrega pasada) la navegación entre pantallas del Ciudadano.
-
-Se puede interactuar con el prototipo navegable aquí (nuevo link, prototipo actualizado):
+Se puede interactuar con el prototipo navegable aquí (link actual, prototipo actualizado):
 [Enlace a Figma](https://www.figma.com/design/zbS9fxfxutZEDHJ8CJblVV/Proyecto-ING-Web-y-M%C3%B3vil-Entrega-Parcial-2?node-id=0-1&t=KLkTDE9nLrQaHELZ-1)

@@ -1,35 +1,31 @@
 {
   "info": {
-    "name": "Cultura Municipal API",
-    "description": "Pruebas funcionales de los endpoints de Autenticación, Gestión de Comunidad, Eventos y Fondos.",
+    "name": "Cultura Municipal API V2 (Estructurada)",
+    "description": "Pruebas funcionales y de seguridad de los endpoints del proyecto Cultura Municipal.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
     {
-      "name": "Autenticación",
+      "name": "1. Autenticación",
       "item": [
         {
           "name": "Registrar Usuario",
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"nombre\": \"Usuario Postman\",\n  \"email\": \"postman@correo.cl\",\n  \"password\": \"12345678\",\n  \"rol\": \"ciudadano\"\n}"
+              "raw": "{\n  \"nombre\": \"Usuario Test\",\n  \"email\": \"test@correo.cl\",\n  \"password\": \"12345678\",\n  \"rol\": \"ciudadano\"\n}"
             },
             "url": {
-              "raw": "http://localhost:3000/api/auth/register",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
               "path": ["api", "auth", "register"]
             }
           }
         },
         {
-          "name": "Iniciar Sesión",
+          "name": "Iniciar Sesión (Obtiene JWT)",
           "event": [
             {
               "listen": "test",
@@ -46,18 +42,14 @@
           ],
           "request": {
             "method": "POST",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"email\": \"postman@correo.cl\",\n  \"password\": \"12345678\"\n}"
+              "raw": "{\n  \"email\": \"test@correo.cl\",\n  \"password\": \"12345678\"\n}"
             },
             "url": {
-              "raw": "http://localhost:3000/api/auth/login",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
               "path": ["api", "auth", "login"]
             }
           }
@@ -65,80 +57,186 @@
       ]
     },
     {
-      "name": "Comunidad",
+      "name": "2. Ciudadano",
       "item": [
         {
-          "name": "Obtener Propuestas",
+          "name": "Obtener Propuestas/Fichas Públicas",
           "request": {
             "method": "GET",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/comunidad/propuestas",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
+              "raw": "{{base_url}}/api/comunidad/propuestas",
+              "host": ["{{base_url}}"],
               "path": ["api", "comunidad", "propuestas"]
             }
           }
         },
         {
-          "name": "Actualizar Propuesta (Requiere JWT)",
+          "name": "Crear Ficha / Propuesta (Requiere JWT)",
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{jwt_token}}",
-                  "type": "string"
-                }
-              ]
+              "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Mejora en parque municipal\",\n  \"descripcion\": \"Se necesita instalar nuevas bancas.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comunidad/propuesta",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Gestor",
+      "item": [
+        {
+          "name": "Actualizar Estado Propuesta (Requiere JWT Gestor)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
             },
             "method": "PUT",
-            "header": [
-              { "key": "Content-Type", "value": "application/json" }
-            ],
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"estado\": \"aprobado\"\n}"
             },
             "url": {
-              "raw": "http://localhost:3000/api/comunidad/propuesta/AQUI_PONER_ID_PROPUESTA",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["api", "comunidad", "propuesta", "AQUI_PONER_ID_PROPUESTA"]
+              "raw": "{{base_url}}/api/comunidad/propuesta/ID_PROPUESTA_AQUI",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta", "ID_PROPUESTA_AQUI"]
             }
           }
         },
         {
-          "name": "Eliminar Propuesta (Requiere JWT)",
+          "name": "Eliminar Propuesta (Requiere JWT Gestor)",
           "request": {
             "auth": {
               "type": "bearer",
-              "bearer": [
-                {
-                  "key": "token",
-                  "value": "{{jwt_token}}",
-                  "type": "string"
-                }
-              ]
+              "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
             },
             "method": "DELETE",
             "header": [],
             "url": {
-              "raw": "http://localhost:3000/api/comunidad/propuesta/AQUI_PONER_ID_PROPUESTA",
-              "protocol": "http",
-              "host": ["localhost"],
-              "port": "3000",
-              "path": ["api", "comunidad", "propuesta", "AQUI_PONER_ID_PROPUESTA"]
+              "raw": "{{base_url}}/api/comunidad/propuesta/ID_PROPUESTA_AQUI",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta", "ID_PROPUESTA_AQUI"]
             }
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Pruebas de Seguridad (Security Vectors)",
+      "item": [
+        {
+          "name": "CORS Test - Origen no Autorizado",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Origin", "value": "http://sitio-malicioso.com", "description": "Intento de acceso desde dominio no autorizado" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/comunidad/propuestas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuestas"]
+            },
+            "description": "Prueba de CORS: El servidor no debe retornar 'Access-Control-Allow-Origin: http://sitio-malicioso.com'."
+          }
+        },
+        {
+          "name": "Rate Limit Test - Fuerza Bruta Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@correo.cl\",\n  \"password\": \"adivinando123\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Prueba de Rate Limiting: Ejecutar este request múltiples veces rápidamente usando Postman Runner. Debería retornar código 429 Too Many Requests."
+          }
+        },
+        {
+          "name": "Auth Test 1 - Acceso sin JWT (401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Ficha de prueba sin auth\",\n  \"descripcion\": \"Esta petición debería fallar.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comunidad/propuesta",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta"]
+            },
+            "description": "Prueba de Autenticación: Al no enviar Token, el servidor debe retornar 401 Unauthorized."
+          }
+        },
+        {
+          "name": "Auth Test 2 - Acceso con Rol Incorrecto (403)",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+            },
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"aprobado\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comunidad/propuesta/ID_PROPUESTA_AQUI",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta", "ID_PROPUESTA_AQUI"]
+            },
+            "description": "Prueba de RBAC (Roles): Inicia sesión como 'ciudadano', obtén el token y ejecuta este request. Como es una acción de 'gestor', debe retornar 403 Forbidden."
+          }
+        },
+        {
+          "name": "XSS Test - Inyección de Script",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+            },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"<script>alert('XSS Hack');</script>\",\n  \"descripcion\": \"Prueba de inyección en el backend.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/comunidad/propuesta",
+              "host": ["{{base_url}}"],
+              "path": ["api", "comunidad", "propuesta"]
+            },
+            "description": "Prueba de XSS: Enviar un payload malicioso. El backend debería guardarlo como texto plano o rechazarlo si hay validación estricta. El Frontend debe renderizarlo sin ejecutar el alert."
           }
         }
       ]
     }
   ],
   "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
     {
       "key": "jwt_token",
       "value": "",

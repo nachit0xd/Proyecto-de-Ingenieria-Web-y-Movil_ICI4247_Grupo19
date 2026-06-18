@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { verifyToken, AuthRequest } from '../middleware/auth';
+import { verifyToken, requireRole, AuthRequest } from '../middleware/auth';
 import prisma from '../db';
 
 const router = Router();
@@ -18,7 +18,7 @@ router.get('/', async (req: Request, res: Response) => {
 });
 
 // Crear nueva ficha (Solo administradores/gestores)
-router.post('/', verifyToken, async (req: Request, res: Response) => {
+router.post('/', verifyToken, requireRole(['gestor']), async (req: Request, res: Response) => {
   try {
     const { nombre, descripcion, categoria, estado, ubicacion, multimediaUrl } = req.body;
     
@@ -46,7 +46,7 @@ router.post('/', verifyToken, async (req: Request, res: Response) => {
 });
 
 // Actualizar una ficha existente
-router.put('/:id', verifyToken, async (req: Request, res: Response) => {
+router.put('/:id', verifyToken, requireRole(['gestor']), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { nombre, descripcion, categoria, estado, ubicacion, multimediaUrl } = req.body;
@@ -71,7 +71,7 @@ router.put('/:id', verifyToken, async (req: Request, res: Response) => {
 });
 
 // Cambiar el estado de una ficha (visible/oculto)
-router.patch('/:id/estado', verifyToken, async (req: Request, res: Response) => {
+router.patch('/:id/estado', verifyToken, requireRole(['gestor']), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     const { estado } = req.body;
@@ -93,7 +93,7 @@ router.patch('/:id/estado', verifyToken, async (req: Request, res: Response) => 
 });
 
 // Eliminar una ficha
-router.delete('/:id', verifyToken, async (req: Request, res: Response) => {
+router.delete('/:id', verifyToken, requireRole(['gestor']), async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
     

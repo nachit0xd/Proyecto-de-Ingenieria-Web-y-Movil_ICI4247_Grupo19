@@ -337,3 +337,34 @@
   font-weight: 500;
   cursor: pointer;
 }
+
+/* AJUSTES RESPONSIVOS PARA MÓVILES */
+@media (max-width: 992px) {
+  .master-detail-layout {
+    flex-direction: column;
+    height: auto;
+    gap: 15px;
+  }
+  
+  .master-column {
+    flex: none;
+    width: 100%;
+    border-right: none;
+    border-bottom: 2px solid var(--border-color);
+    padding-right: 0;
+    padding-bottom: 15px;
+    max-height: 50vh;
+  }
+
+  .detail-column {
+    flex: none;
+    width: 100%;
+    min-height: 50vh;
+    padding: 15px;
+  }
+
+  .prop-card-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+}

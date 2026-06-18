@@ -102,32 +102,103 @@ El requerimiento se inspira en la transparencia implementada en la herramienta d
 **Relación con caso de la vida real:**
 El requerimiento se basa en algunas iniciativas que implementan mecanismos de consulta ciudadana, como "Viña Decide" de Viña del Mar.
 
+## RF08 — Gestión de Identidad (Autenticación)
+**Roles participantes:** Ciudadano y Gestor Municipal.
+
+**Descripción:** El sistema debe proveer un mecanismo seguro para que los usuarios puedan registrarse e iniciar sesión utilizando su correo electrónico y contraseña. Esta funcionalidad es la entrada a los servicios personalizados y administrativos de la plataforma.
+
+**Criterios:**
+- Formulario de registro con validación de formato de correo electrónico y contraseña.
+- Emisión de un Token Web JSON (JWT) con encriptación tras un login exitoso.
+- Persistencia de sesión en el cliente (localStorage).
+
+**Relación con caso de la vida real:**
+Responde a la necesidad de mantener trazabilidad en los procesos de postulación y participación ciudadana, evitando el anonimato en votaciones comunitarias.
+
+## RF09 — Diferenciación de Roles (Autorización)
+**Roles participantes:** Sistema (Backend).
+
+**Descripción:** El sistema debe aislar lógicamente las capacidades de lectura y escritura dependiendo del rol asignado al usuario durante el registro, aplicando el principio de menores privilegios (Role-Based Access Control).
+
+**Criterios:**
+- Todo nuevo usuario registrado asume por defecto el rol de "Ciudadano" (prevención de escalamiento de privilegios).
+- Las vistas administrativas (Dashboard Gestor) son inaccesibles desde la interfaz si el usuario no posee el rol adecuado.
+- La API rechaza cualquier intento de mutación de datos (POST/PUT/DELETE) sobre recursos protegidos si el JWT no contiene el claim de rol `gestor`.
+
+**Relación con caso de la vida real:**
+Garantiza la seguridad y la correcta delegación de tareas administrativas dentro de una DIDECO o Dirección Cultural Municipal.
+
+## RF10 — Centro de Notificaciones
+**Roles participantes:** Ciudadano y Gestor Municipal.
+
+**Descripción:** El sistema debe informar proactivamente a los usuarios sobre cambios relevantes en sus interacciones con la municipalidad, manteniendo un registro histórico de estas alertas.
+
+**Criterios:**
+- Ícono de campana interactivo en la barra superior con contador de notificaciones no leídas.
+- Generación automática de notificaciones ante cambios de estado (ej. "Tu postulación ha sido aprobada", "Nueva propuesta ciudadana requiere revisión").
+- Capacidad de marcar notificaciones como leídas.
+
+**Relación con caso de la vida real:**
+Resuelve la queja común ciudadana sobre la falta de retroalimentación tras enviar trámites o participar en propuestas municipales.
+
+## RF11 — Gestión Multimedia en la Nube
+**Roles participantes:** Ciudadano y Gestor Municipal.
+
+**Descripción:** El sistema debe soportar la carga y almacenamiento de archivos multimedia (imágenes) para enriquecer perfiles de usuario, fichas de patrimonio, eventos y propuestas, delegando el almacenamiento a un servicio en la nube (Cloudinary).
+
+**Criterios:**
+- El usuario puede subir su foto de perfil.
+- El gestor puede adjuntar imágenes ilustrativas al crear fichas de catálogo o eventos.
+- Las imágenes no se almacenan en el disco duro local del servidor, sino que se suben a Cloudinary mediante una integración API (Multer-Storage-Cloudinary).
+
+**Relación con caso de la vida real:**
+Permite visibilizar de forma mucho más atractiva e interactiva el patrimonio y las ferias locales, fomentando el interés turístico.
+
+---
+
 # Requerimientos No Funcionales
 
 ## RNF01 — Rendimiento
-**Descripción:** El sistema debe garantizar tiempos de respuesta adecuados tanto en condiciones normales como en momentos de alta concurrencia, considerando que puede ser utilizado desde zonas con conectividad limitada (comunas rurales y mixtas).
+**Descripción:** El sistema debe garantizar tiempos de respuesta rápidos y fluidos, optimizando la experiencia del usuario para evitar la deserción, incluso en redes móviles (4G).
 
 **Criterios Medibles:**
-- Carga de pantalla principal (≤ 3 segundos).
-- Carga del catálogo patrimonial (≤ 5 segundos para los primeros resultados).
-- Carga del mapa interactivo (≤ 5 segundos con conexión adecuada).
-- Concurrencia soportada sin degradación (mínimo 100 usuarios al mismo tiempo).
+- **Tiempo de carga inicial:** La interfaz SPA debe cargar su estructura base (*First Contentful Paint*) en **≤ 1.5 segundos**.
+- **Carga de catálogo:** El catálogo patrimonial debe renderizar los primeros 10 resultados en **≤ 2 segundos**.
 
-## RNF02 — Seguridad
-**Descripción:** El sistema debe proteger los datos de los ciudadanos y garantizar que únicamente usuarios autorizados puedan ejecutar acciones sensibles, cumpliendo la ley chilena.
+## RNF02 — Escalabilidad
+**Descripción:** El sistema backend y la base de datos deben ser capaces de procesar múltiples solicitudes simultáneas sin interrupción del servicio, pensando en picos de tráfico durante apertura de fondos o votaciones de propuestas.
 
 **Criterios Medibles:**
-- Autenticación de ciudadano (integración de **Clave Única** de Chile).
-- Comunicación Cliente-Servidor (HTTPS en todos los endpoints).
-- Datos sensibles (el RUT ciudadano no debe exponerse en ningún momento).
-- Registro actualizado (el sistema registra cada acción crítica del gestor, como creación, edición, eliminación o cambio de estado de variables).
+- **Concurrencia:** La API (Express.js) y la DB (PostgreSQL) deben soportar sin degradación al menos **100 usuarios interactuando simultáneamente**.
 
-## RNF03 — Usabilidad
-**Descripción:** El sistema debe ser accesible, intuitivo y usable para una audiencia diversa que incluye ciudadanos de comunas rurales, personas con baja alfabetización digital y adultos mayores.
+## RNF03 — Autenticación
+**Descripción:** El sistema debe proteger las cuentas ciudadanas y municipales contra ataques automatizados o intentos de vulneración de contraseñas.
 
 **Criterios Medibles:**
-- Diseño responsivo (la interfaz debe adaptarse a pantallas de escritorio y móviles).
-- Lenguaje (todos los textos deben estar en lenguaje simple y evitar tecnicismos municipales).
-- Consistencia visual (el sistema debe mantener un diseño coherente, una paleta de colores definida y componentes reutilizables, como botones o símbolos).
-- Feedback de acciones (una acción del usuario, como votar o comentar, debe recibir una confirmación visual rápida).
-- Accesibilidad (se deben cumplir criterios de accesibilidad, como contraste mínimo, textos alternativos con imágenes o navegación por teclado).
+- **Límite de peticiones (Rate Limiting):** El endpoint de login debe bloquear la IP del cliente tras **5 intentos fallidos en una ventana de 15 minutos** (previniendo ataques de fuerza bruta).
+- **Criptografía:** Las contraseñas deben almacenarse procesadas por algoritmos de hashing unidireccional (*bcrypt*).
+
+## RNF04 — Autorización o RBAC
+**Descripción:** La capa de la API debe ser completamente invulnerable a accesos no autorizados mediante inyección o alteración de tokens.
+
+**Criterios Medibles:**
+- **Tolerancia cero a intrusiones:** El **100% de los endpoints administrativos** (POST, PUT, DELETE sobre entidades gestoras) deben rechazar solicitudes (Código HTTP 403 o 401) si el token JWT enviado en la cabecera no contiene la inyección encriptada del rol `gestor`.
+
+## RNF05 — Infraestructura
+**Descripción:** El código fuente y el servidor no deben permitir la exposición accidental de claves criptográficas vitales en entornos comprometidos o mal configurados.
+
+**Criterios Medibles:**
+- **Fail-Fast de secretos:** El tiempo de apagado del servidor Node.js debe ser de **0 segundos** tras su inicio (terminación inmediata `process.exit`) si no se detecta la variable de entorno crítica `JWT_SECRET`.
+
+## RNF06 — Usabilidad
+**Descripción:** El sistema debe ser altamente interactivo, confirmándole al usuario visualmente que sus acciones están siendo procesadas para evitar confusiones o dobles envíos.
+
+**Criterios Medibles:**
+- **Retroalimentación de UI:** El tiempo de feedback del sistema ante interacciones críticas (enviar formularios, votar, iniciar sesión) no debe superar **1 segundo** sin mostrar un indicador de carga visual (*Spinner* o *Toast*).
+- **Accesibilidad:** Uso estricto de componentes nativos Ionic que aseguran áreas de toque grandes (mínimo 44x44 px) aptas para dispositivos móviles.
+
+## RNF07 — Portabilidad
+**Descripción:** La plataforma debe estar desacoplada del sistema operativo anfitrión para facilitar su instalación, distribución y despliegue por parte de otros equipos municipales o desarrolladores.
+
+**Criterios Medibles:**
+- **Tiempo de Despliegue:** El sistema completo (Base de Datos, Backend API y Frontend compilado) debe poder orquestarse, compilarse y levantarse en **≤ 3 minutos** en un servidor nuevo utilizando exclusivamente el comando único `docker compose up --build`.
